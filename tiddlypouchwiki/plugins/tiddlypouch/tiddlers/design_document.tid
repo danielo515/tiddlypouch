@@ -1,0 +1,15 @@
+title: $:/plugins/danielo515/tiddlypouch/config/design_document
+
+{
+  '_id': '_design/tw',
+  'views': {
+    'skinny-tiddlers': {
+      'map': "function(doc){ var fields = {};
+          for(var field in doc.fields ){
+              if( ['text','title'].indexOf(field) === -1){
+                  fields[field] = doc.fields[field];
+                  }}
+          fields.revision = doc._rev;
+          emit(doc._id,fields); }"
+    }}
+  };

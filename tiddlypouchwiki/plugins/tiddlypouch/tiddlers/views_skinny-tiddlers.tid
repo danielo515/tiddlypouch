@@ -1,0 +1,9 @@
+title: $:/plugins/danielo515/tiddlypouch/views/skinny-tiddlers
+
+function(doc){fields = {};  
+for(var field in doc.fields ){ 
+if( ['text','title'].indexOf(field) === -1){
+fields[field] = doc.fields[field];
+}}
+fields.revision = doc._rev;
+emit(doc._id,fields);}
