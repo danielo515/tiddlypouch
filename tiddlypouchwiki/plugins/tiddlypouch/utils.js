@@ -1,7 +1,7 @@
 /*\
 title: $:/plugins/danielo515/tiddlypouch/startup/utils.js
 type: application/javascript
-module-type: startup
+module-type: 
 
 \*/
 
