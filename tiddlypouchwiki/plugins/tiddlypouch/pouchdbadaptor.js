@@ -385,7 +385,8 @@ PouchAdaptor.prototype.loadSystemTiddlers = function(callback) {
 }
 --- END TEMPT COMMENT */ 
 
-if($tw.browser) {
+if($tw.browser && $tw.TiddlyPouch.database) {
+    /*Only works if we are on browser and there is a database*/
 	exports.adaptorClass = PouchAdaptor;
 }
 
