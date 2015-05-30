@@ -12,3 +12,9 @@ Name: <$edit-text tag="input" tiddler="$:/plugins/danielo515/tiddlypouch/config/
 @@color:#cc0000;
 ,,//Without this parameter the plugin remains inactive //,,
 @@
+
+!!!Important information
+Local databases are grouped by file name or domain. 
+''If you rename'' your html wiki file then that particular file @@color:red; will not be able to 
+access@@ any of the databases created while having the old name. 
+Fortunately ''renaming the file'' to the previous name will correct this situation.
