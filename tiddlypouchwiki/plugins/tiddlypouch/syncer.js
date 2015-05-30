@@ -37,6 +37,7 @@ exports.startup = function() {
   }
 
     var URL = $tw.wiki.getTiddlerText(CONFIG_PREFIX + 'URL');
+    var Databasename = $tw.wiki.getTiddlerText(CONFIG_PREFIX + 'DatabaseName');
     /*If there is no URL set, then no sync*/
     if(!URL){
         this.logger.log("Entering offline mode");
