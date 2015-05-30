@@ -23,10 +23,10 @@ var SYNC_ERRORS="$:/state/tiddlypouch/sync/errors"
 var SYNC_LOG="$:/state/tiddlypouch/sync/Log"
 var SYNC_ICON="$:/state/tiddlypouch/sync/status"
 
-exports.startup = function() {
+exports.startup = function(callback) {
   this.logger = new $tw.utils.Logger("PouchSync");
   var self=this;
-  this.logger.log('Starting syncer...');
+  this.logger.log('Trying to sync...');
   function PouchLog(log,info){
     /*Appends info to the specified log tiddler*/
     var oldinfo = $tw.wiki.getTiddlerText(log) + '\n';
@@ -44,6 +44,7 @@ exports.startup = function() {
         this.logger.log("Entering offline mode");
         /* We don't want sync status icon on sidebar*/
         $tw.wiki.addTiddler(new $tw.Tiddler(sincStatusFlag,{tags:[]})); //so remove tags
+        callback();
         return
     }
         /*Otherwise, add to sidebar with the tag (it could be removed) */
@@ -74,6 +75,7 @@ exports.startup = function() {
         PouchLog(SYNC_ERRORS,err);
     });
     $tw.TiddlyPouch.syncHandler=sync;
+    callback();
 };
 
 })();
