@@ -1,0 +1,6 @@
+title: $:/plugins/danielo515/tiddlypouch/ControlPanel
+caption: TiddlyPouch
+tags: $:/tags/ControlPanel
+
+
+<<tabs "[tag[$:/tags/TiddlyPouch/ControlPanel]]" "" "$:/state/TiddlyPouch/tabs">>

@@ -1,0 +1,29 @@
+title: $:/plugins/danielo515/tiddlypouch/ServerControlPanel
+caption: Server
+tags: $:/tags/TiddlyPouch/ControlPanel
+
+!!! Connection Info
+Fill the below fields if you want to syncrhonize your local database with a remote
+couch-like server.
+
+~CouchDB URL: <$edit-text tiddler="$:/plugins/danielo515/tiddlypouch/config/URL"  default=""/>
+
+Design document name: <$edit-text tiddler="$:/plugins/danielo515/tiddlypouch/config/DatabaseName" default=""/>
+
+Needs XHR withCredentials: <$transclude tiddler="$:/plugins/wshallum/couchadaptor/config/RequiresWithCredentials">no</$transclude>
+
+<$button message="tm-server-refresh">Refresh</$button> to fetch changes from the server immediately
+
+!!! Authentication
+
+<$reveal state="$:/status/IsLoggedIn" type="nomatch" text="yes">
+Log in to ~CouchDB: <$button message="tm-login">Login</$button>
+</$reveal>
+<$reveal state="$:/status/IsLoggedIn" type="match" text="yes">
+<$reveal state="$:/status/UserName" type="nomatch" text="">
+Logged in as {{$:/status/UserName}} <$button message="tm-logout">Logout</$button>
+</$reveal>
+<$reveal state="$:/status/UserName" type="match" text="">
+Logged in with no username: ~CouchDB is probably in [[admin party mode|http://docs.couchdb.org/en/latest/intro/security.html#the-admin-party]]. <$button message="tm-logout">Logout</$button>
+</$reveal>
+</$reveal>
