@@ -1,7 +1,7 @@
 /*\
 title: $:/plugins/danielo515/tiddlypouch/startup/utils.js
 type: application/javascript
-module-type: 
+module-type: startup
 
 \*/
 
@@ -16,7 +16,7 @@ exports.name = "pouchdb-utils";
 exports.after = ["pouchdb"];
 exports.before = ["pouchdb-sycer"];
 exports.platforms = ["browser"];
-exports.synchronous = false;
+exports.synchronous = true;
 
 exports.startup = function() {
   this.logger = new $tw.utils.Logger("PouchDB");
@@ -28,7 +28,7 @@ exports.startup = function() {
        function(doc) {
             return db.remove(doc);
           }).then(function (result) {
-            self.logger.log("Document removed",doc);
+            self.logger.log("Document removed",result);
           }).catch(function (err) {
             self.logger.log(err);
           });
