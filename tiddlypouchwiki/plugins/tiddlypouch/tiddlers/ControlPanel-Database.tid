@@ -1,0 +1,14 @@
+title: $:/plugins/danielo515/tiddlypouch/ControlPanel/Database
+caption: Server
+tags: $:/tags/TiddlyPouch/ControlPanel
+
+!!! Database Name
+This is the name of your local database. Tiddlers are stored there. 
+You can have as many databases as you want. Changing this value will make your wiki to save/load
+tiddlers to that database. This requires a ''save and reload'' to take effect, the `No tiddlers` option 
+in the download tab of this control panel is the recommended choice for this task.
+
+Name: <$edit-text tag="input" tiddler="$:/plugins/danielo515/tiddlypouch/config/DatabaseName"  default=""/>
+@@color:#cc0000;
+,,//Without this parameter the plugin remains inactive //,,
+@@
