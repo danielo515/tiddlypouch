@@ -26,23 +26,28 @@ var design_document = {
   '_id': '_design/tw',
   'views': {
     'skinny-tiddlers': {
-      'map': function(doc){ var fields = {};           for(var field in doc.fields ){ if( ['text','title'].indexOf(field) === -1){ fields[field] = doc.fields[field]; }}           fields.revision = doc._rev;           emit(doc._id,fields); }.toString()
+      'map': function(doc){ var fields = {}; for(var field in doc.fields ){ if( ['text','title'].indexOf(field) === -1){ fields[field] = doc.fields[field]; }}           fields.revision = doc._rev;           emit(doc._id,fields); }.toString()
     }}
   };
 
-exports.startup = function() {
-  $tw.TiddlyPouch = {};
-	$tw.TiddlyPouch.PouchDB = require("$:/plugins/danielo515/tiddlypouch/pouchdb.js");
-  if($tw.node) {
-        $tw.TiddlyPouch.database = new $tw.TiddlyPouch.PouchDB('./tiddlywiki');
-        console.log("Server side pouchdb started");
-	}else{
-        $tw.TiddlyPouch.database = new $tw.TiddlyPouch.PouchDB('tiddlywiki');
-        console.log("Client side pochdb started");
-        if(DEBUG){
-            $tw.TiddlyPouch.database.on('error', function (err) { console.log(err); });
-        }
-    }
+exports.startup = function(){
+  $tw.TiddlyPouch = { utils: {}};
+  $tw.TiddlyPouch.utils.getConfig=function(name){ 
+    var configValue = $tw.wiki.getTiddlerText(CONFIG_PREFIX + name,"");
+    return configValue.trim();
+};
+  var utils = $tw.TiddlyPouch.utils;
+  $tw.TiddlyPouch.databaseName = utils.getConfig('DatabaseName');
+  if(!$tw.TiddlyPouch.databaseName){
+      /*If a database name is not set then don't create any database*/
+      return
+  }
+  $tw.TiddlyPouch.PouchDB = require("$:/plugins/danielo515/tiddlypouch/pouchdb.js");
+  $tw.TiddlyPouch.database = new $tw.TiddlyPouch.PouchDB($tw.TiddlyPouch.databaseName);
+  console.log("Client side pochdb started");
+    if(DEBUG){
+      $tw.TiddlyPouch.database.on('error', function (err) { console.log(err); });
+     }
 
     //var design_document = $tw.wiki.getTiddlerText(CONFIG_PREFIX + "design_document");
     $tw.TiddlyPouch.database.put(design_document).then(function () {

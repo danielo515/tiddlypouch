@@ -3,6 +3,7 @@ title: $:/plugins/danielo515/tiddlypouch/startup/utils.js
 type: application/javascript
 module-type: startup
 
+Basic Utils object is created int the pouch startup module
 \*/
 
 (function(){
@@ -21,8 +22,7 @@ exports.synchronous = true;
 exports.startup = function() {
   this.logger = new $tw.utils.Logger("PouchDB");
   var self = this;
-   var utils = {};
-   utils.remove = function(title){
+  $tw.TiddlyPouch.utils.remove = function(title){
      var db=$tw.TiddlyPouch.database;
      db.get(title).then(
        function(doc) {
@@ -33,9 +33,6 @@ exports.startup = function() {
             self.logger.log(err);
           });
    }
-
-
-   $tw.TiddlyPouch.utils = utils;
 
 };
 
