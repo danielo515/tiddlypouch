@@ -22,13 +22,27 @@ exports.synchronous = true;
 exports.startup = function() {
   this.logger = new $tw.utils.Logger("PouchDB");
   var self = this;
+  var db=$tw.TiddlyPouch.database;
+  /*Removes the document with the provided title from the database*/
   $tw.TiddlyPouch.utils.remove = function(title){
-     var db=$tw.TiddlyPouch.database;
      db.get(title).then(
        function(doc) {
             return db.remove(doc);
           }).then(function (result) {
             self.logger.log("Document removed",result);
+          }).catch(function (err) {
+            self.logger.log(err);
+          });
+   };
+   /*Replaces a document in the database with the provided one
+     without taking in account the revision.*/
+   $tw.TiddlyPouch.utils.replace = function(newdoc){
+       db.get(newdoc._id).then(
+       function(doc) {
+            return db.remove(doc);
+          }).then(function (doc) {
+            db.put(newdoc).then(function(doc){
+            self.logger.log("Document replaced",doc)});
           }).catch(function (err) {
             self.logger.log(err);
           });
