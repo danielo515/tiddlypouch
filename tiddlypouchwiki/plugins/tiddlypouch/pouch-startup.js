@@ -19,18 +19,18 @@ exports.synchronous = true;
 var CONFIG_PREFIX="$:/plugins/danielo515/tiddlypouch/config/";
 var DEBUG=true;
 
-/*var design_document = {
+var design_document = {
   '_id': '_design/tw',
   'views': {
     'skinny-tiddlers': {
       'map': function(doc){ var fields = {};           for(var field in doc.fields ){ if( ['text','title'].indexOf(field) === -1){ fields[field] = doc.fields[field]; }}           fields.revision = doc._rev;           emit(doc._id,fields); }.toString()
     }}
-  };*/
+  };
 
 exports.startup = function() {
   $tw.TiddlyPouch = {};
 	$tw.TiddlyPouch.PouchDB = require("$:/plugins/danielo515/tiddlypouch/pouchdb.js");
-    if($tw.node) {
+  if($tw.node) {
         $tw.TiddlyPouch.database = new $tw.TiddlyPouch.PouchDB('./tiddlywiki');
         console.log("Server side pouchdb started");
 	}else{
@@ -41,8 +41,7 @@ exports.startup = function() {
         }
     }
 
-    var design_document = $tw.wiki.getTiddlerText(CONFIG_PREFIX + "design_document");
-    console.log(design_document);
+    //var design_document = $tw.wiki.getTiddlerText(CONFIG_PREFIX + "design_document");
     $tw.TiddlyPouch.database.put(design_document).then(function () {
         console.log("PouchDB design document created");
     }).catch(function (err) {
