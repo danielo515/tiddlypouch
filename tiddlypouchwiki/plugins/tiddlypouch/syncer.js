@@ -37,17 +37,21 @@ exports.startup = function() {
   }
 
     var URL = $tw.wiki.getTiddlerText(CONFIG_PREFIX + 'URL');
-    var Databasename = $tw.wiki.getTiddlerText(CONFIG_PREFIX + 'DatabaseName');
+    var Databasename = $tw.wiki.getTiddlerText(CONFIG_PREFIX + 'RemoteDatabaseName');
+    var sincStatusFlag = $tw.wiki.getTiddler(SYNC_ICON);
     /*If there is no URL set, then no sync*/
     if(!URL){
         this.logger.log("Entering offline mode");
         /* We don't want sync status icon on sidebar*/
-        var tiddler = $tw.wiki.getTiddler(SYNC_ICON);
-        $tw.wiki.addTiddler(new $tw.Tiddler(tiddler,{tags:[]})); //so remove tags
+        $tw.wiki.addTiddler(new $tw.Tiddler(sincStatusFlag,{tags:[]})); //so remove tags
         return
     }
-    URL = URL.trim();
-    var sync = $tw.TiddlyPouch.PouchDB.sync($tw.TiddlyPouch.database, URL, {
+        /*Otherwise, add to sidebar with the tag (it could be removed) */
+        $tw.wiki.addTiddler(new $tw.Tiddler(sincStatusFlag,{tags:['$:/tags/ControlPanel']})); //so remove tags
+        
+    URL = URL.substr(-1) === '/' ? URL.trim() : URL.trim() + '/'; //Make sure it ends with slash
+    Databasename = Databasename.trim();
+    var sync = $tw.TiddlyPouch.PouchDB.sync($tw.TiddlyPouch.database, URL+Databasename, {
         live: true,
         retry: true
     }).on('change', function (info) {
@@ -69,6 +73,7 @@ exports.startup = function() {
         $tw.wiki.setText(SYNC_STATE,'text',undefined,'error')
         PouchLog(SYNC_ERRORS,err);
     });
+    $tw.TiddlyPouch.syncHandler=sync;
 };
 
 })();
