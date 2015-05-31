@@ -45,20 +45,18 @@ exports.startup = function(){
         var configValue = $tw.wiki.getTiddlerText(CONFIG_PREFIX + configName,"");
         return configValue.trim();
    };
-  /* --- TiddlyPouch namespace creation ---*/ 
+  /* --- TiddlyPouch namespace creation and basic initialization---*/ 
   $tw.TiddlyPouch = { utils: {}};
   $tw.TiddlyPouch.utils.getConfig = getConfig;
+  $tw.TiddlyPouch.databaseName = $tw.TiddlyPouch.utils.getConfig('DatabaseName');
+  setDebug();
   
-  var utils = $tw.TiddlyPouch.utils;
-  $tw.TiddlyPouch.databaseName = utils.getConfig('DatabaseName');
   if(!$tw.TiddlyPouch.databaseName){
       /*If a database name is not set then don't create any database*/
       return
   }
   
   /* Here is where startup stuff really starts */
-  
-  setDebug();
   
   $tw.TiddlyPouch.PouchDB = require("$:/plugins/danielo515/tiddlypouch/pouchdb.js");
   $tw.TiddlyPouch.database = new $tw.TiddlyPouch.PouchDB($tw.TiddlyPouch.databaseName);
