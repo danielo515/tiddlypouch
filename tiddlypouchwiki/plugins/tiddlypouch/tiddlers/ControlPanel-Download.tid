@@ -6,6 +6,7 @@ Here you have different methods of download this wiki.
 
 !!No tiddlers
 This downloads this wiki without any tiddler created by the user. ''Useful if'':
+
 * You have changed Server Settings and you want to persist those changes.
 * You want to sync this wiki from the server in another computer/browser.
 
