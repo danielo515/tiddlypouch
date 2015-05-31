@@ -24,16 +24,20 @@ var SYNC_LOG="$:/state/tiddlypouch/sync/Log"
 var SYNC_ICON="$:/state/tiddlypouch/sync/status"
 
 exports.startup = function(callback) {
+   /* --- Declaration ZONE ---*/
+   /*============================*/
   this.logger = new $tw.utils.Logger("PouchSync");
   var self=this;
   this.logger.log('Trying to sync...');
  
  function PouchLog(log,info){
-    /*Appends info to the specified log tiddler*/
-    var oldinfo = $tw.wiki.getTiddlerText(log) + '\n';
-    var newinfo = typeof info === 'object' ? JSON.stringify(info,null,$tw.config.preferences.jsonSpaces) : info;
-    var logTiddler = {type:'text/plain' , text: oldinfo + newinfo, title:log};
-    $tw.wiki.addTiddler(new $tw.Tiddler(logTiddler));
+    if($tw.TiddlyPouch.Debug.Active){
+        /*Appends info to the specified log tiddler*/
+        var oldinfo = $tw.wiki.getTiddlerText(log) + '\n';
+        var newinfo = typeof info === 'object' ? JSON.stringify(info,null,$tw.config.preferences.jsonSpaces) : info;
+        var logTiddler = {type:'text/plain' , text: oldinfo + newinfo, title:log};
+        $tw.wiki.addTiddler(new $tw.Tiddler(logTiddler));
+    }
     self.logger.log(info);
   }
   
@@ -85,6 +89,7 @@ exports.startup = function(callback) {
   
     $tw.TiddlyPouch.startSync = startSync;
     $tw.TiddlyPouch.newOnlineDB = newOnlineDB;
+   /* Here is where startup stuff really starts */
     var onlineDB = newOnlineDB();
     if(!onlineDB){
         callback('There is no online DB set');
