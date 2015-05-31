@@ -20,9 +20,10 @@ exports.platforms = ["browser"];
 exports.synchronous = true;
 
 var CONFIG_PREFIX="$:/plugins/danielo515/tiddlypouch/config/";
-var DEBUG=true;
 
 exports.startup = function(){
+    /* --- Declaration ZONE ---*/
+   //============================
     function buildDesignDocument(){
        var design_document = $tw.wiki.getTiddlerData(CONFIG_PREFIX + "design_document");
        var skinny_view = $tw.wiki.getTiddlerText(CONFIG_PREFIX + "skinny-tiddlers-view").replace(/\n/,'');
@@ -30,22 +31,39 @@ exports.startup = function(){
        return design_document;
    }
    
-  $tw.TiddlyPouch = { utils: {}};
-  $tw.TiddlyPouch.utils.getConfig=function(name){ 
-    var configValue = $tw.wiki.getTiddlerText(CONFIG_PREFIX + name,"");
-    return configValue.trim();
+   function setDebug(){
+       var debugActive = $tw.wiki.getTiddlerData(CONFIG_PREFIX + "Debug/Active");
+       var debugVerbose = $tw.wiki.getTiddlerData(CONFIG_PREFIX + "Debug/Verbose");
+       
+       $tw.TiddlyPouch.Debug = { 
+                Active: debugActive === 'yes',
+                Verbose: debugVerbose === 'yes'
+       }
+   }
+   
+   function getConfig(configName){ 
+        var configValue = $tw.wiki.getTiddlerText(CONFIG_PREFIX + configName,"");
+        return configValue.trim();
    };
-
+  /* --- TiddlyPouch namespace creation ---*/ 
+  $tw.TiddlyPouch = { utils: {}};
+  $tw.TiddlyPouch.utils.getConfig = getConfig;
+  
   var utils = $tw.TiddlyPouch.utils;
   $tw.TiddlyPouch.databaseName = utils.getConfig('DatabaseName');
   if(!$tw.TiddlyPouch.databaseName){
       /*If a database name is not set then don't create any database*/
       return
   }
+  
+  /* Here is where startup stuff really starts */
+  
+  setDebug();
+  
   $tw.TiddlyPouch.PouchDB = require("$:/plugins/danielo515/tiddlypouch/pouchdb.js");
   $tw.TiddlyPouch.database = new $tw.TiddlyPouch.PouchDB($tw.TiddlyPouch.databaseName);
   console.log("Client side pochdb started");
-    if(DEBUG){
+    if($tw.TiddlyPouch.Debug.Active){
       $tw.TiddlyPouch.database.on('error', function (err) { console.log(err); });
      }
 
