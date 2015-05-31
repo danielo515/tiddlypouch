@@ -3,7 +3,7 @@ caption: Server
 tags: $:/tags/TiddlyPouch/ControlPanel
 
 !!! Connection Info
-Fill the below fields if you want to syncrhonize your local database with a remote
+Fill the below fields if you want to synchronize your local database with a remote
 couch-like server.
 
 ~CouchDB URL: <$edit-text tag="input" tiddler="$:/plugins/danielo515/tiddlypouch/config/URL"  default=""/>
@@ -11,11 +11,17 @@ couch-like server.
 ,,//EJ: ~https://someone.cloudant.com //,,
 @@
 
-Design document name: <$edit-text tag="input" tiddler="$:/plugins/danielo515/tiddlypouch/config/RemoteDatabaseName" default=""/>
+Database name: <$edit-text tag="input" tiddler="$:/plugins/danielo515/tiddlypouch/config/RemoteDatabaseName" default=""/>
+@@color:#c0c0c0;
+,,//Your data will be synbced to this this database. ''Must exist on server''. //,,
+@@
 
 Needs XHR withCredentials: <$transclude tiddler="$:/plugins/wshallum/couchadaptor/config/RequiresWithCredentials">no</$transclude>
 
-<$button message="tm-server-refresh">Refresh</$button> to fetch changes from the server immediately
+@@color: #DD0000;
+To make this changes take effect you have to save and reload.
+@@
+{{$:/plugins/danielo515/tiddlypouch/Buttons/download-empty}}
 
 !!! Authentication
 

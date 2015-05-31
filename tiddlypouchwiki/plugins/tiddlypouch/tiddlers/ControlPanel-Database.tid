@@ -14,7 +14,8 @@ Name: <$edit-text tag="input" tiddler="$:/plugins/danielo515/tiddlypouch/config/
 @@
 
 !!!Important information
-Local databases are grouped by file name or domain. 
-''If you rename'' your html wiki file then that particular file @@color:red; will not be able to 
-access@@ any of the databases created while having the old name. 
-Fortunately ''renaming the file'' to the previous name will correct this situation.
+Local databases are grouped by domain. 
+''If you work'' with your wiki from a file then that particular file @@color:red; will not be able to 
+access@@ any of the databases created by any wiki accessed online. 
+If you want to sync databases between a wiki served by http and a local wiki you have to use
+some couch backend or export and import the database.
