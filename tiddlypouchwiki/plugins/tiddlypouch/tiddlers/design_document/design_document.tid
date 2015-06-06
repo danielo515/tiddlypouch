@@ -1,11 +1,14 @@
 title: $:/plugins/danielo515/tiddlypouch/config/design_document
 type: application/json
-comment_l1: The map function is processed from a separate tiddler  
+comment_l1: The map function is processed from a separate tiddler
 comment_l2: because for being valid JSON it should be in a single line
 
-{"_id": "_design/tw",
+{"_id": "_design/TiddlyPouch",
   "views": {
     "skinny-tiddlers": {
       "map": {}
-    }}
+    }},
+    "filters": {
+      "tiddlers" : ""
+}
   }

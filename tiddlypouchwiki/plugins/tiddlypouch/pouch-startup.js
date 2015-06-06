@@ -25,39 +25,57 @@ exports.startup = function(){
     /* --- Declaration ZONE ---*/
    //============================
     function buildDesignDocument(){
-       var design_document = $tw.wiki.getTiddlerData(CONFIG_PREFIX + "design_document");
-       var skinny_view = $tw.wiki.getTiddlerText(CONFIG_PREFIX + "skinny-tiddlers-view").replace(/\n/,'');
+      /* This builds the design document.
+         Each tiddler conforming the design document elements should be a  tiddler
+         with just one anonimous function*/
+       var design_document = $tw.wiki.getTiddlerData(CONFIG_PREFIX + "design_document"),
+       /*To be valid json functions should be just one line of text. That's why we remove line breaks*/
+           skinny_view = $tw.wiki.getTiddlerText(CONFIG_PREFIX + "skinny-tiddlers-view").replace(/\r?\n/,' '),
+           filter = $tw.wiki.getTiddlerText(CONFIG_PREFIX + "design_document/filter").replace(/\r?\n/,' ');
+
        design_document.views['skinny-tiddlers'].map = skinny_view;
+       design_document.filters.tiddlers = filter;
        return design_document;
    }
-   
+
    function setDebug(){
-       var debugActive = $tw.wiki.getTiddlerData(CONFIG_PREFIX + "Debug/Active");
-       var debugVerbose = $tw.wiki.getTiddlerData(CONFIG_PREFIX + "Debug/Verbose");
-       
-       $tw.TiddlyPouch.Debug = { 
+       var debugActive = $tw.wiki.getTiddlerText(CONFIG_PREFIX + "Debug/Active");
+       var debugVerbose = $tw.wiki.getTiddlerText(CONFIG_PREFIX + "Debug/Verbose");
+
+       $tw.TiddlyPouch.Debug = {
                 Active: debugActive === 'yes',
                 Verbose: debugVerbose === 'yes'
        }
    }
-   
-   function getConfig(configName){ 
+
+   function getConfig(configName){
         var configValue = $tw.wiki.getTiddlerText(CONFIG_PREFIX + configName,"");
         return configValue.trim();
    };
-  /* --- TiddlyPouch namespace creation and basic initialization---*/ 
+
+   function getUrl(section){
+       var URL = getConfig('URL');
+       URL = URL.substr(-1) === '/' ? URL : URL + '/'; //Make sure it ends with slash
+       if(section){
+         URL += section;
+       }
+       return URL;
+   };
+  /* --- TiddlyPouch namespace creation and basic initialization---*/
   $tw.TiddlyPouch = { utils: {}};
   $tw.TiddlyPouch.utils.getConfig = getConfig;
+  $tw.TiddlyPouch.utils.getUrl = getUrl;
   $tw.TiddlyPouch.databaseName = $tw.TiddlyPouch.utils.getConfig('DatabaseName');
+  $tw.TiddlyPouch.designDocument = buildDesignDocument();
   setDebug();
-  
+
   if(!$tw.TiddlyPouch.databaseName){
       /*If a database name is not set then don't create any database*/
       return
   }
-  
+
   /* Here is where startup stuff really starts */
-  
+
   $tw.TiddlyPouch.PouchDB = require("$:/plugins/danielo515/tiddlypouch/pouchdb.js");
   $tw.TiddlyPouch.database = new $tw.TiddlyPouch.PouchDB($tw.TiddlyPouch.databaseName);
   console.log("Client side pochdb started");
@@ -65,7 +83,7 @@ exports.startup = function(){
       $tw.TiddlyPouch.database.on('error', function (err) { console.log(err); });
      }
 
-    $tw.TiddlyPouch.database.put(buildDesignDocument()).then(function () {
+    $tw.TiddlyPouch.database.put($tw.TiddlyPouch.designDocument).then(function () {
         console.log("PouchDB design document created");
     }).catch(function (err) {
         if(err.status == 409)
