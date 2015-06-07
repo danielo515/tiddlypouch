@@ -24,6 +24,9 @@ var CONFIG_PREFIX="$:/plugins/danielo515/tiddlypouch/config/";
 exports.startup = function(){
     /* --- Declaration ZONE ---*/
    //============================
+
+   var logger = new $tw.utils.Logger("PouchStartup");
+
     function buildDesignDocument(){
       /* This builds the design document.
          Each tiddler conforming the design document elements should be a  tiddler
@@ -78,25 +81,25 @@ exports.startup = function(){
 
   $tw.TiddlyPouch.PouchDB = require("$:/plugins/danielo515/tiddlypouch/pouchdb.js");
   $tw.TiddlyPouch.database = new $tw.TiddlyPouch.PouchDB($tw.TiddlyPouch.databaseName);
-  console.log("Client side pochdb started");
+  logger.log("Client side pochdb started");
     if($tw.TiddlyPouch.Debug.Active){
-      $tw.TiddlyPouch.database.on('error', function (err) { console.log(err); });
+      $tw.TiddlyPouch.database.on('error', function (err) { logger.log(err); });
      }
 
     $tw.TiddlyPouch.database.put($tw.TiddlyPouch.designDocument).then(function () {
-        console.log("PouchDB design document created");
+      logger.log("PouchDB design document created");
     }).catch(function (err) {
         if(err.status == 409)
-            console.log("Design document exists already");
+        logger.log("Design document exists already");
     });
 
     /*Fetch and add the StoryList before core tries to save it*/
     $tw.TiddlyPouch.database.get("$:/StoryList").then(function (doc) {
             $tw.wiki.addTiddler(new $tw.Tiddler(doc.fields,{title: doc._id, revision: doc._rev}));
-            console.log("StoryList is already in database ",doc.fields);
+            logger.log("StoryList is already in database ",doc.fields);
         }).catch(function (err) {
-            console.log("Error retrieving StoryList");
-            console.log(err);
+          logger.log("Error retrieving StoryList");
+          logger.log(err);
         });
 
 };
