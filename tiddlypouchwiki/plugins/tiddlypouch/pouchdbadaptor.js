@@ -13,7 +13,6 @@ A sync adaptor module for synchronising with local PouchDB
 "use strict";
 
 // var CONFIG_PREFIX = "$:/plugins/wshallum/PouchAdaptor/config/";
-var debug_mode=true;
 
 function PouchAdaptor(options) {
 	this.wiki = options.wiki;
@@ -28,7 +27,7 @@ PouchAdaptor.prototype.readConfig = function() {
 	var url = this.wiki.getTiddlerText(CONFIG_PREFIX + "Url", "AUTO").trim(),
 	    designDocName = this.wiki.getTiddlerText(CONFIG_PREFIX + "DesignDocumentName", "AUTO").trim(),
 	    requiresWithCreds = this.wiki.getTiddlerText(CONFIG_PREFIX + "RequiresWithCredentials", "no").trim(),
-	    docUrl = document.location.href,
+	    //docUrl = document.location.href,
 	    pathParts = document.location.pathname.split("/");
 	if (url === "AUTO") {
 		// assume loaded as PREFIX/_design/DESIGNDOCNAME/HTMLFILENAME
@@ -39,7 +38,6 @@ PouchAdaptor.prototype.readConfig = function() {
 		else {
 			this.designDocName = designDocName;
 		}
-		this.sessionUrl = '/_session';
 	}
 	else {
 		this.urlPrefix = url;
@@ -54,18 +52,10 @@ PouchAdaptor.prototype.readConfig = function() {
 		else {
 			this.designDocName = designDocName;
 		}
-		// urlPrefix is ...../dbname so _session is obtained by replacing the dbname with _session
-		this.sessionUrl = this.urlPrefix.substring(0, this.urlPrefix.lastIndexOf("/")) + "/_session";
+		// getUrl returns the basic URL plus the parammeter
 	}
+	this.sessionUrl = $tw.TiddlyPouch.utils.getUrl("_session");
 	this.xhrNeedsWithCredentials = (requiresWithCreds === "yes");
-};
-
-PouchAdaptor.prototype.getUrlForTitle = function(title) {
-	return this.urlPrefix +  "/" + encodeURIComponent(this.mangleTitle(title));
-};
-
-PouchAdaptor.prototype.getUrlForView = function(viewName) {
-	return this.urlPrefix +  "/_design/" + this.designDocName + "/_view/" + viewName;
 };
 
 /*
@@ -119,13 +109,6 @@ function httpRequest(options) {
 	return request;
 };
 
-/*
-getTiddlerInfo(tiddler)
-getSkinnyTiddlers(callback(err,data)) data is array of {title: ..., revision: ...}
-saveTiddler(tiddler, callback(err, adaptorInfo, revision), options) options has options.tiddlerInfo
-deleteTiddler(title, callback(err), options) options has options.tiddlerInfo
-*/
-
 PouchAdaptor.prototype.getTiddlerInfo = function(tiddler) {
 	return {_rev: tiddler.fields.revision};
 };
@@ -133,9 +116,9 @@ PouchAdaptor.prototype.getTiddlerInfo = function(tiddler) {
 
 PouchAdaptor.prototype.getSkinnyTiddlers = function(callback) {
 	var self = this;
-    $tw.TiddlyPouch.database.query("tw/skinny-tiddlers").then(function (tiddlersList) {
+    $tw.TiddlyPouch.database.query("TiddlyPouch/skinny-tiddlers").then(function (tiddlersList) {
         var tiddlers = tiddlersList.rows
-        console.log("Skinnytiddlers: ",tiddlers);
+        self.logger.log("Skinnytiddlers: ",tiddlers);
         for(var i=0; i < tiddlers.length; i++) {
 				tiddlers[i] = self.convertFromSkinnyTiddler(tiddlers[i]);
 			}
@@ -152,9 +135,9 @@ PouchAdaptor.prototype.saveTiddler = function(tiddler, callback, options) {
 	var tiddlerInfo = options.tiddlerInfo;
 	if (tiddlerInfo.adaptorInfo && tiddlerInfo.adaptorInfo._rev) {
         delete convertedTiddler._rev;
-		convertedTiddler._rev = tiddlerInfo.adaptorInfo._rev;
+				convertedTiddler._rev = tiddlerInfo.adaptorInfo._rev;
 	}
-    debug_mode && console.log(tiddlerInfo);
+    $tw.TiddlyPouch.Debug.Active && this.logger.log(tiddlerInfo);
     this.logger.log("Saving ",convertedTiddler);
     $tw.TiddlyPouch.database.put(convertedTiddler,function (error, saveInfo) {
         if (error) {
@@ -169,7 +152,7 @@ PouchAdaptor.prototype.saveTiddler = function(tiddler, callback, options) {
 
 PouchAdaptor.prototype.loadTiddler = function(title, callback) {
 	var self = this;
-    $tw.TiddlyPouch.database.get(title, function (error, doc) {
+    $tw.TiddlyPouch.database.get(this.mangleTitle(title), function (error, doc) {
       if (error) {
         callback(error);
       } else {
@@ -271,7 +254,7 @@ PouchAdaptor.prototype.convertToCouch = function(tiddler) {
 	}
 	// Default the content type
 	result.fields.type = result.fields.type || "text/vnd.tiddlywiki";
-    result._id = tiddler.fields.title;
+    result._id = this.mangleTitle(tiddler.fields.title);
     result._rev = tiddler.fields.revision; //Temporary workaround. Remove
 	return result;
 }
@@ -297,10 +280,10 @@ PouchAdaptor.prototype.convertFromCouch = function(tiddlerFields) {
 	return result;
 }
 
-/* --- TEMP COMMENTED 
+
 PouchAdaptor.prototype.getStatus = function(callback) {
 	httpRequest({
-		url: this.sessionUrl,
+		url: $tw.TiddlyPouch.utils.getUrl("_session"),
 		withCredentials: this.xhrNeedsWithCredentials,
 		callback: function(err, data) {
 			if (err) {
@@ -317,8 +300,8 @@ PouchAdaptor.prototype.getStatus = function(callback) {
 				username = json.userCtx.name;
 				isLoggedIn = (username !== null);
 				if (!isLoggedIn && json.userCtx.roles.length == 1 && json.userCtx.roles[0] === '_admin') {
-					/* admin party mode */
-/* --- TEMP COMMENTED                     
+					// admin party mode
+
 					isLoggedIn = true;
 				}
 			}
@@ -327,9 +310,11 @@ PouchAdaptor.prototype.getStatus = function(callback) {
 	});
 }
 
+
+
 PouchAdaptor.prototype.login = function(username, password, callback) {
 	var options = {
-		url: this.sessionUrl,
+		url: $tw.TiddlyPouch.utils.getUrl("_session"),
 		type: "POST",
 		data: {
 			name: username,
@@ -345,7 +330,7 @@ PouchAdaptor.prototype.login = function(username, password, callback) {
 
 PouchAdaptor.prototype.logout = function(callback) {
 	var options = {
-		url: this.sessionUrl,
+		url: $tw.TiddlyPouch.utils.getUrl("_session"),
 		type: "DELETE",
 		withCredentials: this.xhrNeedsWithCredentials,
 		callback: function(err) {
@@ -355,7 +340,7 @@ PouchAdaptor.prototype.logout = function(callback) {
 	httpRequest(options);
 }
 
---- END TEMPT COMMENT */ 
+//--- END TEMPT COMMENT */
 
 if($tw.browser && $tw.TiddlyPouch.database) {
     /*Only works if we are on browser and there is a database*/
