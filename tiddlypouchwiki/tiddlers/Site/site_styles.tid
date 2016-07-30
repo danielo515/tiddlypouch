@@ -58,6 +58,25 @@ html .tc-header {
     /* border-color: #c8c8c8; */
 }
 
+html .tc-header .tc-tp-navbar {
+  float: right;
+}
+
+.tc-tp-cleaner {
+   display: inline-block; 
+   display: -webkit-inline-box;
+   height: 0; 
+   clear: both;
+}
+
+/*html .tc-header .tc-tp-navbar::after {
+   content: "."; 
+   visibility: hidden; 
+   display: block; 
+   height: 0; 
+   clear: both;
+}*/
+
 html .tc-footer {
   text-align:center;
   border-top: 2px solid #c8c8c8;
