@@ -281,6 +281,7 @@ PouchAdaptor.prototype.convertFromCouch = function(tiddlerFields) {
 }
 
 
+/* Useless at this point.
 PouchAdaptor.prototype.getStatus = function(callback) {
 	httpRequest({
 		url: $tw.TiddlyPouch.utils.getUrl("_session"),
@@ -308,7 +309,7 @@ PouchAdaptor.prototype.getStatus = function(callback) {
 			callback(null, isLoggedIn, username);
 		}
 	});
-}
+}*/
 
 
 

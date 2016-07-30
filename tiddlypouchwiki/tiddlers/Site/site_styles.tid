@@ -1,0 +1,95 @@
+title: $:/TiddlyPouch/Site/Styles
+tags: $:/tags/Stylesheet
+
+\rules only filteredtranscludeinline transcludeinline macrodef macrocallinline
+
+@media (min-width: {{$:/themes/tiddlywiki/vanilla/metrics/sidebarbreakpoint}}) {
+   html .tc-story-river {
+        padding: 0px;
+        width: 100%;
+        padding-right: 0px;
+    }
+
+  html .tc-tiddler-frame {
+          padding: 28px 20% 42px 20%;
+    }
+}
+
+@media (max-width: {{$:/themes/tiddlywiki/vanilla/metrics/sidebarbreakpoint}}) {
+  .tc-sidebar-header {
+      display: none;
+  }
+}
+
+    .tc-tagged-even {
+        background-color: #f4f4f4;
+    }
+
+    .tc-tagged-odd {
+        background-color: #eeeeee
+    }
+
+    html .tc-tiddler-frame {
+          border: 0px;
+          margin: 0px;
+    }
+
+/* Buttons */
+  .tc-btn-big-green:hover {
+      background-color: #2FBA2F;
+  }
+
+/* Hide common TW elements */
+  .tc-tags-wrapper, .tc-tiddler-controls {
+    display: none;
+  }
+
+
+/*==== HEADER AND FOOTER STYLES ===*/
+/* This corrects header's top margin */
+section.story-backdrop p {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+html .tc-header {
+    border-bottom: 2px solid #c8c8c8;
+    margin-top: 0;
+    /* border-color: #c8c8c8; */
+}
+
+html .tc-footer {
+  text-align:center;
+  border-top: 2px solid #c8c8c8;
+    margin-bottom: 0px;
+}
+
+/* Footer icons */
+.tc-footer-icon::before {
+  content: " ";
+}
+
+.tc-tagged-footer .tc-tiddler-title{
+  display: none;
+}
+
+
+
+.tc-footer-icon {
+  background-repeat: no-repeat;
+  background-size: 100%;
+  display: inline-block;
+  margin-left: 10px;
+  }
+
+.tc-pouch-logo{
+  height: 65px;
+  width: 200px;
+  background-image: url(<<datauri "pouch-logo.svg" >>);
+}
+
+.tc-tiddlywiki-logo{
+  height: 65px;
+  width: 100px;
+  background-image: url(<<datauri "Motovun Jack.svg">>);
+}

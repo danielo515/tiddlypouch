@@ -1,0 +1,7 @@
+title: Footer
+tags: footer $:/tags/BelowStory 
+home-order:3
+
+<div class="tc-page-controls tc-footer tc-tiddler-frame">
+    <span class="tc-footer-icon tc-pouch-logo"></span><span class="tc-footer-icon tc-tiddlywiki-logo"></span>
+</div>

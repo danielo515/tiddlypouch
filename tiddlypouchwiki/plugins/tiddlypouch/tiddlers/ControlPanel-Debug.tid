@@ -16,7 +16,3 @@ Activate logging if you are experiencing problems while syncing or you are curio
 <$action-navigate $to="$:/state/tiddlypouch/sync/Log"/>
 Open Log
 </$button>
-<$button>
-<$action-navigate $to="$:/state/tiddlypouch/sync/Log"/>
-Open Error Log
-</$button>

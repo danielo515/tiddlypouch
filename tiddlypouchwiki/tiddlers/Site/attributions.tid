@@ -1,0 +1,4 @@
+title: Attribution
+
+TiddPouch runs on top of [[tiddlywiki|www.tiddlywiki.com]]
+Local storage and synchronization are possible thanks to [[PouchDB|www.pouchdb.com]]

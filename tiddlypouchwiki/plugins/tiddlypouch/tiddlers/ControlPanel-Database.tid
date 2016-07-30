@@ -28,6 +28,6 @@ This will delete your current database.
 @@color:#cc0000;
 This action can not be undone!!
 @@
-
+Please, reload your browser immediately after applying this.
 
 <$button message="tm-pouch-delete-db">Delete database</$button>

@@ -1,0 +1,16 @@
+title: FAQ
+tags: odd
+
+!!Where is my data stored?
+Your data is stored inside your browser. We use PouchDB in the background,
+which uses creates a database on your browser's LocalStorage.
+If LocalStorage is not available it will fallback to WebSQL.
+In any case your information is stored locally within your browser.
+
+!!How can I sync multiple devices?
+The best way at this moment is to use a remote `couchdb` server. There is a plenty list of compatible servers, but for simplicity, price and availability we recommend [[cloudant||https://cloudant.com/]]
+
+!!I just opened my Wiki in a different browser and I have nothing!
+That's because data is stored in your browser. This means inside your browser
+literally. If you open your wiki again with the browser you were previously using
+all your data should be there.

@@ -96,7 +96,11 @@ exports.startup = function(callback) {
       }
   }
 
-  function newOnlineDB(){
+  function newOnlineDB(authOptions){
+    /* authOptions: {
+      username: 'mysecretusername',
+      password: 'mysecretpassword'
+    }*/
       var utils = $tw.TiddlyPouch.utils;
       var URL = utils.getConfig('URL');
       var Databasename = utils.getConfig('RemoteDatabaseName');
@@ -113,7 +117,7 @@ exports.startup = function(callback) {
 
        URL = URL.substr(-1) === '/' ? URL : URL + '/'; //Make sure it ends with slash
 
-       return $tw.TiddlyPouch.PouchDB(URL + Databasename);
+       return $tw.TiddlyPouch.PouchDB(URL + Databasename,{auth:authOptions});
   }
 
     $tw.TiddlyPouch.startSync = startSync;

@@ -1,0 +1,8 @@
+title: Features
+tags: Home odd
+home-order:1
+
+* Two way sync with remote CouchDB
+* Work offline, sync when you get back online
+* Work totally offline if you want
+* Free and personal: you choose where to store your data.
