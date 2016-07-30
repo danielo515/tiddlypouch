@@ -42,6 +42,12 @@ html .tc-tagged-even .tc-image-wrapper{
     margin-right: -20%;    
 }
 
+html .tc-tagged-odd .tc-image-wrapper img {
+    height: 120px;
+    float: left;
+    margin-right: 20px;
+}
+
 /* Buttons */
   .tc-btn-big-green:hover {
       background-color: #2FBA2F;
