@@ -9,9 +9,9 @@ tags: $:/tags/AboveStory
     </div>
     <div class="tc-tp-navbar">
         <$button class="tc-btn-invisible tc-tiddlylink"><$action-sendmessage $message="tm-close-all-tiddlers"/><$list filter="[tag[Home]!sort[home-order]]"><$action-navigate $to={{!!title}}/></$list>Home</$button>
-        [[About]]
-        [[Features]]
-        <$button class="tc-btn-invisible tc-tiddlylink"><$action-sendmessage $message="tm-close-all-tiddlers"/><$action-navigate $to="FAQ"/>FAQ</$button>
+        {{About||$:/nav_btn}}
+        {{Features||$:/nav_btn}}
+        {{FAQ||$:/nav_btn}}
         {{$:/TiddlyPouch/Site/Buttons/Download}}
     </div>
     <div class="tc-tp-cleaner"></div>

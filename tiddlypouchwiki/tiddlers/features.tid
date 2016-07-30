@@ -1,6 +1,6 @@
 title: Features
 tags: Home odd
-home-order:1
+home-order: 1
 
 * Two way synchronization with ''any'' remote CouchDB server
 * Work offline, sync when you get back online

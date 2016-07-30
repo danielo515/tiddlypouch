@@ -2,11 +2,22 @@ title: Installation
 created: 20140901120057909
 modified: 20140901120057909
 type: text/vnd.tiddlywiki
-tags: even
+tags: Home even
+home-order: 2
 
 
+NoteSelf does not require any installation. 
+It works directly in your browser, which includes most modern web browsers
+and many mobile browsers.
+<br>All you need to do is click on the download button:
 
-Although NoteSelf is more a TW version than just a plugin, 
+{{$:/TiddlyPouch/Site/Buttons/Download}}
+
+
+After downloading the file, you can start using it inmediatelly. 
+For example, open your browser's download section and click on the `index.html` file you just downloaded. 
+
+,,Although NoteSelf is more a TW version than just a plugin, 
 if you are only interested on the plugin itself, there is
 also a method for [[installing the plugin||$:/plugins/danielo515/tiddlypouch/Installation]] 
-in your own tiddlywiki.
+in your own tiddlywiki.,,
