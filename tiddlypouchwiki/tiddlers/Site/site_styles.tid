@@ -55,27 +55,37 @@ section.story-backdrop p {
 html .tc-header {
     border-bottom: 2px solid #c8c8c8;
     margin-top: 0;
-    /* border-color: #c8c8c8; */
+    padding-top: 0px;
+    padding-bottom: 0px;
 }
 
 html .tc-header .tc-tp-navbar {
   float: right;
+  padding-top: 20px;
 }
 
+html .tc-header img {
+  width: 100px;
+}
+
+html .tc-header #logo-bar, html .tc-header #logo-bar img, html .tc-header #logo-bar h1 {
+  float: left;
+  display: inline-block;
+}
+
+
 .tc-tp-cleaner {
-   display: inline-block; 
-   display: -webkit-inline-box;
    height: 0; 
    clear: both;
 }
 
-/*html .tc-header .tc-tp-navbar::after {
+html .tc-header .tc-tp-navbar::after {
    content: "."; 
    visibility: hidden; 
    display: block; 
    height: 0; 
    clear: both;
-}*/
+}
 
 html .tc-footer {
   text-align:center;

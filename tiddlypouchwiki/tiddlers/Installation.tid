@@ -4,7 +4,9 @@ modified: 20140901120057909
 type: text/vnd.tiddlywiki
 tags: even
 
-# Open your wiki in a browser
-# Drag this link into your wiki
-#> [[$:/plugins/danielo515/tiddlypouch]]
-# Save your wiki
+
+
+Although NoteSelf is more a TW version than just a plugin, 
+if you are only interested on the plugin itself, there is
+also a method for [[installing the plugin||$:/plugins/danielo515/tiddlypouch/Installation]] 
+in your own tiddlywiki.

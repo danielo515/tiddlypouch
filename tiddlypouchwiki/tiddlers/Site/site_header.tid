@@ -2,6 +2,11 @@ title: $:/TiddlyPouch/Site/Header
 tags: $:/tags/AboveStory
 
 <div class="tc-page-controls tc-header tc-tiddler-frame">
+    
+    <div id="logo-bar">
+        [img width=80 [SiteLogo]] 
+        <h1>Note Self</h1>
+    </div>
     <div class="tc-tp-navbar">
         <$button class="tc-btn-invisible tc-tiddlylink"><$action-sendmessage $message="tm-close-all-tiddlers"/><$list filter="[tag[Home]!sort[home-order]]"><$action-navigate $to={{!!title}}/></$list>Home</$button>
         [[About]]
