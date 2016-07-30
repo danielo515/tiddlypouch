@@ -79,7 +79,7 @@ exports.startup = function(){
 
   /* Here is where startup stuff really starts */
 
-  $tw.TiddlyPouch.PouchDB = require("$:/plugins/danielo515/tiddlypouch/pouchdb.js");
+  $tw.TiddlyPouch.PouchDB = require("$:/plugins/danielo515/tiddlypouch/lib/pouchdb.js");
   $tw.TiddlyPouch.database = new $tw.TiddlyPouch.PouchDB($tw.TiddlyPouch.databaseName);
   logger.log("Client side pochdb started");
     if($tw.TiddlyPouch.Debug.Active){

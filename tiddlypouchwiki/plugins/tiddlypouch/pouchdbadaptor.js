@@ -109,59 +109,6 @@ function httpRequest(options) {
 	return request;
 };
 
-PouchAdaptor.prototype.getTiddlerInfo = function(tiddler) {
-	return {_rev: tiddler.fields.revision};
-};
-
-
-PouchAdaptor.prototype.getSkinnyTiddlers = function(callback) {
-	var self = this;
-    $tw.TiddlyPouch.database.query("TiddlyPouch/skinny-tiddlers").then(function (tiddlersList) {
-        var tiddlers = tiddlersList.rows
-        self.logger.log("Skinnytiddlers: ",tiddlers);
-        for(var i=0; i < tiddlers.length; i++) {
-				tiddlers[i] = self.convertFromSkinnyTiddler(tiddlers[i]);
-			}
-        callback(null, tiddlers);
-        }).catch(function (err) {
-            // some error
-            });
-
-};
-
-PouchAdaptor.prototype.saveTiddler = function(tiddler, callback, options) {
-	var self = this;
-	var convertedTiddler = this.convertToCouch(tiddler);
-	var tiddlerInfo = options.tiddlerInfo;
-	if (tiddlerInfo.adaptorInfo && tiddlerInfo.adaptorInfo._rev) {
-        delete convertedTiddler._rev;
-				convertedTiddler._rev = tiddlerInfo.adaptorInfo._rev;
-	}
-    $tw.TiddlyPouch.Debug.Active && this.logger.log(tiddlerInfo);
-    this.logger.log("Saving ",convertedTiddler);
-    $tw.TiddlyPouch.database.put(convertedTiddler,function (error, saveInfo) {
-        if (error) {
-            // oh noes! we got an error
-            console.log(error);
-            callback(error);
-        } else {
-            callback(null,{ _rev: saveInfo.rev}, saveInfo.rev);
-               }
-    });
-};
-
-PouchAdaptor.prototype.loadTiddler = function(title, callback) {
-	var self = this;
-    $tw.TiddlyPouch.database.get(this.mangleTitle(title), function (error, doc) {
-      if (error) {
-        callback(error);
-      } else {
-        // okay, doc contains our document
-        callback(null, self.convertFromCouch(doc));
-      }
-    });
-};
-
 /*
 CouchDB does not like document IDs starting with '_'.
 Convert leading '_' to '%5f' and leading '%' to '%25'
@@ -311,6 +258,68 @@ PouchAdaptor.prototype.getStatus = function(callback) {
 	});
 }*/
 
+/*****************************************************
+ ****** Tiddlywiki required methods
+ *****************************************************/
+
+PouchAdaptor.prototype.getTiddlerInfo = function(tiddler) {
+	return {_rev: tiddler.fields.revision};
+};
+
+
+PouchAdaptor.prototype.getSkinnyTiddlers = function(callback) {
+	var self = this;
+    $tw.TiddlyPouch.database.query("TiddlyPouch/skinny-tiddlers").then(function (tiddlersList) {
+        var tiddlers = tiddlersList.rows
+        self.logger.log("Skinnytiddlers: ",tiddlers);
+        for(var i=0; i < tiddlers.length; i++) {
+				tiddlers[i] = self.convertFromSkinnyTiddler(tiddlers[i]);
+			}
+        callback(null, tiddlers);
+        }).catch(function (err) {
+            // some error
+            });
+
+};
+
+PouchAdaptor.prototype.saveTiddler = function(tiddler, callback, options) {
+	var self = this;
+	var convertedTiddler = this.convertToCouch(tiddler);
+	var tiddlerInfo = options.tiddlerInfo;
+	if (tiddlerInfo.adaptorInfo && tiddlerInfo.adaptorInfo._rev) {
+        delete convertedTiddler._rev;
+				convertedTiddler._rev = tiddlerInfo.adaptorInfo._rev;
+	}
+    $tw.TiddlyPouch.Debug.Active && this.logger.log(tiddlerInfo);
+    this.logger.log("Saving ",convertedTiddler);
+    $tw.TiddlyPouch.database.put(convertedTiddler,function (error, saveInfo) {
+        if (error) {
+            // oh noes! we got an error
+            console.log(error);
+            callback(error);
+        } else {
+            callback(null,{ _rev: saveInfo.rev}, saveInfo.rev);
+               }
+    });
+};
+
+PouchAdaptor.prototype.loadTiddler = function(title, callback) {
+	var self = this;
+	self.logger.log('Retrieving tiddler ',title,' from database');
+    $tw.TiddlyPouch.database.get(this.mangleTitle(title), function (error, doc) {
+      if (error) {
+        callback(error);
+      } else {
+        // okay, doc contains our document
+        callback(null, self.convertFromCouch(doc));
+      }
+    });
+};
+
+PouchAdaptor.prototype.isReady = function() {
+	// Since pouchdb handles the sync to the server we declare ourselves allways ready.
+	return true;
+};
 
 
 PouchAdaptor.prototype.login = function(username, password, callback) {

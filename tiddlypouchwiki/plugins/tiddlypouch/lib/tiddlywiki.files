@@ -4,7 +4,7 @@
 			"file": "pouchdb-3.5.0.min.js",
 			"fields": {
 				"type": "application/javascript",
-				"title": "$:/plugins/danielo515/tiddlypouch/pouchdb.js",
+				"title": "$:/plugins/danielo515/tiddlypouch/lib/pouchdb.js",
 				"module-type": "library"
 			},
 			"prefix": "",
