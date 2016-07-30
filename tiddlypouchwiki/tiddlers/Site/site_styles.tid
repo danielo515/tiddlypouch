@@ -34,6 +34,14 @@ tags: $:/tags/Stylesheet
           margin: 0px;
     }
 
+
+/*   images */
+
+html .tc-tagged-even .tc-image-wrapper{ 
+    float: right;
+    margin-right: -20%;    
+}
+
 /* Buttons */
   .tc-btn-big-green:hover {
       background-color: #2FBA2F;
@@ -44,7 +52,7 @@ tags: $:/tags/Stylesheet
   }
 
 /* Hide common TW elements */
-  .tc-tags-wrapper, .tc-tiddler-controls {
+  .tc-tags-wrapper, .tc-tiddler-controls, .tc-subtitle {
     display: none;
   }
 
@@ -117,6 +125,7 @@ html .tc-footer {
 }
 
 
+/*============= ICONS ==================*/
 
 .tc-footer-icon {
   background-repeat: no-repeat;
@@ -137,7 +146,13 @@ html .tc-footer {
   background-image: url(<<datauri "Motovun Jack.svg">>);
 }
 
-/*=============ICONS ==================*/
+html .tc-footer .tc-footer-icon svg.tc-image-github.tc-image-button{
+  height: 65px;
+  width: 65px;
+}
+
+
+
 .icon {
     margin: auto;
     margin-bottom: 1.5rem;
