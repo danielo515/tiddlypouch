@@ -1,12 +1,14 @@
 title: About
-tags: even
+tags: even About
 home-order: 0
 
 NoteSelf has been created and it's developed by 
-Danielo Rodríguez Rivero, a single JavaScript developer.
-I only do this because my own interest on having something like this.
+[[Danielo Rodríguez Rivero||https://es.linkedin.com/in/danielorodriguez]], a single JavaScript developer.
+
+
+I only do this because my own interest about having something like this.
 I have been looking for a similar solution for years, and 
-I didn't found anything, so I decided to create it myself.
+I didn't found anything, so I decided to create one myself.
 
 
 NoteSelf stands on the shoulders of two giants that made this project possible: 
