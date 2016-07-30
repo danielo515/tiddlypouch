@@ -8,7 +8,7 @@ If LocalStorage is not available it will fallback to WebSQL.
 In any case your information is stored locally within your browser.
 
 !!How can I sync multiple devices?
-The best way at this moment is to use a remote `couchdb` server. There is a plenty list of compatible servers, but for simplicity, price and availability we recommend [[cloudant||https://cloudant.com/]]
+The best way at this moment is to use a remote `couchdb` server. There is a plenty list of compatible servers, but for simplicity, price and availability we recommend [[cloudant|https://cloudant.com/]]
 
 !!I just opened my Wiki in a different browser and I have nothing!
 That's because data is stored in your browser. This means inside your browser
@@ -22,4 +22,4 @@ Drag and drop the plugin on top of your current Notebook.
 
 !! Still not clear?
 Just visit the project's [[site|https://github.com/danielo515]] and open an issue!
-Or maybe ask for some help on [[tiddliwiki boards||https://groups.google.com/forum/#!forum/tiddlywiki]]. They are very nice and helpful people
+Or maybe ask for some help on [[tiddliwiki boards|https://groups.google.com/forum/#!forum/tiddlywiki]]. They are very nice and helpful people

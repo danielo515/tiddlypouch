@@ -22,6 +22,6 @@ Wow, it's almost perfect, but... don't you miss?:
 
 NoteSelf is built on top of TiddlyWiki, a powerful, free, highly customizable and open-source personal wiki.
 We took the best of it, it's powerfull customization system, and mixed it with one of the best
-embedded databases available, [[PouchDd||www.pouchdb.com]], for bringing the synchronization capabilities you need.
+embedded databases available, [[PouchDd|http://www.pouchdb.com]], for bringing the synchronization capabilities you need.
 
-Do you want to know more? Take a look at the [[Features!]]
+Do you want to know more? Take a look at the [[Features]]!

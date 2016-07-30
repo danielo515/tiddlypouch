@@ -3,7 +3,7 @@ tags: even About
 home-order: 0
 
 NoteSelf has been created and it's developed by 
-[[Danielo Rodríguez Rivero||https://es.linkedin.com/in/danielorodriguez]], a single JavaScript developer.
+[ext[Danielo Rodríguez Rivero|https://es.linkedin.com/in/danielorodriguez]], a single JavaScript developer.
 
 
 I only do this because my own interest about having something like this.
@@ -12,7 +12,7 @@ I didn't found anything, so I decided to create one myself.
 
 
 NoteSelf stands on the shoulders of two giants that made this project possible: 
-[[TiddlyWiki||www.tiddliwiki.com]] and [[PouchDd||www.pouchdb.com]].
+[ext[TiddlyWiki|http://www.tiddliwiki.com]] and [ext[PouchDb|https://www.pouchdb.com]].
 If you don't know any of those projects, please visit their home pages, 
 they deserve your attention.
 
