@@ -130,7 +130,7 @@ exports.startup = function(callback) {
         return
     }
     $tw.TiddlyPouch.onlineDB = onlineDB;
-    //startSync(onlineDB);
+    startSync(onlineDB); // Por que coño habías comentado esto??
     callback();
 };
 
