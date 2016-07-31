@@ -1,4 +1,4 @@
-<pre><code>Copyright (c) 2014, Jeremy Ruston
+<pre><code>Copyright (c) 2016, Danielo Rodríguez Rivero
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

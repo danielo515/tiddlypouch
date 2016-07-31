@@ -1,2 +1,2 @@
-<h1 class=""><a class="tc-tiddlylink tc-tiddlylink-resolves" href="#HelloThere">HelloThere</a></h1><p>This is tiddlypouch plugin for TiddlyWiki (<a class="tc-tiddlylink-external" href="http://tiddlywiki.com" rel="noopener noreferrer" target="_blank">http://tiddlywiki.com</a>).
+<h1 class="">HelloThere</h1><p>This is tiddlypouch plugin for ~TiddlyWiki (<a class="tc-tiddlylink-external" href="http://tiddlywiki.com" rel="noopener noreferrer" target="_blank">http://tiddlywiki.com</a>).
 </p>
