@@ -7,5 +7,5 @@
 tiddlywiki \
 	./*wiki \
 	--verbose \
-	--server 8087 $:/core/save/all text/plain text/html $1 $2
+	--server 8087 $:/core/save/all text/plain text/html '' '' 0.0.0.0
  
