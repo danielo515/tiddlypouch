@@ -65,22 +65,19 @@ exports.startup = function(){
        return URL;
    };
   /* --- TiddlyPouch namespace creation and basic initialization---*/
-  $tw.TiddlyPouch = { utils: {}};
-  $tw.TiddlyPouch.utils.getConfig = getConfig;
-  $tw.TiddlyPouch.utils.getUrl = getUrl;
-  $tw.TiddlyPouch.databaseName = $tw.TiddlyPouch.utils.getConfig('DatabaseName');
+  $tw.TiddlyPouch.utils = {};
   $tw.TiddlyPouch.designDocument = buildDesignDocument();
   setDebug();
 
-  if(!$tw.TiddlyPouch.databaseName){
-      /*If a database name is not set then don't create any database*/
+  if(!$tw.TiddlyPouch.config.isPluginActive){
+      logger.log("Plugin is inactive, WARNING: changes will not be saved");
       return
   }
 
   /* Here is where startup stuff really starts */
 
   $tw.TiddlyPouch.PouchDB = require("$:/plugins/danielo515/tiddlypouch/lib/pouchdb.js");
-  $tw.TiddlyPouch.database = new $tw.TiddlyPouch.PouchDB($tw.TiddlyPouch.databaseName);
+  $tw.TiddlyPouch.database = new $tw.TiddlyPouch.PouchDB($tw.TiddlyPouch.config.currentDB.name);
   logger.log("Client side pochdb started");
     if($tw.TiddlyPouch.Debug.Active){
       $tw.TiddlyPouch.database.on('error', function (err) { logger.log(err); });

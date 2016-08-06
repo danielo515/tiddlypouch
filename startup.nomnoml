@@ -4,3 +4,4 @@
 [startup-syncer| pouchdb-sycer]
 [startup-pouch]creates ->[database]
 [startup-pouch] depends -->[config]
+[startup-pouch] before->[Startup]

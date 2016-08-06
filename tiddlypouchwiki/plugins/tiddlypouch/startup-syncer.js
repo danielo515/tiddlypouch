@@ -101,9 +101,9 @@ exports.startup = function(callback) {
       username: 'mysecretusername',
       password: 'mysecretpassword'
     }*/
-      var utils = $tw.TiddlyPouch.utils;
-      var URL = utils.getConfig('URL');
-      var Databasename = utils.getConfig('RemoteDatabaseName');
+      var Config = $tw.TiddlyPouch.config;
+      var URL = Config.currentDB.getUrl();
+      var Databasename = Config.currentDB.getRemoteName();
       var sincStatusFlag = $tw.wiki.getTiddler(SYNC_ICON);
       /*If there is no URL set, then no sync*/
       if(!URL){

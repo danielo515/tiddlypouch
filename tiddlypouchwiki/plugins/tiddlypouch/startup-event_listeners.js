@@ -27,7 +27,7 @@ exports.startup = function(){
   ########################### EVENT LISTENERS ##################################*/
   $tw.rootWidget.addEventListener("tm-pouch-delete-db",function(event) {
       $tw.passwordPrompt.createPrompt({
-    			serviceName: $tw.language.getString("TiddlyPouch/Delete-DB",{variables:{database:$tw.TiddlyPouch.databaseName}}),
+    			serviceName: $tw.language.getString("TiddlyPouch/Delete-DB",{variables:{database:$tw.TiddlyPouch.config.currentDB.name}}),
     			noUserName: true,
     			submitText: "Confirm",
     			canCancel: true,
@@ -36,7 +36,7 @@ exports.startup = function(){
     				if(data && data.password === 'delete') {
     					$tw.TiddlyPouch.database.destroy().then(
                 function(){
-                  logger.alert("Database ",$tw.TiddlyPouch.databaseName," deleted!!!")
+                  logger.alert("Database ",$tw.TiddlyPouch.config.currentDB.name," deleted!!!")
                 }
               );
     				}

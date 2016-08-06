@@ -17,46 +17,47 @@ A sync adaptor module for synchronising with local PouchDB
 function PouchAdaptor(options) {
 	this.wiki = options.wiki;
 	this.logger = new $tw.utils.Logger("PouchAdaptor");
-	// this.readConfig();
+	this.sessionUrl = $tw.TiddlyPouch.config.currentDB.getUrl("_session"); // save the URL on startup
+	//this.readConfig()
 }
 
 /*
 Reads config and sets up URLs.
 */
-PouchAdaptor.prototype.readConfig = function() {
-	var url = this.wiki.getTiddlerText(CONFIG_PREFIX + "Url", "AUTO").trim(),
-	    designDocName = this.wiki.getTiddlerText(CONFIG_PREFIX + "DesignDocumentName", "AUTO").trim(),
-	    requiresWithCreds = this.wiki.getTiddlerText(CONFIG_PREFIX + "RequiresWithCredentials", "no").trim(),
-	    //docUrl = document.location.href,
-	    pathParts = document.location.pathname.split("/");
-	if (url === "AUTO") {
-		// assume loaded as PREFIX/_design/DESIGNDOCNAME/HTMLFILENAME
-		this.urlPrefix = pathParts.slice(0, -3).join("/");
-		if (designDocName === "AUTO") {
-			this.designDocName = pathParts[pathParts.length - 2];
-		}
-		else {
-			this.designDocName = designDocName;
-		}
-	}
-	else {
-		this.urlPrefix = url;
-		if (this.urlPrefix.substring(this.urlPrefix.length - 1) === "/") {
-			this.urlPrefix = this.urlPrefix.substring(0, this.urlPrefix.length - 1);
-		}
-		if (designDocName === "AUTO") {
-			// there is no sensible way to "AUTO" a design document name from a custom URL
-			// so just use the default
-			this.designDocName = "tw";
-		}
-		else {
-			this.designDocName = designDocName;
-		}
-		// getUrl returns the basic URL plus the parammeter
-	}
-	this.sessionUrl = $tw.TiddlyPouch.utils.getUrl("_session");
-	this.xhrNeedsWithCredentials = (requiresWithCreds === "yes");
-};
+// PouchAdaptor.prototype.readConfig = function() {
+// 	var url = this.wiki.getTiddlerText(CONFIG_PREFIX + "Url", "AUTO").trim(),
+// 	    designDocName = this.wiki.getTiddlerText(CONFIG_PREFIX + "DesignDocumentName", "AUTO").trim(),
+// 	    requiresWithCreds = this.wiki.getTiddlerText(CONFIG_PREFIX + "RequiresWithCredentials", "no").trim(),
+// 	    //docUrl = document.location.href,
+// 	    pathParts = document.location.pathname.split("/");
+// 	if (url === "AUTO") {
+// 		// assume loaded as PREFIX/_design/DESIGNDOCNAME/HTMLFILENAME
+// 		this.urlPrefix = pathParts.slice(0, -3).join("/");
+// 		if (designDocName === "AUTO") {
+// 			this.designDocName = pathParts[pathParts.length - 2];
+// 		}
+// 		else {
+// 			this.designDocName = designDocName;
+// 		}
+// 	}
+// 	else {
+// 		this.urlPrefix = url;
+// 		if (this.urlPrefix.substring(this.urlPrefix.length - 1) === "/") {
+// 			this.urlPrefix = this.urlPrefix.substring(0, this.urlPrefix.length - 1);
+// 		}
+// 		if (designDocName === "AUTO") {
+// 			// there is no sensible way to "AUTO" a design document name from a custom URL
+// 			// so just use the default
+// 			this.designDocName = "tw";
+// 		}
+// 		else {
+// 			this.designDocName = designDocName;
+// 		}
+// 		// getUrl returns the basic URL plus the parammeter
+// 	}
+// 	this.sessionUrl = $tw.TiddlyPouch.config.currentDB.getUrl("_session"); // save the URL on startup
+// 	this.xhrNeedsWithCredentials = (requiresWithCreds === "yes");
+// };
 
 /*
 Copied from TiddlyWiki5 core/modules/utils/dom/http.js to add support for xhr.withCredentials
@@ -231,7 +232,7 @@ PouchAdaptor.prototype.convertFromCouch = function(tiddlerFields) {
 /* Useless at this point.
 PouchAdaptor.prototype.getStatus = function(callback) {
 	httpRequest({
-		url: $tw.TiddlyPouch.utils.getUrl("_session"),
+		url: $tw.TiddlyPouch.config.currentDB.getUrl("_session"),
 		withCredentials: this.xhrNeedsWithCredentials,
 		callback: function(err, data) {
 			if (err) {
@@ -323,14 +324,15 @@ PouchAdaptor.prototype.isReady = function() {
 
 
 PouchAdaptor.prototype.login = function(username, password, callback) {
+	var self = this;
 	var options = {
-		url: $tw.TiddlyPouch.utils.getUrl("_session"),
+		url: self.sessionUrl,
 		type: "POST",
 		data: {
 			name: username,
 			password: password
 		},
-		withCredentials: this.xhrNeedsWithCredentials,
+		withCredentials: true,
 		callback: function(err, data) {
 			callback(err);
 		}
@@ -339,10 +341,11 @@ PouchAdaptor.prototype.login = function(username, password, callback) {
 }
 
 PouchAdaptor.prototype.logout = function(callback) {
+	var self = this;
 	var options = {
-		url: $tw.TiddlyPouch.utils.getUrl("_session"),
+		url: self.sessionUrl,
 		type: "DELETE",
-		withCredentials: this.xhrNeedsWithCredentials,
+		withCredentials: true,
 		callback: function(err) {
 			callback(err);
 		}
