@@ -6,6 +6,7 @@ module-type: startup
 Module responsible of managing the config.
 Creates and reads the config database.
 Provides an interface to the configurations (get, set, update)
+Configuration should be inmutable and require a reboot to become active
 \*/
 
 (function(){
@@ -26,125 +27,125 @@ var CONFIG_TIDDLER = CONFIG_PREFIX + "config_database";
 
 exports.startup = function(callback){
 
-	var Logger = new $tw.utils.Logger("TiddlyPouch:config");
-	var PouchDB = require("$:/plugins/danielo515/tiddlypouch/lib/pouchdb.js")
-	var _config; // debug { active, verbose }, selectedDbId, databases
-	var _configDB; // where the _config is persisted to 
-	var currentDB; // name, remote { url, user } Only configs!, not the actual db
+    var Logger = new $tw.utils.Logger("TiddlyPouch:config");
+    var PouchDB = require("$:/plugins/danielo515/tiddlypouch/lib/pouchdb.js")
+    var _config; // debug { active, verbose }, selectedDbId, databases
+    var _configDB; // where the _config is persisted to 
+    var currentDB; // name, remote { url, user } Only configs!, not the actual db
 
-	/*==== TIDDLER METHODS === */
+    /*==== TIDDLER METHODS === */
 
-	function _readConfigTiddler(){
-		var configDefault = {
+    function _readConfigTiddler(){
+        var configDefault = {
             isPluginActive: true,
-			debug: {active: true, verbose: false },
-			selectedDbId: 'MyNotebook',
-			databases: {},
-		};
-		return $tw.wiki.getTiddlerData(CONFIG_TIDDLER,configDefault);
-	}
+            debug: {active: true, verbose: false },
+            selectedDbId: 'MyNotebook',
+            databases: {},
+        };
+        return $tw.wiki.getTiddlerData(CONFIG_TIDDLER,configDefault);
+    }
 
-	function _writeConfigTiddler(newConfig){
+    function _writeConfigTiddler(newConfig){
         var config =  newConfig || _config;
-		var Jconfig = JSON.stringify(config);
-		$tw.wiki.addTiddler(new $tw.Tiddler({title: CONFIG_TIDDLER, type: "application/json", text: Jconfig}));
-	}
+        var Jconfig = JSON.stringify(config);
+        $tw.wiki.addTiddler(new $tw.Tiddler({title: CONFIG_TIDDLER, type: "application/json", text: Jconfig}));
+    }
 
-	function _updateConfig(newConfig){
-		// Extends existing config with the new one. Use empty object as base to avoid mutability
-		var config = $tw.utils.extend( {} , _config , newConfig );
+    function _updateConfig(newConfig){
+        // Extends existing config with the new one. Use empty object as base to avoid mutability
+        var config = $tw.utils.extend( {} , _config , newConfig );
         if(!config || ! _isValidConfig(config)){
-			Logger.log('Updating config to DB - ERROR','Tried to persist an invalid config');
-			return;
-		}
-		// After any update to the config persist the changes
-		_persistConfig(config)
+            Logger.log('Updating config to DB - ERROR','Tried to persist an invalid config');
+            return;
+        }
+        // After any update to the config persist the changes
+        _persistConfig(config)
         .then(_writeConfigTiddler);
-	}
+    }
 
-	/*==== DATABASE METHODS === */
-	/**
-	 * Saves the current configuration to the database
-	 * 
-	 * @returns {Promise}
+    /*==== DATABASE METHODS === */
+    /**
+     * Saves the current configuration to the database
+     * 
+     * @returns {Promise}
      * - Fullfills to the document written
-	 */
-	function _persistConfig(newConfig){
-		var config = $tw.utils.extend( {} , newConfig );
-		config._id = config._id || 'configuration'; 
-		return _configDB.put(config)
-			.then(
+     */
+    function _persistConfig(newConfig){
+        var config = $tw.utils.extend( {} , newConfig );
+        config._id = config._id || 'configuration'; 
+        return _configDB.put(config)
+            .then(
                 function(status){
                     Logger.log('Persist config to DB - OK',status);
                     return _readConfigFromDB();
             })
-			.catch(Logger.log.bind(Logger,'Persist config to DB - ERROR'));
-	}
+            .catch(Logger.log.bind(Logger,'Persist config to DB - ERROR'));
+    }
 
-	/**
-	 * Reads the configuration from the _configDB
-	 * This method should be called from init() or after the database is instantiated
-	 *  
-	 * @returns {Promise}
-	 * - Fullfills with the configuration object
-	 * - Rejects if no config exists or it is invalid 
-	 */
-	function _readConfigFromDB(){
-		var promise = _configDB.get('configuration');
-		promise = promise.then(function(config){
-			if(_isValidConfig(config)){
-				return config;
-			}
-			throw new Error('Config was read, but it was invalid');
-		});
+    /**
+     * Reads the configuration from the _configDB
+     * This method should be called from init() or after the database is instantiated
+     *  
+     * @returns {Promise}
+     * - Fullfills with the configuration object
+     * - Rejects if no config exists or it is invalid 
+     */
+    function _readConfigFromDB(){
+        var promise = _configDB.get('configuration');
+        promise = promise.then(function(config){
+            if(_isValidConfig(config)){
+                return config;
+            }
+            throw new Error('Config was read, but it was invalid');
+        });
         promise = promise.catch(
             function(err){
                 Logger.log('Config read from DB - ERROR',err);
                 throw err;
             });
 
-		return promise;
-	}
+        return promise;
+    }
 
-	/*==== HELPER METHODS === */
-	function _isValidConfig(config){
-		var valid = false;
-		valid = !!( config && config.debug );
-		valid = !!( config && config.selectedDbId );
-		return valid;
-	}
+    /*==== HELPER METHODS === */
+    function _isValidConfig(config){
+        var valid = false;
+        valid = !!( config && config.debug );
+        valid = !!( config && config.selectedDbId );
+        return valid;
+    }
 
-	/**
-	 * Reads the configuration of certain database from the config object.
-	 * Currently the _config holds also the databases configurations, but this may change on the future.
-	 * 
-	 * If no configuration is found, returns a default config.
-	 * 
-	 * @param {String} dbName name of the DB you want the config of
-	 * @returns {Object} databaseConfig  
-	 */
-	function _getDatabaseConfig(dbName){
-		var configDefault = {
-			name: dbName,
-			remote: null
-		}
-		
-		_config.databases[dbName] = _config.databases[dbName] || configDefault;
-		
-		return _config.databases[dbName];
-	}
+    /**
+     * Reads the configuration of certain database from the config object.
+     * Currently the _config holds also the databases configurations, but this may change on the future.
+     * 
+     * If no configuration is found, returns a default config.
+     * 
+     * @param {String} dbName name of the DB you want the config of
+     * @returns {Object} databaseConfig  
+     */
+    function _getDatabaseConfig(dbName){
+        var configDefault = {
+            name: dbName,
+            remote: null
+        }
+        
+        _config.databases[dbName] = _config.databases[dbName] || configDefault;
+        
+        return _config.databases[dbName];
+    }
 
-	/*==== PUBLIC METHODS === */
-	function getRemoteUrl(){
-		var url = currentDB.remote && currentDB.remote.url;
-		return url;
-	}
-	function setRemoteUrl(newUrl) {
-		currentDB.remote = currentDB.remote || {};
-		currentDB.remote.url = newUrl;
-		return  currentDB.remote.url;
-	}
-	function getUrl(section){
+    /*==== PUBLIC METHODS === */
+    function getRemoteUrl(){
+        var url = currentDB.remote && currentDB.remote.url;
+        return url;
+    }
+    function setRemoteUrl(newUrl) {
+        currentDB.remote = currentDB.remote || {};
+        currentDB.remote.url = newUrl;
+        return  currentDB.remote.url;
+    }
+    function getUrl(section){
        var URL = getRemoteUrl();
        if(!URL) return null;
        URL = URL.substr(-1) === '/' ? URL : URL + '/'; //Make sure it ends with slash
@@ -152,60 +153,60 @@ exports.startup = function(callback){
          URL += section;
        }
        return URL;
-   	};
+       };
     function getRemoteName(){
         var name = currentDB.remote && currentDB.remote.name;
         return name || 'my_database';
     }
-	function getAllDBNames(){
-		var dbNames = [];
-		$tw.utils.each(dbNames, function(db){
-			dbNames.push(db.name);
-		});
+    function getAllDBNames(){
+        var dbNames = [];
+        $tw.utils.each(dbNames, function(db){
+            dbNames.push(db.name);
+        });
 
-		return dbNames;
-	}
+        return dbNames;
+    }
 
 
 
-	/**
-	 * Initializes the configuration internals.
-	 * - Creates the Pouch config db
-	 * - Reads from the config database
-	 * -- Load tiddler config if no config on db exists
-	 * --- Load default config if no tiddler config exists
-	 * - Updates the tiddler version of the config db
-	 * - Persists config read from tiddler to DB
-	 * 
-	 * @returns	{Promise} When fullfilled the configuration is ready to be used 
-	 */
-	function init(){
-		_configDB = new PouchDB(CONFIG_DATABASE);
-		Logger.log('Initializing config module');
-		return _readConfigFromDB() // be aware of not breaking the promise chain!
-		.then(function(config){ // All ok reading from DB.
-			Logger.log("Config read from DB - OK");
-			_config = config;
-			_writeConfigTiddler(); // Save current config to tiddler version 
-		})
-		.catch( // Error reading from db, fallback to tiddler configuration 
-			function(error){
-				Logger.log("FallingBack to tiddler configuration");
-				_config = _readConfigTiddler();
-				return _config; // return something to continue the chain!
-			}
-		).then(
-			function(){
-				currentDB = _getDatabaseConfig(_config.selectedDbId);
-				_updateConfig(); //Persisted at the end of the chain because some functions may update with default values
-			}
-		);
-	}
+    /**
+     * Initializes the configuration internals.
+     * - Creates the Pouch config db
+     * - Reads from the config database
+     * -- Load tiddler config if no config on db exists
+     * --- Load default config if no tiddler config exists
+     * - Updates the tiddler version of the config db
+     * - Persists config read from tiddler to DB
+     * 
+     * @returns	{Promise} When fullfilled the configuration is ready to be used 
+     */
+    function init(){
+        _configDB = new PouchDB(CONFIG_DATABASE);
+        Logger.log('Initializing config module');
+        return _readConfigFromDB() // be aware of not breaking the promise chain!
+        .then(function(config){ // All ok reading from DB.
+            Logger.log("Config read from DB - OK");
+            _config = config;
+            _writeConfigTiddler(); // Save current config to tiddler version 
+        })
+        .catch( // Error reading from db, fallback to tiddler configuration 
+            function(error){
+                Logger.log("FallingBack to tiddler configuration");
+                _config = _readConfigTiddler();
+                return _config; // return something to continue the chain!
+            }
+        ).then(
+            function(){
+                currentDB = _getDatabaseConfig(_config.selectedDbId);
+                _updateConfig(); //Persisted at the end of the chain because some functions may update with default values
+            }
+        );
+    }
 
-	return init().then(
-		function(){
+    return init().then(
+        function(){
             /*==== PUBLIC API === */
-	        /* --- TiddlyPouch namespace creation and basic initialization---*/
+            /* --- TiddlyPouch namespace creation and basic initialization---*/
             $tw.TiddlyPouch = {
                 config: {
                     getAllDBNames: getAllDBNames,
@@ -219,9 +220,9 @@ exports.startup = function(callback){
                         remote: currentDB.remote
                     }
             } };
-			Logger.log('Configuration startup finished',_config);
-			callback();
-		});
+            Logger.log('Configuration startup finished',_config);
+            callback();
+        });
 
 };
 
