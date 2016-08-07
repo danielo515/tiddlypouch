@@ -22,6 +22,7 @@ exports.synchronous = true;
 
 exports.startup = function(){
   var logger = new $tw.utils.Logger("TiddlyPouch");
+  var uiConnector = require("$:/plugins/danielo515/tiddlypouch/ui/config.js");
 
   /*****************************************************************************
   ########################### EVENT LISTENERS ##################################*/
@@ -44,6 +45,8 @@ exports.startup = function(){
     			}
     		});
     });
+
+	$tw.rootWidget.addEventListener("tm-TP-config-updateDebug",uiConnector.updateDebugHandler);
 
 };
 

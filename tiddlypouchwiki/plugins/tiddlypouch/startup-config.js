@@ -7,6 +7,7 @@ Module responsible of managing the config.
 Creates and reads the config database.
 Provides an interface to the configurations (get, set, update)
 Configuration should be inmutable and require a reboot to become active
+Only remote configuration (username, remote_name, url) may be changed in the running session.
 \*/
 
 (function(){
@@ -28,7 +29,8 @@ var CONFIG_TIDDLER = CONFIG_PREFIX + "config_database";
 exports.startup = function(callback){
 
     var Logger = new $tw.utils.Logger("TiddlyPouch:config");
-    var PouchDB = require("$:/plugins/danielo515/tiddlypouch/lib/pouchdb.js")
+    var PouchDB = require("$:/plugins/danielo515/tiddlypouch/lib/pouchdb.js");
+    var Ui = require("$:/plugins/danielo515/tiddlypouch/ui/config.js");
     var _config; // debug { active, verbose }, selectedDbId, databases
     var _configDB; // where the _config is persisted to 
     var currentDB; // name, remote { url, user } Only configs!, not the actual db
@@ -140,11 +142,6 @@ exports.startup = function(callback){
         var url = currentDB.remote && currentDB.remote.url;
         return url;
     }
-    function setRemoteUrl(newUrl) {
-        currentDB.remote = currentDB.remote || {};
-        currentDB.remote.url = newUrl;
-        return  currentDB.remote.url;
-    }
     function getUrl(section){
        var URL = getRemoteUrl();
        if(!URL) return null;
@@ -158,6 +155,17 @@ exports.startup = function(callback){
         var name = currentDB.remote && currentDB.remote.name;
         return name || 'my_database';
     }
+    /**
+     * Updates the remote config of the current database.
+     * This is the only method that is allowed to modify the running config
+     * changes WILL NOT be persisted
+     * 
+     * @param {Object} newConfig Options that extends the current configuration
+     */
+    function updateRemoteConfig(newConfig){
+        currentDB.remote = $tw.utils.extend({}, currentDB.remote, newConfig); 
+    }
+
     function getAllDBNames(){
         var dbNames = [];
         $tw.utils.each(dbNames, function(db){
@@ -210,16 +218,20 @@ exports.startup = function(callback){
             $tw.TiddlyPouch = {
                 config: {
                     getAllDBNames: getAllDBNames,
+                    readConfigTiddler: _readConfigTiddler,
                     update: _updateConfig,
                     selectedDB: _config.selectedDbId,
                      _configDB:  _configDB,
+                     _config: _config,
                     currentDB: {
                         getUrl: getUrl,
                         getRemoteName: getRemoteName,
+                        updateRemote: updateRemoteConfig,
                         name: currentDB.name,
                         remote: currentDB.remote
                     }
             } };
+            Ui.updateDebug(_config);
             Logger.log('Configuration startup finished',_config);
             callback();
         });

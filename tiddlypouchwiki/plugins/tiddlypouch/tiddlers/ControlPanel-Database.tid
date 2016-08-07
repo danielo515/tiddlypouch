@@ -11,7 +11,7 @@ tiddlers to that database. This requires a ''save and reload'' to take effect, t
 in the download tab of this control panel is the recommended choice for this task.
 </$reveal>
 
-Name: <$edit-text tag="input" tiddler="$:/plugins/danielo515/tiddlypouch/config/DatabaseName"  default=""/>
+Name: <$edit-text tag="input" tiddler="$:/plugins/danielo515/tiddlypouch/config/config_database" index="selectedDbId" default=""/>
 @@color:#cc0000;
 ,,//Without this parameter the plugin remains inactive //,,
 @@

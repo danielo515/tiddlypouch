@@ -10,6 +10,8 @@ Activate logging if you are experiencing problems while syncing or you are curio
 <$checkbox tiddler="$:/plugins/danielo515/tiddlypouch/config/Debug/Verbose" field="text" checked="yes" unchecked="no" default="no"> Verbose mode</$checkbox>
 """
 
+<$button message="tm-TP-config-updateDebug">Save Config</$button>
+
 !!! Sync Log
 
 <$button>
