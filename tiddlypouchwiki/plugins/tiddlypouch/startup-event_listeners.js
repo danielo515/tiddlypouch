@@ -47,6 +47,7 @@ exports.startup = function(){
     });
 
 	$tw.rootWidget.addEventListener("tm-TP-config-updateDebug",uiConnector.updateDebugHandler);
+	$tw.rootWidget.addEventListener("tm-TP-config-updateSelectedDB",uiConnector.updateSelectedDBHandler);
 
 };
 

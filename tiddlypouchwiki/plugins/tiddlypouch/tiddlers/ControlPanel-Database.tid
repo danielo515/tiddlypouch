@@ -11,10 +11,32 @@ tiddlers to that database. This requires a ''save and reload'' to take effect, t
 in the download tab of this control panel is the recommended choice for this task.
 </$reveal>
 
-Name: <$edit-text tag="input" tiddler="$:/plugins/danielo515/tiddlypouch/config/config_database" index="selectedDbId" default=""/>
+Name: <$edit-text tag="input" tiddler="$:/plugins/danielo515/tiddlypouch/config/selected_database" index="name"/>
 @@color:#cc0000;
 ,,//Without this parameter the plugin remains inactive //,,
 @@
+
+!!! Connection Info
+Fill the fields below if you want to synchronize your local database with a remote
+couch-like server. 
+This information will be saved as metadata of the selected local database.
+
+~CouchDB URL: <$edit-text tag="input" index="remote.url" tiddler="$:/plugins/danielo515/tiddlypouch/config/selected_database"  default=""/>
+@@color:#c0c0c0;
+,,//EJ: ~https://someone.cloudant.com //,,
+@@
+
+Remote database name: <$edit-text tag="input" index="remote.name" tiddler="$:/plugins/danielo515/tiddlypouch/config/selected_database" default=""/>
+@@color:#c0c0c0;
+,,//Local database will be synced to this database. ''Must exist on server''. //,,
+@@
+
+User: <$edit-text tag="input" index="remote.user" tiddler="$:/plugins/danielo515/tiddlypouch/config/selected_database"  default=""/>
+@@color:#c0c0c0;
+,,//A user with rights to write to the remote database. //,,
+@@
+
+<$button message="tm-TP-config-updateSelectedDB">Save Config</$button>
 
 !!!Important information
 Local databases are grouped by domain.
