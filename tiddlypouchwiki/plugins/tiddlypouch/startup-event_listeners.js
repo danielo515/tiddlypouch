@@ -46,7 +46,8 @@ exports.startup = function(){
     		});
     });
 
-	$tw.rootWidget.addEventListener("tm-TP-config-updateDebug",uiConnector.updateDebugHandler);
+	$tw.rootWidget.addEventListener("tp-sync-state",uiConnector.setSyncFlag);
+    $tw.rootWidget.addEventListener("tm-TP-config-updateDebug",uiConnector.updateDebugHandler);
 	$tw.rootWidget.addEventListener("tm-TP-config-updateSelectedDB",uiConnector.updateSelectedDBHandler);
 
 };

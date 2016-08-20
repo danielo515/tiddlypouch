@@ -13,14 +13,32 @@ Links the user interface with the configuration methods
 "use strict";
 
 var DEBUG_CONFIG = "$:/plugins/danielo515/tiddlypouch/config/Debug";
-var DEBUG_ACTIVE = DEBUG_CONFIG + '/Active';
-var DEBUG_VERBOSE = DEBUG_CONFIG + '/Verbose';
+var DEBUG_ACTIVE = DEBUG_CONFIG + "/Active";
+var DEBUG_VERBOSE = DEBUG_CONFIG + "/Verbose";
 var SELECTED_DATABASE = "$:/plugins/danielo515/tiddlypouch/config/selected_database";
+var SYNC_ICON = "$:/plugins/danielo515/tiddlypouch/ui/sync-flag";
 
 exports.refreshUI = function refreshUI(config) {
     updateDebugUI(config);
     updateSelectedDBUI(config);
+    setSyncFlag();
 }
+
+function setSyncFlag(mode) {
+    var sincStatusFlag = $tw.wiki.getTiddler(SYNC_ICON);
+    /* Because I'm unsure about how to decide if we are in offline mode
+        i can take both, a message param or just a plain function execution.
+        take a look at startup-syncer for the emit of the events
+    */
+    if (mode === "offline" || !$tw.TiddlyPouch.config.currentDB.getUrl()) {
+        /* We don't want sync status icon on sidebar*/
+        return $tw.wiki.addTiddler(new $tw.Tiddler(sincStatusFlag,{tags: []})); //Remove tags
+    }
+    /*Otherwise, add to sidebar with the tag (it could be removed) */
+    $tw.wiki.addTiddler(new $tw.Tiddler(sincStatusFlag,{tags: ['$:/tags/PageControls']}));
+}
+
+exports.setSyncFlag = setSyncFlag;
 
 exports.updateDebugHandler = function(event){
     var Active = $tw.wiki.getTiddlerText(DEBUG_ACTIVE) === 'yes';
@@ -48,47 +66,47 @@ function updateSelectedDBUI(config){
     var dbInfo = config.databases[config.selectedDbId];
     var uiConfig = flattenObject(dbInfo);
     $tw.wiki.addTiddler(new $tw.Tiddler({
-        title: SELECTED_DATABASE, 
-        type: "application/json", 
+        title: SELECTED_DATABASE,
+        type: "application/json",
         text: JSON.stringify(uiConfig)
     }));
 }
 
 // source: https://gist.github.com/gdibble/9e0f34f0bb8a9cf2be43
 var flattenObject = function(ob) {
-  var toReturn = {};
-  var flatObject;
-  for (var i in ob) {
-    if (!ob.hasOwnProperty(i)) {
-      continue;
-    }
-    if ((typeof ob[i]) === 'object') {
-      flatObject = flattenObject(ob[i]);
-      for (var x in flatObject) {
-        if (!flatObject.hasOwnProperty(x)) {
-          continue;
+    var toReturn = {};
+    var flatObject;
+    for (var i in ob) {
+        if (!ob.hasOwnProperty(i)) {
+            continue;
         }
-        toReturn[i + (!!isNaN(x) ? '.' + x : '')] = flatObject[x];
-      }
-    } else {
-      toReturn[i] = ob[i];
+        if ((typeof ob[i]) === 'object') {
+            flatObject = flattenObject(ob[i]);
+            for (var x in flatObject) {
+                if (!flatObject.hasOwnProperty(x)) {
+                    continue;
+                }
+                toReturn[i + (!!isNaN(x) ? '.' + x : '')] = flatObject[x];
+            }
+        } else {
+            toReturn[i] = ob[i];
+        }
     }
-  }
-  return toReturn;
+    return toReturn;
 };
 
-function plainToNestedObject(plain){
+function plainToNestedObject(plain) {
     var result = {};
     $tw.utils.each(plain,
-        function(value,key){
+        function(value,key) {
             createChilds(result,key.split('.'),value)
         });
     return result;
     function createChilds(ob,keys,value){
-        keys =  keys.slice(); // no side effects please
-        var lastKey = keys.pop(); //pop is handy but mutates the array
+        keys =  keys.slice(); // No side effects please
+        var lastKey = keys.pop(); // Pop is handy but mutates the array
         var lastChild = keys.reduce(
-            function(ob,k){
+            function(ob,k) {
                 ob[k] = ob[k] || {};
                 return ob[k];
             }
@@ -98,8 +116,14 @@ function plainToNestedObject(plain){
     }
 }
 
-function boolToHuman(value){
-    return value ? "yes" : "no" 
+/**
+ * Translates true/false to yes/no
+ * 
+ * @param {Boolean} value
+ * @returns {String}
+ */
+function boolToHuman(value) {
+    return value ? "yes" : "no"
 }
 
 })();
