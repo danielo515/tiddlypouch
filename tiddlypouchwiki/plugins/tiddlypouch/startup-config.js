@@ -151,6 +151,7 @@ exports.startup = function(callback){
        }
        return URL;
        };
+       
     function getRemoteName(){
         var name = currentDB.remote && currentDB.remote.name;
         return name || 'my_database';
@@ -186,6 +187,10 @@ exports.startup = function(callback){
 
     function isDebugVerbose(){
         return _config.debug.verbose;
+    }
+
+    function isPluginActive(){
+        return _config.isPluginActive;
     }
 
 
@@ -234,6 +239,7 @@ exports.startup = function(callback){
                     readConfigTiddler: _readConfigTiddler,
                     update: _updateConfig,
                     selectedDB: _config.selectedDbId,
+                    isPluginActive: isPluginActive,
                      _configDB:  _configDB,
                      _config: _config,
                     debug: {
