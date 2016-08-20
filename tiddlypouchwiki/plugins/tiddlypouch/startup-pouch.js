@@ -46,19 +46,11 @@ exports.startup = function(){
         return configValue.trim();
    };
 
-   function getUrl(section){
-       var URL = getConfig('URL');
-       URL = URL.substr(-1) === '/' ? URL : URL + '/'; //Make sure it ends with slash
-       if(section){
-         URL += section;
-       }
-       return URL;
-   };
   /* --- TiddlyPouch namespace creation and basic initialization---*/
   $tw.TiddlyPouch.utils = {};
   $tw.TiddlyPouch.designDocument = buildDesignDocument();
 
-  if(!$tw.TiddlyPouch.config.isPluginActive){
+  if(!$tw.TiddlyPouch.config.isPluginActive()){
       logger.log("Plugin is inactive, WARNING: changes will not be saved");
       return
   }
