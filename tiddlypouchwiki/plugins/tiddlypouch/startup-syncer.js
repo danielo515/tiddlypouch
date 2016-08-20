@@ -104,10 +104,10 @@ module-type: startup
             /*If there is no URL set, then no sync*/
             if (!URL) {
                 PouchLog(SYNC_LOG, "Entering offline mode");
-                $tw.rootWidget.emitEvent({ type: "tp-sync-state", param: "offline" });
+                $tw.rootWidget.dispatchEvent({ type: "tp-sync-state", param: "offline" });
                 return
             }
-            $tw.rootWidget.emitEvent({ type: "tp-sync-state", param: "online" });
+            $tw.rootWidget.dispatchEvent({ type: "tp-sync-state", param: "online" });
 
             return $tw.TiddlyPouch.PouchDB(URL + Databasename, { auth: authOptions });
         }

@@ -229,11 +229,12 @@ PouchAdaptor.prototype.convertFromCouch = function(tiddlerFields) {
 }
 
 
-/* Useless at this point.
+
 PouchAdaptor.prototype.getStatus = function(callback) {
+    var self = this;
 	httpRequest({
 		url: $tw.TiddlyPouch.config.currentDB.getUrl("_session"),
-		withCredentials: this.xhrNeedsWithCredentials,
+		withCredentials: true,
 		callback: function(err, data) {
 			if (err) {
 				return callback(err);
@@ -250,14 +251,14 @@ PouchAdaptor.prototype.getStatus = function(callback) {
 				isLoggedIn = (username !== null);
 				if (!isLoggedIn && json.userCtx.roles.length == 1 && json.userCtx.roles[0] === '_admin') {
 					// admin party mode
-
+                    self.logger('Warning! Server is on admin party mode!')
 					isLoggedIn = true;
 				}
 			}
 			callback(null, isLoggedIn, username);
 		}
 	});
-}*/
+}
 
 /*****************************************************
  ****** Tiddlywiki required methods
@@ -325,6 +326,7 @@ PouchAdaptor.prototype.isReady = function() {
 
 PouchAdaptor.prototype.login = function(username, password, callback) {
 	var self = this;
+	/* Instead of manual logging, let's allow that task to Pouchdb
 	var options = {
 		url: self.sessionUrl,
 		type: "POST",
@@ -337,7 +339,24 @@ PouchAdaptor.prototype.login = function(username, password, callback) {
 			callback(err);
 		}
 	};
-	httpRequest(options);
+
+	httpRequest(options);*/
+
+	if(!$tw.TiddlyPouch.config.isPluginActive()){
+      self.logger.log('Sync will not happen because plugin is inactive');
+      return callback('Inactive plugin');
+    }
+
+    self.logger.log('Trying to sync...');
+    
+   /* Here is where startup stuff really starts */
+    var onlineDB = $tw.TiddlyPouch.newOnlineDB({username: username, password: password});
+    if(!onlineDB){
+        self.logger.log("Warning, sync is not possible because no onlineDB");
+        return callback('There is no online DB set');        
+    }
+    $tw.TiddlyPouch.onlineDB = onlineDB;
+    $tw.TiddlyPouch.startSync(onlineDB).then(callback);
 }
 
 PouchAdaptor.prototype.logout = function(callback) {
