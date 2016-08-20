@@ -41,16 +41,6 @@ exports.startup = function(){
        return design_document;
    }
 
-   function setDebug(){
-       var debugActive = $tw.wiki.getTiddlerText(CONFIG_PREFIX + "Debug/Active");
-       var debugVerbose = $tw.wiki.getTiddlerText(CONFIG_PREFIX + "Debug/Verbose");
-
-       $tw.TiddlyPouch.Debug = {
-                Active: debugActive === 'yes',
-                Verbose: debugVerbose === 'yes'
-       }
-   }
-
    function getConfig(configName){
         var configValue = $tw.wiki.getTiddlerText(CONFIG_PREFIX + configName,"");
         return configValue.trim();
@@ -67,7 +57,6 @@ exports.startup = function(){
   /* --- TiddlyPouch namespace creation and basic initialization---*/
   $tw.TiddlyPouch.utils = {};
   $tw.TiddlyPouch.designDocument = buildDesignDocument();
-  setDebug();
 
   if(!$tw.TiddlyPouch.config.isPluginActive){
       logger.log("Plugin is inactive, WARNING: changes will not be saved");
@@ -79,7 +68,7 @@ exports.startup = function(){
   $tw.TiddlyPouch.PouchDB = require("$:/plugins/danielo515/tiddlypouch/lib/pouchdb.js");
   $tw.TiddlyPouch.database = new $tw.TiddlyPouch.PouchDB($tw.TiddlyPouch.config.currentDB.name);
   logger.log("Client side pochdb started");
-    if($tw.TiddlyPouch.Debug.Active){
+    if($tw.TiddlyPouch.config.debug.isActive()){
       $tw.TiddlyPouch.database.on('error', function (err) { logger.log(err); });
      }
 

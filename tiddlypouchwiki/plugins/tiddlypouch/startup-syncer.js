@@ -31,7 +31,7 @@ exports.startup = function(callback) {
   this.logger.log('Trying to sync...');
 
  function PouchLog(log,info,header){
-    if($tw.TiddlyPouch.Debug.Active){
+    if($tw.TiddlyPouch.config.debug.isActive()){
         /*Appends info to the specified log tiddler*/
         var oldinfo = $tw.wiki.getTiddlerText(log) + '\n';
         if(typeof info === 'object'){

@@ -166,13 +166,26 @@ exports.startup = function(callback){
         currentDB.remote = $tw.utils.extend({}, currentDB.remote, newConfig); 
     }
 
+    /**
+     * Fetches the names of the databases which configuratons are saved
+     * 
+     * @returns {Array} dbNames The names of all the databases configurations stored on the config
+     */
     function getAllDBNames(){
         var dbNames = [];
-        $tw.utils.each(dbNames, function(db){
+        $tw.utils.each(_config.databases, function(db){
             dbNames.push(db.name);
         });
 
         return dbNames;
+    }
+
+    function isDebugActive(){
+        return _config.debug.active;
+    }
+
+    function isDebugVerbose(){
+        return _config.debug.verbose;
     }
 
 
@@ -223,6 +236,10 @@ exports.startup = function(callback){
                     selectedDB: _config.selectedDbId,
                      _configDB:  _configDB,
                      _config: _config,
+                    debug: {
+                        isActive: isDebugActive,
+                        isVerbose: isDebugVerbose
+                    },
                     currentDB: {
                         getUrl: getUrl,
                         getRemoteName: getRemoteName,

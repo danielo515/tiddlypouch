@@ -291,7 +291,7 @@ PouchAdaptor.prototype.saveTiddler = function(tiddler, callback, options) {
         delete convertedTiddler._rev;
 				convertedTiddler._rev = tiddlerInfo.adaptorInfo._rev;
 	}
-    $tw.TiddlyPouch.Debug.Active && this.logger.log(tiddlerInfo);
+    $tw.TiddlyPouch.config.debug.isActive() && this.logger.log(tiddlerInfo);
     this.logger.log("Saving ",convertedTiddler);
     $tw.TiddlyPouch.database.put(convertedTiddler,function (error, saveInfo) {
         if (error) {
