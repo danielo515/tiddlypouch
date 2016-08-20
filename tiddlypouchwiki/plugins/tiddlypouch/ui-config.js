@@ -15,6 +15,7 @@ Links the user interface with the configuration methods
 var DEBUG_CONFIG = "$:/plugins/danielo515/tiddlypouch/config/Debug";
 var DEBUG_ACTIVE = DEBUG_CONFIG + "/Active";
 var DEBUG_VERBOSE = DEBUG_CONFIG + "/Verbose";
+var DATABASE_NAMES = "$:/plugins/danielo515/tiddlypouch/config/database_names";
 var SELECTED_DATABASE = "$:/plugins/danielo515/tiddlypouch/config/selected_database";
 var SYNC_ICON = "$:/plugins/danielo515/tiddlypouch/ui/sync-flag";
 
@@ -22,7 +23,9 @@ exports.refreshUI = function refreshUI(config) {
     updateDebugUI(config);
     updateSelectedDBUI(config);
     setSyncFlag();
-}
+    refreshDatabaseNamesUI();
+
+};
 
 function setSyncFlag(mode) {
     var sincStatusFlag = $tw.wiki.getTiddler(SYNC_ICON);
@@ -39,6 +42,11 @@ function setSyncFlag(mode) {
 }
 
 exports.setSyncFlag = setSyncFlag;
+
+function refreshDatabaseNamesUI() {
+    var namesList = $tw.TiddlyPouch.config.getAllDBNames();
+    $tw.wiki.addTiddler({title: DATABASE_NAMES , list: namesList, text: "{{!!list}}" })
+}
 
 exports.updateDebugHandler = function(event){
     var Active = $tw.wiki.getTiddlerText(DEBUG_ACTIVE) === 'yes';

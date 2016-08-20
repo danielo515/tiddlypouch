@@ -46,6 +46,12 @@ exports.startup = function(){
     		});
     });
 
+
+    $tw.rootWidget.addEventListener("tm-tp-config-saved", function(){
+        var reload = confirm('Configuration has been changed and saved. It is necessary to reload the window. Are you Ok with it?');
+        reload && location.reload();
+    });
+
 	$tw.rootWidget.addEventListener("tp-sync-state",uiConnector.setSyncFlag);
     $tw.rootWidget.addEventListener("tm-TP-config-updateDebug",uiConnector.updateDebugHandler);
 	$tw.rootWidget.addEventListener("tm-TP-config-updateSelectedDB",uiConnector.updateSelectedDBHandler);

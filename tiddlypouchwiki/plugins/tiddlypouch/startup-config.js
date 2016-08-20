@@ -51,6 +51,7 @@ exports.startup = function(callback){
         var config =  newConfig || _config;
         var Jconfig = JSON.stringify(config);
         $tw.wiki.addTiddler(new $tw.Tiddler({title: CONFIG_TIDDLER, type: "application/json", text: Jconfig}));
+        return true;
     }
 
     function _updateConfig(newConfig){
@@ -61,8 +62,11 @@ exports.startup = function(callback){
             return;
         }
         // After any update to the config persist the changes
-        _persistConfig(config)
-        .then(_writeConfigTiddler);
+        return _persistConfig(config)
+        .then(_writeConfigTiddler)
+        .then(function(){
+            $tw.rootWidget && $tw.rootWidget.dispatchEvent({type:'tm-tp-config-saved' , param: true});
+        });
     }
 
     /*==== DATABASE METHODS === */
@@ -80,7 +84,8 @@ exports.startup = function(callback){
                 function(status){
                     Logger.log('Persist config to DB - OK',status);
                     return _readConfigFromDB();
-            })
+                }
+            )
             .catch(Logger.log.bind(Logger,'Persist config to DB - ERROR'));
     }
 
@@ -95,7 +100,7 @@ exports.startup = function(callback){
     function _readConfigFromDB(){
         var promise = _configDB.get('configuration');
         promise = promise.then(function(config){
-            if(_isValidConfig(config)){
+            if (_isValidConfig(config)) {
                 return config;
             }
             throw new Error('Config was read, but it was invalid');
@@ -224,7 +229,7 @@ exports.startup = function(callback){
         ).then(
             function(){
                 currentDB = _getDatabaseConfig(_config.selectedDbId);
-                _updateConfig(); //Persisted at the end of the chain because some functions may update with default values
+                return _updateConfig(); //Persisted at the end of the chain because some functions may update with default values
             }
         );
     }

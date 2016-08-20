@@ -3,16 +3,22 @@ title: GettingStarted
 \define lingo-base() $:/language/ControlPanel/Basics/
 Welcome to ~NoteSelf and the ~TiddlyWiki community
 
-Before you start storing important information in this wiki it is important to make sure that you can reliably save changes.
-For being able to save any information it is 'very important' that you setup a database name. 
-This is part of the installation process, so if you did this before downloading, then forget about it.
+You can start using your notebook right now to collect ideas, make lists, take notes, as a diary...
+You can have as many notebooks as you want. 
+Just change the `Notebook Name` , save and reload. New notes will be saved to that database.
+
+In case you want automatic synchronization fill the fields of the synchronization section below
 
 !! Set up this Notebook
 
 <div class="tc-control-panel">
 
-|<$link to="$:/SiteTitle"><<lingo Title/Prompt>></$link> |<$edit-text tiddler="$:/SiteTitle" default="" tag="input"/> |
-|<$link to="$:/ControlPanel">Database Name</$link> |<$edit-text tag="input" tiddler="$:/plugins/danielo515/tiddlypouch/config/DatabaseName"  default=""/> |
+|<<tiddlypouch-tab "Notebook Name" "Database" >> |{{$:/plugins/danielo515/tiddlypouch/ui/database-name}} |
+|! Sync configuration|<|
+|<<tiddlypouch-tab "~CouchDB URL" "Database" >> |{{$:/plugins/danielo515/tiddlypouch/ui/remote-url}} |
+|<<tiddlypouch-tab "Remote database name" "Database" >> |{{$:/plugins/danielo515/tiddlypouch/ui/remote-name}} |
+| {{$:/plugins/danielo515/tiddlypouch/ui/save-database-config}} |<|
+|<$link to="$:/SiteTitle">Page title</$link> |<$edit-text tiddler="$:/SiteTitle" default="" tag="input"/> |
 |<$link to="$:/SiteSubtitle"><<lingo Subtitle/Prompt>></$link> |<$edit-text tiddler="$:/SiteSubtitle" default="" tag="input"/> |
 |<$link to="$:/DefaultTiddlers"><<lingo DefaultTiddlers/Prompt>></$link> |<<lingo DefaultTiddlers/TopHint>><br> <$edit tag="textarea" tiddler="$:/DefaultTiddlers"/><br>//<<lingo DefaultTiddlers/BottomHint>>// |
 </div>

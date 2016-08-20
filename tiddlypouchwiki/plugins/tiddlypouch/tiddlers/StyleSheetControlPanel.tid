@@ -8,3 +8,8 @@ tags: $:/tags/Stylesheet
 .tc-tiddlypouch-control-panel input[type="checkbox"], .tc-tiddlypouch-control-panel-checkbox {
     width: auto;
 }
+
+.tc-tiddlypouch-control-panel .tc-type-selector input, .tc-control-panel table .tc-type-selector input {
+    width: auto;
+}
+

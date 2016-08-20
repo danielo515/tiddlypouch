@@ -232,8 +232,11 @@ PouchAdaptor.prototype.convertFromCouch = function(tiddlerFields) {
 
 PouchAdaptor.prototype.getStatus = function(callback) {
     var self = this;
+    if (!self.sessionUrl) {
+        return callback(null,false,"NON-AUTHENTICATED")
+    }
 	httpRequest({
-		url: $tw.TiddlyPouch.config.currentDB.getUrl("_session"),
+		url: self.sessionUrl,
 		withCredentials: true,
 		callback: function(err, data) {
 			if (err) {
