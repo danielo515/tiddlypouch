@@ -1,6 +1,3 @@
-
-\rules only filteredtranscludeinline transcludeinline macrodef macrocallinline
-
 @media (min-width: 980px ) {
    html .tc-story-river {
         padding: 0px;
@@ -92,7 +89,7 @@ html .tc-tagged-odd .tc-image-wrapper img {
 
 /* hide the arrow that switchs to TW layour */
 .tc-topbar-right .tc-image-chevron-left.tc-image-button { 
-  display: none;
+ /* display: none;*/
 }
 
 /* This corrects header's top margin */
