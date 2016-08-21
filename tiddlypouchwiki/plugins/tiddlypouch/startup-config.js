@@ -39,7 +39,6 @@ exports.startup = function(callback){
 
     function _readConfigTiddler(){
         var configDefault = {
-            isPluginActive: true,
             debug: {active: true, verbose: false },
             selectedDbId: 'MyNotebook',
             databases: {},
@@ -57,7 +56,7 @@ exports.startup = function(callback){
     function _updateConfig(newConfig){
         // Extends existing config with the new one. Use empty object as base to avoid mutability
         var config = $tw.utils.extend( {} , _config , newConfig );
-        if(!config || ! _isValidConfig(config)){
+        if (!config || !_isValidConfig(config)) {
             Logger.log('Updating config to DB - ERROR','Tried to persist an invalid config');
             return;
         }
@@ -194,8 +193,16 @@ exports.startup = function(callback){
         return _config.debug.verbose;
     }
 
+    /**
+     * Returns if the plugin is active or not
+     * It is required to deactivate the plugin on the Index page
+     * We have to use a tiddler instead a property of the configuration
+     * because the domain is shared, and the config database too.
+     * 
+     * @returns {Boolean}
+     */
     function isPluginActive(){
-        return _config.isPluginActive;
+        return $tw.wiki.getTiddlerText(CONFIG_PREFIX + 'isPluginActive','yes') === 'yes';
     }
 
 
