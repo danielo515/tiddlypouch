@@ -133,7 +133,7 @@ exports.startup = function(callback){
     function _getDatabaseConfig(dbName){
         var configDefault = {
             name: dbName,
-            remote: {}
+            remote: {name: null, username: null, ur: null }
         }
         
         _config.databases[dbName] = _config.databases[dbName] || configDefault;
@@ -249,6 +249,7 @@ exports.startup = function(callback){
                 config: {
                     getAllDBNames: getAllDBNames,
                     readConfigTiddler: _readConfigTiddler,
+                    getDatabaseConfig: _getDatabaseConfig,
                     update: _updateConfig,
                     selectedDB: _config.selectedDbId,
                     isPluginActive: isPluginActive,

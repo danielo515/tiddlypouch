@@ -53,7 +53,8 @@ exports.startup = function(){
     });
 
 	$tw.rootWidget.addEventListener("tp-sync-state",uiConnector.setSyncFlag);
-    $tw.rootWidget.addEventListener("tm-TP-config-updateDebug",uiConnector.updateDebugHandler);
+    $tw.rootWidget.addEventListener("tm-TP-config-selectedDb",uiConnector.handlers.databaseHasBeenSelected);
+    $tw.rootWidget.addEventListener("tm-TP-config-updateDebug",uiConnector.handlers.updateDebug);
 	$tw.rootWidget.addEventListener("tm-TP-config-updateSelectedDB",uiConnector.updateSelectedDBHandler);
 
 };

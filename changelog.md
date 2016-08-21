@@ -1,3 +1,7 @@
+# 0.11.1
+- Update ui when a different Database is selected
+- Started to move selected database logic to a separate module
+- Utils moved to a module
 # 0.11
 - Updates to UX when saving config
 -- On config update user is asked to reload the window

@@ -19,13 +19,17 @@ var DATABASE_NAMES = "$:/plugins/danielo515/tiddlypouch/config/database_names";
 var SELECTED_DATABASE = "$:/plugins/danielo515/tiddlypouch/config/selected_database";
 var SYNC_ICON = "$:/plugins/danielo515/tiddlypouch/ui/sync-flag";
 
+var Utils = require('/plugins/danielo515/tiddlypouch/utils');
+
 exports.refreshUI = function refreshUI(config) {
     updateDebugUI(config);
-    updateSelectedDBUI(config);
+    refreshSelectedDBUI(config.databases[config.selectedDbId]);
     setSyncFlag();
     refreshDatabaseNamesUI();
 
 };
+
+exports.handlers = {};
 
 function setSyncFlag(mode) {
     var sincStatusFlag = $tw.wiki.getTiddler(SYNC_ICON);
@@ -48,7 +52,7 @@ function refreshDatabaseNamesUI() {
     $tw.wiki.addTiddler({title: DATABASE_NAMES , list: namesList, text: "{{!!list}}" })
 }
 
-exports.updateDebugHandler = function(event){
+exports.handlers.updateDebug = function(event){
     var Active = $tw.wiki.getTiddlerText(DEBUG_ACTIVE) === 'yes';
     var Verbose = $tw.wiki.getTiddlerText(DEBUG_VERBOSE) === 'yes';
     var savedConfig = $tw.TiddlyPouch.config.readConfigTiddler();
@@ -56,9 +60,14 @@ exports.updateDebugHandler = function(event){
     $tw.TiddlyPouch.config.update(savedConfig);
 }
 
+/**
+ *  Updates the debug ui to reflect the configuration 
+ * 
+ * @param {Object} config
+ */
 function updateDebugUI(config){
-    $tw.wiki.addTiddler(new $tw.Tiddler({title: DEBUG_ACTIVE, text: boolToHuman(config.debug.active)}));
-    $tw.wiki.addTiddler(new $tw.Tiddler({title: DEBUG_VERBOSE, text: boolToHuman(config.debug.verbose)}));
+    $tw.wiki.addTiddler(new $tw.Tiddler({title: DEBUG_ACTIVE, text: Utils.boolToHuman(config.debug.active)}));
+    $tw.wiki.addTiddler(new $tw.Tiddler({title: DEBUG_VERBOSE, text: Utils.boolToHuman(config.debug.verbose)}));
 }
 
 exports.updateSelectedDBHandler = function(event){
@@ -66,72 +75,33 @@ exports.updateSelectedDBHandler = function(event){
     var uiConfig = $tw.wiki.getTiddlerData(SELECTED_DATABASE);
 
     savedConfig.selectedDbId = uiConfig.name;
-    savedConfig.databases[uiConfig.name] = plainToNestedObject(uiConfig);
+    savedConfig.databases[uiConfig.name] = Utils.plainToNestedObject(uiConfig);
     $tw.TiddlyPouch.config.update(savedConfig);
 }
 
-function updateSelectedDBUI(config){
-    var dbInfo = config.databases[config.selectedDbId];
-    var uiConfig = flattenObject(dbInfo);
+/**
+ * Event handler that should be triggered when a database name is selected.
+ * It loads it's configuration and refreshes the UI with it.
+ */
+exports.handlers.databaseHasBeenSelected = function(event) {
+    var dbName = event.param;
+    var dbConfig = $tw.TiddlyPouch.config.getDatabaseConfig(dbName);
+    refreshSelectedDBUI(dbConfig);
+}
+
+/**
+ * Refreshes the UI with the provided database configuration
+ * 
+ * @param {Object} dbConfig
+ */
+function refreshSelectedDBUI(dbConfig) {
+    //var dbInfo = config.databases[config.selectedDbId];
+    var uiConfig = Utils.flattenObject(dbConfig);
     $tw.wiki.addTiddler(new $tw.Tiddler({
         title: SELECTED_DATABASE,
         type: "application/json",
         text: JSON.stringify(uiConfig)
     }));
-}
-
-// source: https://gist.github.com/gdibble/9e0f34f0bb8a9cf2be43
-var flattenObject = function(ob) {
-    var toReturn = {};
-    var flatObject;
-    for (var i in ob) {
-        if (!ob.hasOwnProperty(i)) {
-            continue;
-        }
-        if ((typeof ob[i]) === 'object') {
-            flatObject = flattenObject(ob[i]);
-            for (var x in flatObject) {
-                if (!flatObject.hasOwnProperty(x)) {
-                    continue;
-                }
-                toReturn[i + (!!isNaN(x) ? '.' + x : '')] = flatObject[x];
-            }
-        } else {
-            toReturn[i] = ob[i];
-        }
-    }
-    return toReturn;
-};
-
-function plainToNestedObject(plain) {
-    var result = {};
-    $tw.utils.each(plain,
-        function(value,key) {
-            createChilds(result,key.split('.'),value)
-        });
-    return result;
-    function createChilds(ob,keys,value){
-        keys =  keys.slice(); // No side effects please
-        var lastKey = keys.pop(); // Pop is handy but mutates the array
-        var lastChild = keys.reduce(
-            function(ob,k) {
-                ob[k] = ob[k] || {};
-                return ob[k];
-            }
-            ,ob);
-        lastChild[lastKey] = value;
-        return ob;
-    }
-}
-
-/**
- * Translates true/false to yes/no
- * 
- * @param {Boolean} value
- * @returns {String}
- */
-function boolToHuman(value) {
-    return value ? "yes" : "no"
 }
 
 })();
