@@ -1,3 +1,6 @@
+# 0.11.2
+- Plugin deactivation detection mechanism has been removed
+-- It was obsolete. Instead we are now using the default tiddlywiki method for the home page
 # 0.11.1
 - Update ui when a different Database is selected
 - Started to move selected database logic to a separate module

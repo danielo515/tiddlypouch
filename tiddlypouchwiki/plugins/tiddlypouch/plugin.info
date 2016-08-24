@@ -4,5 +4,5 @@
 	"author": "Danielo Rodriguez",
 	"core-version": ">=5.1.0",
 	"list": "readme",
-    "version": "0.11.1"
+    "version": "0.11.2"
 }

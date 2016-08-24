@@ -50,11 +50,6 @@ exports.startup = function(){
   $tw.TiddlyPouch.utils = {};
   $tw.TiddlyPouch.designDocument = buildDesignDocument();
 
-  if(!$tw.TiddlyPouch.config.isPluginActive()){
-      logger.log("Plugin is inactive, WARNING: changes will not be saved");
-      return
-  }
-
   /* Here is where startup stuff really starts */
 
   $tw.TiddlyPouch.PouchDB = require("$:/plugins/danielo515/tiddlypouch/lib/pouchdb.js");

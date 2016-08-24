@@ -344,12 +344,7 @@ PouchAdaptor.prototype.login = function(username, password, callback) {
 	};
 
 	httpRequest(options);*/
-
-	if(!$tw.TiddlyPouch.config.isPluginActive()){
-      self.logger.log('Sync will not happen because plugin is inactive');
-      return callback('Inactive plugin');
-    }
-
+    
     self.logger.log('Trying to sync...');
     
    /* Here is where startup stuff really starts */

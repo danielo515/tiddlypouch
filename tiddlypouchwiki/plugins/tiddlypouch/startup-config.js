@@ -193,18 +193,6 @@ exports.startup = function(callback){
         return _config.debug.verbose;
     }
 
-    /**
-     * Returns if the plugin is active or not
-     * It is required to deactivate the plugin on the Index page
-     * We have to use a tiddler instead a property of the configuration
-     * because the domain is shared, and the config database too.
-     * 
-     * @returns {Boolean}
-     */
-    function isPluginActive(){
-        return $tw.wiki.getTiddlerText(CONFIG_PREFIX + 'isPluginActive','yes') === 'yes';
-    }
-
 
 
     /**
@@ -252,7 +240,6 @@ exports.startup = function(callback){
                     getDatabaseConfig: _getDatabaseConfig,
                     update: _updateConfig,
                     selectedDB: _config.selectedDbId,
-                    isPluginActive: isPluginActive,
                      _configDB:  _configDB,
                      _config: _config,
                     debug: {
