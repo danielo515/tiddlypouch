@@ -26,7 +26,7 @@ exports.refreshUI = function refreshUI(config) {
     refreshSelectedDBUI(config.databases[config.selectedDbId]);
     setSyncFlag();
     refreshDatabaseNamesUI();
-
+    setLoginMessage();
 };
 
 exports.handlers = {};
@@ -46,6 +46,21 @@ function setSyncFlag(mode) {
 }
 
 exports.setSyncFlag = setSyncFlag;
+
+/**
+ * Sets the message "Login to <xxx>" that is showed by tiddlywiki
+ * to remote URL of the current database.  
+ */
+function setLoginMessage() {
+    var loginDestination = $tw.TiddlyPouch.config.currentDB.getUrl();
+    var databaseName = $tw.TiddlyPouch.config.currentDB.getRemoteName();
+    var message = "Login to remote database <b>" + databaseName + "</b> at: " + loginDestination;
+    $tw.wiki.addTiddler({
+        title: "$:/language/LoginToTiddlySpace" ,
+        text: message
+    });
+
+}
 
 function refreshDatabaseNamesUI() {
     var namesList = $tw.TiddlyPouch.config.getAllDBNames();

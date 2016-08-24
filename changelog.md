@@ -1,3 +1,5 @@
+# 0.11.3
+- More meaningful login message
 # 0.11.2
 - Plugin deactivation detection mechanism has been removed
 -- It was obsolete. Instead we are now using the default tiddlywiki method for the home page
