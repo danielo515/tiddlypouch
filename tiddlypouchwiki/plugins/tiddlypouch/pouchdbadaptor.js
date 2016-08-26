@@ -22,44 +22,6 @@ A sync adaptor module for synchronising with local PouchDB
     }
 
     /*
-    Reads config and sets up URLs.
-    */
-    // PouchAdaptor.prototype.readConfig = function() {
-    // 	var url = this.wiki.getTiddlerText(CONFIG_PREFIX + "Url", "AUTO").trim(),
-    // 	    designDocName = this.wiki.getTiddlerText(CONFIG_PREFIX + "DesignDocumentName", "AUTO").trim(),
-    // 	    requiresWithCreds = this.wiki.getTiddlerText(CONFIG_PREFIX + "RequiresWithCredentials", "no").trim(),
-    // 	    //docUrl = document.location.href,
-    // 	    pathParts = document.location.pathname.split("/");
-    // 	if (url === "AUTO") {
-    // 		// assume loaded as PREFIX/_design/DESIGNDOCNAME/HTMLFILENAME
-    // 		this.urlPrefix = pathParts.slice(0, -3).join("/");
-    // 		if (designDocName === "AUTO") {
-    // 			this.designDocName = pathParts[pathParts.length - 2];
-    // 		}
-    // 		else {
-    // 			this.designDocName = designDocName;
-    // 		}
-    // 	}
-    // 	else {
-    // 		this.urlPrefix = url;
-    // 		if (this.urlPrefix.substring(this.urlPrefix.length - 1) === "/") {
-    // 			this.urlPrefix = this.urlPrefix.substring(0, this.urlPrefix.length - 1);
-    // 		}
-    // 		if (designDocName === "AUTO") {
-    // 			// there is no sensible way to "AUTO" a design document name from a custom URL
-    // 			// so just use the default
-    // 			this.designDocName = "tw";
-    // 		}
-    // 		else {
-    // 			this.designDocName = designDocName;
-    // 		}
-    // 		// getUrl returns the basic URL plus the parammeter
-    // 	}
-    // 	this.sessionUrl = $tw.TiddlyPouch.config.currentDB.getUrl("_session"); // save the URL on startup
-    // 	this.xhrNeedsWithCredentials = (requiresWithCreds === "yes");
-    // };
-
-    /*
     Copied from TiddlyWiki5 core/modules/utils/dom/http.js to add support for xhr.withCredentials
     */
     function httpRequest(options) {
@@ -228,6 +190,50 @@ A sync adaptor module for synchronising with local PouchDB
         return result;
     }
 
+    /**
+     * Updates a document on the database if it exists.
+     * Creates a new document if it does not exist.
+     * If the document has a revision but it is new it will throw a conflict
+     * so we look for it and if we get a 404 (not found) we remove the revision
+     * and try to create it again.
+     *
+     * @param {any} document  It should be a document ready to be inserted,
+     *                          no conversion from TW format will be performed.
+     * @returns {promise}
+     */
+    PouchAdaptor.prototype._upsert = function (document) {
+        var self = this;
+        var db = $tw.TiddlyPouch.database;
+        return db.put(document)
+            .then(function (saveInfo) {
+                return saveInfo
+            })
+            .catch(function (err) {
+                if (err) {
+                    if (err.name === 'conflict') { // check if it is a real conflict
+                        self.logger.log('O my gosh, update conflict!')
+                        return db.get(document._id)
+                            .then(function (document) { //oops, we got a document, this was an actual conflict
+                                self.logger.log("It was a real conflict!", document);
+                                throw err; // propagate the error for the moment
+                            })
+                            .catch(function (err) {
+                                if (err.name === 'not_found') { // not found means no actual conflict
+                                    self.logger.log("it was a fake conflict, trying again", document);
+                                    document._rev = null;
+                                    return db.put(document);
+                                }
+                            });
+
+                    }
+                    throw err //propagate the error if it is not a conflict
+                }
+
+            });
+
+    };
+
+
     /*****************************************************
      ****** Tiddlywiki required methods
      *****************************************************/
@@ -290,50 +296,6 @@ A sync adaptor module for synchronising with local PouchDB
         });
 
     };
-
-
-    /**
-     * Updates a document on the database if it exists.
-     * Creates a new document if it does not exist.
-     * If the document has a revision but it is new it will throw a conflict
-     * so we look for it and if we get a 404 (not found) we remove the revision
-     * and try to create it again.
-     *
-     * @param {any} document  It should be a document ready to be inserted,
-     *                          no conversion from TW format will be performed.
-     * @returns {promise}
-     */
-    PouchAdaptor.prototype._upsert = function (document) {
-        var self = this;
-        var db = $tw.TiddlyPouch.database;
-        return db.put(document)
-            .then(function (saveInfo) {
-                return saveInfo
-            })
-            .catch(function (err) {
-                if (err) {
-                    if (err.name === 'conflict') { // check if it is a real conflict
-                        self.logger.log('O my gosh, update conflict!')
-                        return db.get(document._id)
-                            .then(function (document) { //oops, we got a document, this was an actual conflict
-                                self.logger.log("It was a real conflict!", document);
-                                throw err; // propagate the error for the moment
-                            })
-                            .catch(function (err) {
-                                if (err.name === 'not_found') { // not found means no actual conflict
-                                    self.logger.log("it was a fake conflict, trying again", document);
-                                    document._rev = null;
-                                    return db.put(document);
-                                }
-                            });
-
-                    }
-                    throw err //propagate the error if it is not a conflict
-                }
-
-            });
-
-    }
 
     PouchAdaptor.prototype.saveTiddler = function (tiddler, callback, options) {
         var self = this;
