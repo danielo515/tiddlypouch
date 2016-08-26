@@ -18,7 +18,34 @@
             "cwd": "${workspaceRoot}",
             "preLaunchTask": null,
             "runtimeExecutable": null,
-            "runtimeArgs": [ 
+            "runtimeArgs": [
+                "--nolazy"
+              ],
+            "env": {
+                "NODE_ENV": "development"
+            },
+            "externalConsole": false,
+            "sourceMaps": false,
+            "outDir": null
+        },
+        {
+            "name": "Mac debug",
+            "type": "node",
+            "request": "launch",
+            "program": "/Users/danielo/TiddlyWiki5/tiddlywiki.js",
+            "stopOnEntry": false,
+            "args": [
+                "${workspaceRoot}/tiddlypouchwiki",
+                "--verbose",
+                "--server", "8087",
+                "$:/core/save/all",
+                "text/plain",
+                "text/html"
+                  ],
+            "cwd": "${workspaceRoot}",
+            "preLaunchTask": null,
+            "runtimeExecutable": null,
+            "runtimeArgs": [
                 "--nolazy"
               ],
             "env": {

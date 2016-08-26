@@ -1,3 +1,9 @@
+# 0.11.4
+- If a cookie exists, login the user automatically
+- Fixed several issues related to update conflicts:
+-- Cloning a tiddler (was trying to create a new document with an existing revision)
+-- Renaming a tiddler
+- Introduced upsert method (which allowed to solve above issues)
 # 0.11.3
 - More meaningful login message
 # 0.11.2
