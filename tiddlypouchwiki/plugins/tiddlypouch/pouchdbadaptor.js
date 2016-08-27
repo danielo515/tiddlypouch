@@ -190,6 +190,26 @@ A sync adaptor module for synchronising with local PouchDB
         return result;
     }
 
+    PouchAdaptor.prototype.getRevisions = function (title) {
+        var db = $tw.TiddlyPouch.database;
+        return db.get(title, { revs_info: true })
+            .then(function (document) {
+                var revisions = document._revs_info.filter(onlyAvailable).map(getRevisionId);
+                return revisions;
+            });
+
+        function onlyAvailable(rev) { return rev.status === "available"; }
+        function getRevisionId(rev) { return rev.rev; }
+    }
+
+
+    PouchAdaptor.prototype.loadRevision = function (title, revision) {
+        var self = this;
+        self.logger.log('Fetching revision ',revision, ' of tiddler ' , title, ' from database');
+        return $tw.TiddlyPouch.database.get(self.mangleTitle(title), { rev: revision} )
+        .then(self.convertFromCouch)
+    };
+
     /**
      * Updates a document on the database if it exists.
      * Creates a new document if it does not exist.

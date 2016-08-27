@@ -10,17 +10,27 @@ This one should be required in order to be used.
 
 \*/
 (function () {
-    var utils = 
-    {
-        boolToHuman: boolToHuman,
-        plainToNestedObject: plainToNestedObject,
-        flattenObject: flattenObject
-    };
+    var utils =
+        {
+            boolToHuman: boolToHuman,
+            plainToNestedObject: plainToNestedObject,
+            flattenObject: flattenObject,
+            saveAsJsonTiddler: saveAsJsonTiddler
+        };
 
     module.exports = utils;
 
+    function saveAsJsonTiddler(title, data, beautify) {
+        var formatParameters = beautify ? $tw.config.preferences.jsonSpaces : null;
+        $tw.wiki.addTiddler(new $tw.Tiddler({
+            title: title,
+            type: "application/json",
+            text: JSON.stringify(data, null, formatParameters)
+        }));
+    }
+
     // source: https://gist.github.com/gdibble/9e0f34f0bb8a9cf2be43
-    function flattenObject (ob) {
+    function flattenObject(ob) {
         var toReturn = {};
         var flatObject;
         for (var i in ob) {

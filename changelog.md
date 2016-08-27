@@ -1,3 +1,8 @@
+# 0.12
+- Basic revision handling
+-- Get all revisions of a tiddler method
+-- Get revision of a tiddler
+-- Ui to show and reload revisions of a tiddler
 # 0.11.4
 - If a cookie exists, login the user automatically
 - Fixed several issues related to update conflicts:

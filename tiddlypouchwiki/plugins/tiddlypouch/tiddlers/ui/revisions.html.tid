@@ -1,0 +1,23 @@
+title: $:/plugins/danielo515/tiddlypouch/ui/revisions 
+caption: Revisions 
+tags: $:/tags/TiddlerInfo 
+
+<$button message="tm-tp-load-revisions" param={{!!title}}>
+    Reload revisions
+</$button>
+<table>
+<$list filter="[{!!title}addprefix[$:/temp/revisions:]]" variable="rev-store">
+    <$list filter="[<rev-store>indexes[]nsort[]]" variable="index">
+        <$list filter="[<rev-store>getindex<index>]" variable="revision">
+            <tr><td><$button class="tc-btn-invisible tc-tiddlylink">
+                <$action-sendmessage $message="tm-tp-load-certain-revision" $param={{!!title}} revision=<<revision>>/>
+                <$list filter="[{!!title}addprefix[$:/temp/revision:]]" variable="rev-tiddler">
+                    <$action-navigate $to=<<rev-tiddler>>/>
+                </$list>
+                <$text text=<<revision>>/>
+            </$button>
+            </td></tr>
+        </$list>
+    </$list>
+</$list>
+</table>
