@@ -1,3 +1,7 @@
+# 0.12.1
+- Set the database name as subtitle
+-- Click on it to open the control panel on the database selection tab
+- Fixed navigate to tab to display plain text inside the link (avoid wikification)
 # 0.12
 - Basic revision handling
 -- Get all revisions of a tiddler method

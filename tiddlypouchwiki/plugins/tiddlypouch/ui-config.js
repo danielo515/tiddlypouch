@@ -27,6 +27,7 @@ exports.refreshUI = function refreshUI(config) {
     setSyncFlag();
     refreshDatabaseNamesUI();
     setLoginMessage();
+    setSiteSubtitleToDatabaseName();
 };
 
 exports.handlers = {};
@@ -46,6 +47,11 @@ function setSyncFlag(mode) {
 }
 
 exports.setSyncFlag = setSyncFlag;
+
+function setSiteSubtitleToDatabaseName() {
+    var text = "<<tiddlypouch-tab " + $tw.TiddlyPouch.config.currentDB.name + " Database >>";
+    $tw.wiki.addTiddler({ title: "$:/SiteSubtitle", text: text });
+}
 
 /**
  * Sets the message "Login to <xxx>" that is showed by tiddlywiki

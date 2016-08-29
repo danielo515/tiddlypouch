@@ -14,6 +14,6 @@ tags: $:/tags/Macro
     <$action-setfield $tiddler="$:/state/tab-1749438307" text="$:/plugins/danielo515/tiddlypouch/ControlPanel" />
     <$action-setfield $tiddler="$:/state/TiddlyPouch/tabs--1566775042" text="$:/plugins/danielo515/tiddlypouch/ControlPanel/$target$"/>
     <$action-navigate $to="$:/ControlPanel" />
-    $caption$
+    <$text text="$caption$"/>
 </$button>
 \end
