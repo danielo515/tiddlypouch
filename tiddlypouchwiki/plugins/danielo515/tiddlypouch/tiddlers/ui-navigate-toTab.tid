@@ -1,0 +1,19 @@
+title: $:/plugins/danielo515/tiddlypouch/macros/navigate-to-controlPanel-tab
+tags: $:/tags/Macro
+
+\define control-panel-tab(caption target)
+<$button class="tc-btn-invisible tc-tiddlylink">
+    <$action-setfield $tiddler="$:/state/tab-1749438307" text="$target$" />
+    <$action-navigate $to="$:/ControlPanel" />
+    $caption$
+</$button>
+\end
+
+\define tiddlypouch-tab(caption target)
+<$button class="tc-btn-invisible tc-tiddlylink">
+    <$action-setfield $tiddler="$:/state/tab-1749438307" text="$:/plugins/danielo515/tiddlypouch/ControlPanel" />
+    <$action-setfield $tiddler="$:/state/TiddlyPouch/tabs--1566775042" text="$:/plugins/danielo515/tiddlypouch/ControlPanel/$target$"/>
+    <$action-navigate $to="$:/ControlPanel" />
+    <$text text="$caption$"/>
+</$button>
+\end
