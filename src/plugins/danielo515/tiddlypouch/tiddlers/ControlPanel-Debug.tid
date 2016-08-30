@@ -1,0 +1,20 @@
+title: $:/plugins/danielo515/tiddlypouch/ControlPanel/Debug
+caption: Debug
+tags: $:/tags/TiddlyPouch/ControlPanel
+
+
+Activate logging if you are experiencing problems while syncing or you are curious about it.
+
+"""
+<$checkbox tiddler="$:/plugins/danielo515/tiddlypouch/config/Debug/Active" field="text" checked="yes" unchecked="no" default="no"> Debug mode</$checkbox>
+<$checkbox tiddler="$:/plugins/danielo515/tiddlypouch/config/Debug/Verbose" field="text" checked="yes" unchecked="no" default="no"> Verbose mode</$checkbox>
+"""
+
+<$button message="tm-TP-config-updateDebug">Save Config</$button>
+
+!!! Sync Log
+
+<$button>
+<$action-navigate $to="$:/state/tiddlypouch/sync/Log"/>
+Open Log
+</$button>

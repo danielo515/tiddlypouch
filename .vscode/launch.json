@@ -49,7 +49,8 @@
                 "--nolazy"
               ],
             "env": {
-                "NODE_ENV": "development"
+                "NODE_ENV": "development",
+                "TIDDLYWIKI_PLUGIN_PATH":"${workspaceRoot}/src/plugins"
             },
             "externalConsole": false,
             "sourceMaps": false,

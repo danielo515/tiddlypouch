@@ -1,9 +1,0 @@
-title: $:/plugins/danielo515/tiddlypouch/ui/sync-flag
-
-<$reveal type="match" state="$:/state/tiddlypouch/sync/status" text="offline">
-<$button message="tm-login" >Offline</$button>
-</$reveal>
-
-<$reveal type="nomatch" state="$:/state/tiddlypouch/sync/status" text="offline">
-{{$:/state/tiddlypouch/sync/status}}
-</$reveal>

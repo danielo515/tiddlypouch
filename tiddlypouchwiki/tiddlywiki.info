@@ -1,6 +1,7 @@
 {
 	"plugins": [
-          "tiddlywiki/highlight"
+          "tiddlywiki/highlight",
+          "danielo515/tiddlypouch"
 	],
 	"themes": [
 		"tiddlywiki/vanilla",
