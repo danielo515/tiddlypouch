@@ -1,8 +1,9 @@
 {
-	"title": "$:/plugins/danielo515/tiddlypouch",
-	"description": "tiddlypouch for TiddlyWiki",
-	"author": "Danielo Rodriguez",
-	"core-version": ">=5.1.0",
-	"list": "readme",
-    "version": "0.12.1"
+    "title": "$:/plugins/danielo515/tiddlypouch",
+    "description": "tiddlypouch for TiddlyWiki",
+    "author": "Danielo Rodriguez",
+    "core-version": ">=5.1.0",
+    "list": "readme",
+    "version": "0.13",
+    "released": "Tue, 30 Aug 2016 21:40:43 GMT"
 }

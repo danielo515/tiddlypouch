@@ -65,7 +65,7 @@ The existence of the database determines if the plugin will be active or not.
             function (event) {
                 $tw.syncadaptor.loadRevision(event.param, event.paramObject.revision)
                     .then(function (tiddler) {
-                        tiddler.title = "$:/temp/revision:" + event.param;
+                        tiddler.title = "$:/temp/revision:" + event.paramObject.revision.slice(0,6) + ":" + event.param;
                         $tw.wiki.addTiddler(tiddler);  
                     });
             });

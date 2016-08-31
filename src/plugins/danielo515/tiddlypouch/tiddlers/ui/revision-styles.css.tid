@@ -1,0 +1,39 @@
+title: $:/plugins/danielo515/tiddlypouch/ui/revisions/styles
+tags: $:/tags/Stylesheet
+
+\rules only filteredtranscludeinline transcludeinline macrodef macrocallinline macrocallblock
+
+.tc-review-tabs {  
+      line-height: 22px; 
+}
+
+/* avoid nested view template be moved */
+.tc-review-tabs .tc-tiddler-frame {
+    padding-top:0px;
+    padding-bottom: 0px;
+    margin-bottom: 0px;
+    box-shadow: none;
+    border: none;
+}
+
+.tc-review-tabs .tc-titlebar {
+    display: none;
+}
+
+/* This block adjusts the margins inside the review tabs
+   in the different breakpoints
+*/
+
+@media (max-width: {{$:/themes/tiddlywiki/vanilla/metrics/sidebarbreakpoint}}) {
+    .tc-tab-set.tc-review-tabs{
+        margin-left: -14px;
+    }
+}
+
+@media (min-width: {{$:/themes/tiddlywiki/vanilla/metrics/sidebarbreakpoint}}) {
+
+    .tc-tab-set.tc-review-tabs{
+        margin-left: -43px;
+    }
+
+}

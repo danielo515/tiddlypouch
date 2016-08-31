@@ -11,9 +11,6 @@ tags: $:/tags/TiddlerInfo
         <$list filter="[<rev-store>getindex<index>]" variable="revision">
             <tr><td><$button class="tc-btn-invisible tc-tiddlylink">
                 <$action-sendmessage $message="tm-tp-load-certain-revision" $param={{!!title}} revision=<<revision>>/>
-                <$list filter="[{!!title}addprefix[$:/temp/revision:]]" variable="rev-tiddler">
-                    <$action-navigate $to=<<rev-tiddler>>/>
-                </$list>
                 <$text text=<<revision>>/>
             </$button>
             </td></tr>

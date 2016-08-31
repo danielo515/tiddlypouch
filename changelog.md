@@ -1,3 +1,9 @@
+# 0.13
+- Better ui for revision handling
+-- See revisions as tabs of the current tiddler
+-- Open several previous revisions to check them all
+-- Revisions names are shorted for readability
+-- pixel perfect revisions tabs
 # 0.12.1
 - Set the database name as subtitle
 -- Click on it to open the control panel on the database selection tab

@@ -1,0 +1,25 @@
+<style>
+.tc-tagged-revisator >  .tc-reveal > .tc-title, .tc-tagged-revisator >  .tc-reveal > .tc-subtitle, .tc-tagged-revisator > .tc-reveal .tc-tags-wrapper {
+    display: none;
+}
+
+.tc-tiddler-frame.tc-tagged-revisator {
+    margin-left: 0px;
+    padding-left: 0px;
+    margin-right: 0px;
+    padding-right: 0px;
+    background-color: transparent;
+    border: 0px none transparent;
+}
+
+.tc-tab-content.tc-review-tabs, .tc-review-tabs>.tc-reveal>p {
+  margin-top: 0px;
+}
+</style>
+
+<$macrocall $name="tabs"
+tabsList="[<currentTiddler>] [prefix[$:/temp/revision:]suffix<currentTiddler>]"
+default=<<currentTiddler>>
+state="$:/state/test-tabs"
+class="tc-review-tabs"
+template="$:/plugins/danielo515/tiddlypouch/ui/revisions/transclude-template" />
