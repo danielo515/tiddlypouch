@@ -16,7 +16,7 @@ A sync adaptor module for synchronising with local PouchDB
 
     function PouchAdaptor(options) {
         this.wiki = options.wiki;
-        this.logger = new $tw.utils.Logger("PouchAdaptor");
+        this.logger = new $tw.TiddlyPouch.Logger("PouchAdaptor");
         this.sessionUrl = $tw.TiddlyPouch.config.currentDB.getUrl("_session"); // save the URL on startup
         //this.readConfig()
     }
@@ -170,25 +170,7 @@ A sync adaptor module for synchronising with local PouchDB
     }
 
     /* for this version just copy all fields across except _rev and _id */
-    PouchAdaptor.prototype.convertFromCouch = function (tiddlerFields) {
-        var self = this, result = {};
-        console.log("Converting from ", tiddlerFields);
-        // Transfer the fields, pulling down the `fields` hashmap
-        $tw.utils.each(tiddlerFields, function (element, title, object) {
-            if (title === "fields") {
-                $tw.utils.each(element, function (element, subTitle, object) {
-                    result[subTitle] = element;
-                });
-            } else if (title === "_id" || title === "_rev") {
-                /* skip these */
-            } else {
-                result[title] = tiddlerFields[title];
-            }
-        });
-        result["revision"] = tiddlerFields["_rev"];
-        console.log("Conversion result ", result);
-        return result;
-    }
+    PouchAdaptor.prototype.convertFromCouch = require('$:/plugins/danielo515/tiddlypouch/utils').convertFromCouch;
 
     PouchAdaptor.prototype.getRevisions = function (title) {
         var db = $tw.TiddlyPouch.database;

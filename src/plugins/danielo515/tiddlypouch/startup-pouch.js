@@ -7,10 +7,11 @@ This module creates the basic structure needed for the plugin.
 This included the TiddlyPouch Object namespace and the local database
 The existence of the database determines if the plugin will be active or not.
 \*/
-(function() {
+(function () {
 
     /*jslint node: true, browser: true */
     /*global $tw: false */
+    /*global emit: false*/
     "use strict";
 
     // Export name and synchronous status
@@ -25,26 +26,52 @@ The existence of the database determines if the plugin will be active or not.
         /* --- Declaration ZONE ---*/
         //============================
 
-        var logger = new $tw.utils.Logger("PouchStartup");
+        var logger = new $tw.TiddlyPouch.Logger("PouchStartup");
 
+        // This function creates just the skinny view.
+        // it is legacy code, but makes TP compatible with couchdb plugin
+        // because it installs the required view on the server.
         function buildDesignDocument() {
             /* This builds the design document.
                Each tiddler conforming the design document elements should be a  tiddler
                with just one anonimous function*/
-            var design_document = $tw.wiki.getTiddlerData(CONFIG_PREFIX + "design_document"),
+            var design_document = JSON.parse($tw.wiki.getTiddler(CONFIG_PREFIX + "design_document").fields.text),
                 /*To be valid json functions should be just one line of text. That's why we remove line breaks*/
-                skinny_view = $tw.wiki.getTiddlerText(CONFIG_PREFIX + "skinny-tiddlers-view").replace(/\r?\n/, ' '),
-                filter = $tw.wiki.getTiddlerText(CONFIG_PREFIX + "design_document/filter").replace(/\r?\n/, ' ');
+                skinny_view = $tw.wiki.getTiddler(CONFIG_PREFIX + "skinny-tiddlers-view").fields.text.replace(/\r?\n/, ' '),
+                filter = $tw.wiki.getTiddler(CONFIG_PREFIX + "design_document/filter").fields.text.replace(/\r?\n/, ' ');
 
             design_document.views['skinny-tiddlers'].map = skinny_view;
             design_document.filters.tiddlers = filter;
             return design_document;
         }
+        
+        // Source: https://pouchdb.com/2014/05/01/secondary-indexes-have-landed-in-pouchdb.html
+        function createDesignDoc(name, mapFunction) {
+            var ddoc = {
+                _id: '_design/' + name,
+                views: {
+                }
+            };
+            ddoc.views[name] = { map: mapFunction.toString() };
+            return ddoc;
+        }
 
-        function getConfig(configName) {
-            var configValue = $tw.wiki.getTiddlerText(CONFIG_PREFIX + configName, "");
-            return configValue.trim();
-        };
+        function conflict (message){
+            return function(err){
+                if (err.status == 409) {
+                    return logger.log(message);
+                }
+                throw err;
+            }
+        }
+
+        var indexes = 
+        { 
+            by_type: createDesignDoc('by_type', 
+                                function(doc){ doc.fields.type && emit(doc.fields.type) }),
+            by_module_type: createDesignDoc( 'by_module_type', 
+                                function(doc){ doc.fields['module-type'] && emit(doc.fields['module-type']) })
+                    } ;
 
         /* --- TiddlyPouch namespace creation and basic initialization---*/
         $tw.TiddlyPouch.utils = {};
@@ -59,18 +86,25 @@ The existence of the database determines if the plugin will be active or not.
             $tw.TiddlyPouch.database.on('error', function (err) { logger.log(err); });
         }
 
-        $tw.TiddlyPouch.database.put($tw.TiddlyPouch.designDocument).then(function () {
+        $tw.TiddlyPouch.database.put($tw.TiddlyPouch.designDocument)
+        .then(function () {
             logger.log("PouchDB design document created");
-        }).catch(function(err) {
-            if (err.status == 409){
-                logger.log("Design document exists already");}
-        });
+        }).catch(
+            conflict("Design document exists already")
+        ).then(function(){
+            logger.log("Creating index by type...");
+            return $tw.TiddlyPouch.database.put(indexes.by_type);
+        }).then(function(){
+            logger.log("Index by type created");
+        }).catch(
+            conflict("Index by_type exists already ")
+        );
 
         /*Fetch and add the StoryList before core tries to save it*/
         $tw.TiddlyPouch.database.get("$:/StoryList").then(function (doc) {
             $tw.wiki.addTiddler(new $tw.Tiddler(doc.fields, { title: doc._id, revision: doc._rev }));
             logger.log("StoryList is already in database ", doc.fields);
-        }).catch(function(err) {
+        }).catch(function (err) {
             logger.log("Error retrieving StoryList");
             logger.log(err);
         });

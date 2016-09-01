@@ -19,7 +19,7 @@ var DATABASE_NAMES = "$:/plugins/danielo515/tiddlypouch/config/database_names";
 var SELECTED_DATABASE = "$:/plugins/danielo515/tiddlypouch/config/selected_database";
 var SYNC_ICON = "$:/plugins/danielo515/tiddlypouch/ui/sync-flag";
 
-var Utils = require('/plugins/danielo515/tiddlypouch/utils');
+var Utils = require('$:/plugins/danielo515/tiddlypouch/utils');
 
 exports.refreshUI = function refreshUI(config) {
     updateDebugUI(config);

@@ -21,9 +21,9 @@ The existence of the database determines if the plugin will be active or not.
     exports.synchronous = true;
 
     exports.startup = function () {
-        var logger = new $tw.utils.Logger("TiddlyPouch");
+        var logger = new $tw.TiddlyPouch.Logger("TiddlyPouch");
         var uiConnector = require("$:/plugins/danielo515/tiddlypouch/ui/config.js");
-        var Utils = require('/plugins/danielo515/tiddlypouch/utils');
+        var Utils = require('$:/plugins/danielo515/tiddlypouch/utils');
 
         /*****************************************************************************
         ########################### EVENT LISTENERS ##################################*/

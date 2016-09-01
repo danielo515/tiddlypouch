@@ -20,7 +20,7 @@ exports.platforms = ["browser"];
 exports.synchronous = true;
 
 exports.startup = function() {
-  this.logger = new $tw.utils.Logger("PouchDB");
+  this.logger = new $tw.TiddlyPouch.Logger("PouchDB");
   var self = this;
   var db=$tw.TiddlyPouch.database;
   /*Removes the document with the provided title from the database*/

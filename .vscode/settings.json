@@ -1,5 +1,4 @@
 // Place your settings in this file to overwrite default and user settings.
 {
-    "eslint.enable": false,
-    "files.associations": {"*.html.tid": "html", "*.css.tid": "css"}
+    "files.associations": {"*.html.tid": "html", "*.css.tid": "css"},
 }
