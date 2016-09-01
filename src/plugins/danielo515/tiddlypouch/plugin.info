@@ -2,7 +2,7 @@
     "title": "$:/plugins/danielo515/tiddlypouch",
     "description": "tiddlypouch for TiddlyWiki",
     "author": "Danielo Rodriguez",
-    "core-version": ">=5.1.0",
+    "core-version": ">=5.1.14",
     "list": "readme",
     "version": "0.14.0+1",
     "released": "Thu, 01 Sep 2016 23:18:51 GMT"
