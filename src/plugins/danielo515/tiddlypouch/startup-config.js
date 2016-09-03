@@ -8,6 +8,9 @@ Creates and reads the config database.
 Provides an interface to the configurations (get, set, update)
 Configuration should be inmutable and require a reboot to become active
 Only remote configuration (username, remote_name, url) may be changed in the running session.
+
+@preserve
+
 \*/
 
 (function(){
@@ -26,6 +29,10 @@ var CONFIG_PREFIX = "$:/plugins/danielo515/tiddlypouch/config/";
 var CONFIG_DATABASE = "__TP_config";
 var CONFIG_TIDDLER = CONFIG_PREFIX + "config_database";
 
+
+/**
+ * @module config-startup
+ */
 exports.startup = function(callback){
     var LOGGER = require('$:/core/modules/utils/logger.js').Logger;
     var Logger = new LOGGER("TiddlyPouch:config");

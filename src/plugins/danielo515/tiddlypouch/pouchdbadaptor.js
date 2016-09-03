@@ -5,6 +5,9 @@ module-type: syncadaptor
 
 A sync adaptor module for synchronising with local PouchDB
 
+
+@preserve
+
 \*/
 (function () {
 

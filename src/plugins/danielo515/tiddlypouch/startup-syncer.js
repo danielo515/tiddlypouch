@@ -3,6 +3,9 @@ title: $:/plugins/danielo515/tiddlypouch/startup/pouchdb-sycer.js
 type: application/javascript
 module-type: startup
 
+
+@preserve
+
 \*/
 
 (function() {

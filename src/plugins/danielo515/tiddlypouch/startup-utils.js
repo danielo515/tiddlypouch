@@ -4,6 +4,9 @@ type: application/javascript
 module-type: startup
 
 Basic Utils object is created int the pouch startup module
+
+@preserve
+
 \*/
 
 (function(){

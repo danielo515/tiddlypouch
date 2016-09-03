@@ -8,7 +8,16 @@ It is different from the utils created at startup, which are tiddlypoucyh focuse
 This one should be required in order to be used.
 
 
+
+@preserve
+
 \*/
+
+
+/**
+ * @namespace utils
+ */
+
 (function () {
     var utils =
         {

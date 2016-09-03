@@ -4,6 +4,9 @@ title: $:/plugins/danielo515/tiddlypouch/ui/config.js
 module-type: library
 
 Links the user interface with the configuration methods 
+
+@preserve
+
 \*/
 
 (function(){

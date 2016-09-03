@@ -6,6 +6,9 @@ module-type: startup
 This module creates the basic structure needed for the plugin.
 This included the TiddlyPouch Object namespace and the local database
 The existence of the database determines if the plugin will be active or not.
+
+@preserve
+
 \*/
 
 (function () {

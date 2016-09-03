@@ -6,6 +6,9 @@ module-type: startup
 This module loads all the javascript tiddlers and stores them into the wiki store.
 That way, the actual load-modules module of TW will have a chance to register them.
 This includes javascript macros, deserializers, globals etc 
+
+@preserve
+
 \*/
 (function () {
 
