@@ -36,6 +36,8 @@ This includes javascript macros, deserializers, globals etc
              });
              $tw.wiki.defineTiddlerModules();
              cb();
+         }).catch(function(err){
+             console.log('Stupid boy, you tried to use an index that does not exist!')
          });
     }
 

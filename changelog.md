@@ -1,5 +1,6 @@
 # 0.14.2
-- Implemented class for single individual databases configuration.
+- Implemented class for single individual databases configuration
+- DefaultTiddlers is loaded at startup along with StoryList
 # 0.14.1
 - Revisions are validated before saving 
 # 0.14
