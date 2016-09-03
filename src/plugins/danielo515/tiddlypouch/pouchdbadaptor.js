@@ -265,8 +265,8 @@ PouchAdaptor.prototype._upsert = function (document) {
  * @param {string} rev the revision to validate
  * @returns {string|null} 
  */
-function validateRevision(rev){
-    if( /\d+-[A-z0-9]*/.test(rev)){
+function validateRevision(rev) {
+    if (/\d+-[A-z0-9]*/.test(rev)) {
         return rev
     }
     return null
@@ -320,17 +320,28 @@ PouchAdaptor.prototype.getTiddlerInfo = function (tiddler) {
     return { _rev: tiddler.fields.revision };
 };
 
-
+/**
+ * Returns an array of skinny tiddlers (tiddlers withouth text field)
+ * They are converted from CouchDB documents to TW tiddlers
+ * Both callbacks and promises are supported.
+ * @param {function} callback an optional callback to call with the converted tiddlers
+ * @return {promise} Skinnytiddlers a promise that fulfills to an array of skinny tiddlers
+ */
 PouchAdaptor.prototype.getSkinnyTiddlers = function (callback) {
     var self = this;
-    $tw.TiddlyPouch.database.query("TiddlyPouch/skinny-tiddlers").then(function (tiddlersList) {
-        var tiddlers = tiddlersList.rows
-        self.logger.log("Skinnytiddlers: ", tiddlers);
-        for (var i = 0; i < tiddlers.length; i++) {
-            tiddlers[i] = self.convertFromSkinnyTiddler(tiddlers[i]);
-        }
-        callback(null, tiddlers);
-    }).catch(callback);
+    return $tw.TiddlyPouch.database.query("TiddlyPouch/skinny-tiddlers")
+        .then(function (tiddlersList) {
+            var tiddlers = tiddlersList.rows
+            self.logger.log("Skinnytiddlers: ", tiddlers);
+            for (var i = 0; i < tiddlers.length; i++) {
+                tiddlers[i] = self.convertFromSkinnyTiddler(tiddlers[i]);
+            }
+            if(callback){ // handle non-promise callback flows 
+                callback(null, tiddlers);
+            }
+            // Continue the chain
+            return tiddlers 
+        }).catch(callback || self.logger.log.bind(self.logger));
 
 };
 
@@ -339,7 +350,7 @@ PouchAdaptor.prototype.getSkinnyTiddlers = function (callback) {
  */
 PouchAdaptor.prototype.saveTiddler = function (tiddler, callback, options) {
     var self = this;
-    var convertedTiddler = this.convertToCouch(tiddler,options.tiddlerInfo);
+    var convertedTiddler = this.convertToCouch(tiddler, options.tiddlerInfo);
     $tw.TiddlyPouch.config.debug.isActive() && this.logger.log(options.tiddlerInfo);
     this.logger.log("Saving ", convertedTiddler);
     self._upsert(convertedTiddler)

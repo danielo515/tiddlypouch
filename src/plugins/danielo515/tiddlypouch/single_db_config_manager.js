@@ -19,8 +19,8 @@ module.exports = dbConfig;
 /**
  * 
  * @constructor
- * @param {String|Object} name  The name of the database. This can also be a complete config
- *                               for the new database;
+ * @param {String|Object} name  The name of the database. This can also be a complete 
+ *                              config object for the new database
  * @param {Object} remote
  */
 function dbConfig(name, remote) {
@@ -38,15 +38,24 @@ function dbConfig(name, remote) {
     }
 }
 
+/**
+ * @return {String} name the name of the database
+ */
 dbConfig.prototype.getName = function () {
     return this.name;
 }
 
+/**
+ * @return {String} remoteName the name this database has on the remote couchdb server
+ */
 dbConfig.prototype.getRemoteName = function() {
     var name = this.remote && this.remote.name;
     return name;
 }
 
+/**
+ * @return {Object} config A copy of the current configuration
+ */
 dbConfig.prototype.getConfig = function () {
     return {
         name: this.name,
@@ -54,6 +63,10 @@ dbConfig.prototype.getConfig = function () {
     }
 }
 
+/**
+ * @param {String} section Optional sub path of the remote server. For example _session
+ * @return {String} URL The url of the remote server. Pointing to section if it is defined
+ */
 dbConfig.prototype.getUrl = function getUrl(section) {
     var URL = this.remote.url;
     if (!URL) { return null }

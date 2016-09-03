@@ -1,6 +1,8 @@
 # 0.14.2
 - Implemented class for single individual databases configuration
 - DefaultTiddlers is loaded at startup along with StoryList
+- Sync adaptor method get-skinny-tiddlers now supports both promise flow and callbacks
+- Dowload saver that downloads all the tiddlers contained on the current db as JSON
 # 0.14.1
 - Revisions are validated before saving 
 # 0.14
