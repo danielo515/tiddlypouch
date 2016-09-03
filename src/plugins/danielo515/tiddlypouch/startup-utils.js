@@ -28,6 +28,8 @@ exports.startup = function() {
   this.logger = new $tw.TiddlyPouch.Logger("PouchDB");
   var self = this;
   var db = $tw.TiddlyPouch.database;
+
+  $tw.TiddlyPouch.utils = {};
   /** Removes the document with the provided title from the database*/
   $tw.TiddlyPouch.utils.remove = function(title){
      db.get(title).then(

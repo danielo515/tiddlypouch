@@ -85,8 +85,6 @@ The existence of the database determines if the plugin will be active or not.
                                 function(doc){ doc.fields['module-type'] && emit(doc.fields['module-type']) })
                     } ;
 
-        /* --- TiddlyPouch namespace creation and basic initialization---*/
-        $tw.TiddlyPouch.utils = {};
         $tw.TiddlyPouch.designDocument = buildDesignDocument();
 
         /* Here is where startup stuff really starts */
