@@ -86,6 +86,7 @@ var uglify = require("gulp-uglify")
 var jsdoc = require('gulp-jsdoc3');
 var esprima = require('gulp-esprima');
 var debug = require('gulp-debug');
+var tag_version = require('gulp-tag-version');
 
 /**** Preprocessing ************************************************/
 
@@ -163,6 +164,16 @@ gulp.task("patch", function(cb) {
     pluginInfo.released = new Date().toUTCString();
     fs.writeFileSync(pluginInfoPath, JSON.stringify(pluginInfo, null, 4));
 
+    cb();
+});
+
+/**
+ * Labels with the current tag of the plugin
+ */
+gulp.task("tag", function(cb){
+    gulp.src(pluginInfoPath).pipe(
+            tag_version(pluginInfo)
+            );
     cb();
 });
 
