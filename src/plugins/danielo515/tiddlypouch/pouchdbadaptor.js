@@ -12,7 +12,7 @@ A sync adaptor module for synchronising with local PouchDB
 
 
 /*jslint node: false, browser: true */
-/*global $tw: false */
+/*global $tw: false, XMLHttpRequest: false */
 "use strict";
 
 
@@ -28,15 +28,15 @@ function PouchAdaptor(options) {
     //this.readConfig()
 }
 
-/*
-Copied from TiddlyWiki5 core/modules/utils/dom/http.js to add support for xhr.withCredentials
+/**
+* Copied from TiddlyWiki5 core/modules/utils/dom/http.js to add support for xhr.withCredentials
 */
 function httpRequest(options) {
     var type = options.type || "GET",
         headers = options.headers || { accept: "application/json" },
         request = new XMLHttpRequest(),
         data = "",
-        f, results;
+        results;
     // Massage the data hashmap into a string
     if (options.data) {
         if (typeof options.data === "string") { // Already a string
@@ -77,7 +77,7 @@ function httpRequest(options) {
     }
     request.send(data);
     return request;
-};
+}
 
 /**
 * CouchDB does not like document IDs starting with '_'.
@@ -122,7 +122,6 @@ PouchAdaptor.prototype.demangleTitle = function (title) {
 }
 
 PouchAdaptor.prototype.deleteTiddler = function (title, callback, options) {
-    var self = this;
     if (!options.tiddlerInfo || !options.tiddlerInfo.adaptorInfo || typeof options.tiddlerInfo.adaptorInfo._rev == "undefined") {
         /* not on server, just return OK */
         callback(null);
@@ -134,18 +133,24 @@ PouchAdaptor.prototype.deleteTiddler = function (title, callback, options) {
         );
 };
 
-/* The response should include the tiddler fields as an object in the value property*/
+/** The response should include the tiddler fields as an object in the value property*/
 PouchAdaptor.prototype.convertFromSkinnyTiddler = function (row) {
     row.value.title = this.demangleTitle(row.id); //inject the title because is not included in the fields
     return row.value;
 }
 
 
-/*
+/**
  * Copy all fields to "fields" sub-object except for the "revision" field.
  * See also: TiddlyWebAdaptor.prototype.convertTiddlerToTiddlyWebFormat.
+ * 
+ * @param {Tiddler} tiddler the tiddler to convert to CouchDB format
+ * @param {object} tiddlerInfo The metadata about the tiddler that the sync mechanism of tiddlywiki provides.
+ *                             This includes the revision and other metadata related to the tiddler that is not
+ *                              included in the tiddler.
+ * @returns {object} doc An document object that represents the tiddler. Ready to be inserted into CouchDB 
  */
-PouchAdaptor.prototype.convertToCouch = function (tiddler) {
+PouchAdaptor.prototype.convertToCouch = function (tiddler, tiddlerInfo) {
     var result = { fields: {} };
     if (tiddler) {
         $tw.utils.each(tiddler.fields, function (element, title, object) {
@@ -173,10 +178,14 @@ PouchAdaptor.prototype.convertToCouch = function (tiddler) {
     result.fields.type = result.fields.type || "text/vnd.tiddlywiki";
     result._id = this.mangleTitle(tiddler.fields.title);
     result._rev = tiddler.fields.revision; //Temporary workaround. Remove
+    if (tiddlerInfo.adaptorInfo && tiddlerInfo.adaptorInfo._rev) {
+        result._rev = tiddlerInfo.adaptorInfo._rev;
+    }
+    result._rev = validateRevision(result._rev);
     return result;
 }
 
-/* for this version just copy all fields across except _rev and _id */
+/** for this version just copy all fields across except _rev and _id */
 PouchAdaptor.prototype.convertFromCouch = require('$:/plugins/danielo515/tiddlypouch/utils').convertFromCouch;
 
 /**
@@ -248,6 +257,21 @@ PouchAdaptor.prototype._upsert = function (document) {
 
 };
 
+/**
+ * Validates the passed revision according to PouchDB revision format.
+ * If the revision passes the validation thes it is returned.
+ * If it does not, null is returned
+ * 
+ * @param {string} rev the revision to validate
+ * @returns {string|null} 
+ */
+function validateRevision(rev){
+    if( /\d+-[A-z0-9]*/.test(rev)){
+        return rev
+    }
+    return null
+}
+
 
 /*****************************************************
  ****** Tiddlywiki required methods
@@ -306,21 +330,17 @@ PouchAdaptor.prototype.getSkinnyTiddlers = function (callback) {
             tiddlers[i] = self.convertFromSkinnyTiddler(tiddlers[i]);
         }
         callback(null, tiddlers);
-    }).catch(function (err) {
-        // some error
-    });
+    }).catch(callback);
 
 };
 
+/**
+ * 
+ */
 PouchAdaptor.prototype.saveTiddler = function (tiddler, callback, options) {
     var self = this;
-    var convertedTiddler = this.convertToCouch(tiddler);
-    var tiddlerInfo = options.tiddlerInfo;
-    if (tiddlerInfo.adaptorInfo && tiddlerInfo.adaptorInfo._rev) {
-        delete convertedTiddler._rev;
-        convertedTiddler._rev = tiddlerInfo.adaptorInfo._rev;
-    }
-    $tw.TiddlyPouch.config.debug.isActive() && this.logger.log(tiddlerInfo);
+    var convertedTiddler = this.convertToCouch(tiddler,options.tiddlerInfo);
+    $tw.TiddlyPouch.config.debug.isActive() && this.logger.log(options.tiddlerInfo);
     this.logger.log("Saving ", convertedTiddler);
     self._upsert(convertedTiddler)
         .then(function (saveInfo) {

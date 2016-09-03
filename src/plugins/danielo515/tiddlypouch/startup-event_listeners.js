@@ -82,7 +82,7 @@ The existence of the database determines if the plugin will be active or not.
         $tw.rootWidget.addEventListener("tp-sync-state", uiConnector.setSyncFlag);
         $tw.rootWidget.addEventListener("tm-TP-config-selectedDb", uiConnector.handlers.databaseHasBeenSelected);
         $tw.rootWidget.addEventListener("tm-TP-config-updateDebug", uiConnector.handlers.updateDebug);
-        $tw.rootWidget.addEventListener("tm-TP-config-updateSelectedDB", uiConnector.updateSelectedDBHandler);
+        $tw.rootWidget.addEventListener("tm-TP-config-updateSelectedDB", uiConnector.handlers.updateDbConfig);
 
     };
 

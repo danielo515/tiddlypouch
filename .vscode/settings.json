@@ -8,9 +8,17 @@
         "commands": [
             {
                 "match": "\\.js$",
-                "isAsync": true,
-                "cmd": "gulp bump_version"
+                "cmd": "gulp 'bump_version'"
             }
         ]
+    },
+    // Configuración de búsqueda
+
+    // Configure patrones globales para excluir archivos y carpetas de las búsquedas. Hereda todos los patrones globales de la configuración files.exclude.
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/bower_components": true,
+        ".history":true,
+        "docs":true
     }
 }

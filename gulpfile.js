@@ -142,14 +142,28 @@ gulp.task("bump_version", function(cb) {
     var mode = (argv.mode && argv.mode !== "master" ? "-" + argv.mode : "");
     argv.major && v.major++ && (v.minor = 0);
     argv.minor && v.minor++ && (v.patch = 0);
-    argv.patch && v.patch++;
+    (argv.patch || argv.production) && v.patch++;
     pluginInfo.version = v.major + "." + v.minor + "." + v.patch + mode + build;
     pluginInfo.released = new Date().toUTCString();
 
     fs.writeFileSync(pluginInfoPath, JSON.stringify(pluginInfo, null, 4));
 
     cb();
+});
 
+/**
+ * Override the version of the plugin specified in the plugin.info
+ *.
+ */
+gulp.task("patch", function(cb) {
+
+    var v = new SemVer(pluginInfo.version);
+    v.patch++;
+    pluginInfo.version = v.major + "." + v.minor + "." + v.patch;
+    pluginInfo.released = new Date().toUTCString();
+    fs.writeFileSync(pluginInfoPath, JSON.stringify(pluginInfo, null, 4));
+
+    cb();
 });
 
 /**

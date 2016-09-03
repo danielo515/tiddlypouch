@@ -1,3 +1,7 @@
+# 0.14.2
+- Implemented class for single individual databases configuration.
+# 0.14.1
+- Revisions are validated before saving 
 # 0.14
 - First version of module loader
 # 0.13

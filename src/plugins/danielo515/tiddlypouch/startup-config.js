@@ -38,6 +38,7 @@ exports.startup = function(callback){
     var Logger = new LOGGER("TiddlyPouch:config");
     var PouchDB = require("$:/plugins/danielo515/tiddlypouch/lib/pouchdb.js");
     var Ui = require("$:/plugins/danielo515/tiddlypouch/ui/config.js");
+    var SingleConfig = require("$:/plugins/danielo515/tiddlypouch/config/single-db-config");
     var _config; // debug { active, verbose }, selectedDbId, databases
     var _configDB; // where the _config is persisted to 
     var currentDB; // name, remote { url, user } Only configs!, not the actual db
@@ -149,34 +150,17 @@ exports.startup = function(callback){
     }
 
     /*==== PUBLIC METHODS === */
-    function getRemoteUrl(){
-        var url = currentDB.remote && currentDB.remote.url;
-        return url;
-    }
-    function getUrl(section){
-       var URL = getRemoteUrl();
-       if(!URL) return null;
-       URL = URL.substr(-1) === '/' ? URL : URL + '/'; //Make sure it ends with slash
-       if(section){
-         URL += section;
-       }
-       return URL;
-       };
-       
-    function getRemoteName(){
-        var name = currentDB.remote && currentDB.remote.name;
-        return name || 'my_database';
-    }
     /**
      * Updates the remote config of the current database.
      * This is the only method that is allowed to modify the running config
      * changes WILL NOT be persisted
      * 
      * @param {Object} newConfig Options that extends the current configuration
-     */
+     
     function updateRemoteConfig(newConfig){
         currentDB.remote = $tw.utils.extend({}, currentDB.remote, newConfig); 
     }
+    */
 
     /**
      * Fetches the names of the databases which configuratons are saved
@@ -230,7 +214,7 @@ exports.startup = function(callback){
             }
         ).then(
             function(){
-                currentDB = _getDatabaseConfig(_config.selectedDbId);
+                currentDB = new SingleConfig(_getDatabaseConfig(_config.selectedDbId));
                 return _updateConfig(); //Persisted at the end of the chain because some functions may update with default values
             }
         );
@@ -254,13 +238,7 @@ exports.startup = function(callback){
                         isActive: isDebugActive,
                         isVerbose: isDebugVerbose
                     },
-                    currentDB: {
-                        getUrl: getUrl,
-                        getRemoteName: getRemoteName,
-                        updateRemote: updateRemoteConfig,
-                        name: currentDB.name,
-                        remote: currentDB.remote
-                    }
+                    currentDB: currentDB
             } };
             Ui.refreshUI(_config);
             Logger.log('Configuration startup finished',_config);
