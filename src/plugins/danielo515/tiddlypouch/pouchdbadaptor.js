@@ -172,6 +172,12 @@ A sync adaptor module for synchronising with local PouchDB
     /* for this version just copy all fields across except _rev and _id */
     PouchAdaptor.prototype.convertFromCouch = require('$:/plugins/danielo515/tiddlypouch/utils').convertFromCouch;
 
+    /**
+     * returns the revisions of a given tiddler.
+     * Only available revisions are returned
+     * @param {string} title The tiddler's title you want the revisions
+     * @return {promise} promise that fulfills to an array of revisions
+     */
     PouchAdaptor.prototype.getRevisions = function (title) {
         var db = $tw.TiddlyPouch.database;
         return db.get(title, { revs_info: true })
