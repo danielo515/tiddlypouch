@@ -34,7 +34,7 @@ var CONFIG_TIDDLER = CONFIG_PREFIX + "config_database";
  * @module config-startup
  */
 exports.startup = function(callback){
-    var LOGGER = require('$:/core/modules/utils/logger.js').Logger;
+    var LOGGER = require('$:/plugins/danielo515/tiddlypouch/utils/logger.js', true ).Logger;
     var Logger = new LOGGER("TiddlyPouch:config");
     var PouchDB = require("$:/plugins/danielo515/tiddlypouch/lib/pouchdb.js");
     var Ui = require("$:/plugins/danielo515/tiddlypouch/ui/config.js");
@@ -202,13 +202,13 @@ exports.startup = function(callback){
         Logger.log('Initializing config module');
         return _readConfigFromDB() // be aware of not breaking the promise chain!
         .then(function(config){ // All ok reading from DB.
-            Logger.log("Config read from DB - OK");
+            Logger.debug("Config read from DB - OK");
             _config = config;
             _writeConfigTiddler(); // Save current config to tiddler version 
         })
         .catch( // Error reading from db, fallback to tiddler configuration 
             function(error){
-                Logger.log("FallingBack to tiddler configuration");
+                Logger.debug("FallingBack to tiddler configuration");
                 _config = _readConfigTiddler();
                 return _config; // return something to continue the chain!
             }

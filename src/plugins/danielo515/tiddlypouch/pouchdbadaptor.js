@@ -23,7 +23,8 @@ A sync adaptor module for synchronising with local PouchDB
  */
 function PouchAdaptor(options) {
     this.wiki = options.wiki;
-    this.logger = new $tw.TiddlyPouch.Logger("PouchAdaptor");
+    var Debug = $tw.TiddlyPouch.config.debug;
+    this.logger = new $tw.TiddlyPouch.Logger("PouchAdaptor", Debug.isActive(), Debug.isVerbose() );
     this.sessionUrl = $tw.TiddlyPouch.config.currentDB.getUrl("_session"); // save the URL on startup
     //this.readConfig()
 }
@@ -206,7 +207,7 @@ PouchAdaptor.prototype.getRevisions = function (title) {
 
 PouchAdaptor.prototype.loadRevision = function (title, revision) {
     var self = this;
-    self.logger.log('Fetching revision ', revision, ' of tiddler ', title, ' from database');
+    self.logger.debug('Fetching revision ', revision, ' of tiddler ', title, ' from database');
     return $tw.TiddlyPouch.database.get(self.mangleTitle(title), { rev: revision })
         .then(self.convertFromCouch)
 };
@@ -232,15 +233,15 @@ PouchAdaptor.prototype._upsert = function (document) {
         .catch(function (err) {
             if (err) {
                 if (err.name === 'conflict') { // check if it is a real conflict
-                    self.logger.log('O my gosh, update conflict!')
+                    self.logger.debug('O my gosh, update conflict!')
                     return db.get(document._id)
                         .then(function (document) { //oops, we got a document, this was an actual conflict
-                            self.logger.log("It was a real conflict!", document);
+                            self.logger.log("A real update conflict!", document);
                             throw err; // propagate the error for the moment
                         })
                         .catch(function (err) {
                             if (err.name === 'not_found') { // not found means no actual conflict
-                                self.logger.log("it was a fake conflict, trying again", document);
+                                self.logger.debug("Fake conflict, trying again", document);
                                 document._rev = null;
                                 return db.put(document);
                             }
@@ -329,7 +330,7 @@ PouchAdaptor.prototype.getSkinnyTiddlers = function (callback) {
     return $tw.TiddlyPouch.database.query("TiddlyPouch/skinny-tiddlers")
         .then(function (tiddlersList) {
             var tiddlers = tiddlersList.rows
-            self.logger.log("Skinnytiddlers: ", tiddlers);
+            self.logger.trace("Skinnytiddlers: ", tiddlers);
             for (var i = 0; i < tiddlers.length; i++) {
                 tiddlers[i] = self.convertFromSkinnyTiddler(tiddlers[i]);
             }
@@ -349,7 +350,7 @@ PouchAdaptor.prototype.saveTiddler = function (tiddler, callback, options) {
     var self = this;
     var convertedTiddler = this.convertToCouch(tiddler, options.tiddlerInfo);
     $tw.TiddlyPouch.config.debug.isActive() && this.logger.log(options.tiddlerInfo);
-    this.logger.log("Saving ", convertedTiddler);
+    this.logger.debug("Saving ", convertedTiddler);
     self._upsert(convertedTiddler)
         .then(function (saveInfo) {
             callback(null, { _rev: saveInfo.rev }, saveInfo.rev);
@@ -359,7 +360,7 @@ PouchAdaptor.prototype.saveTiddler = function (tiddler, callback, options) {
 
 PouchAdaptor.prototype.loadTiddler = function (title, callback) {
     var self = this;
-    self.logger.log('Retrieving tiddler ', title, ' from database');
+    self.logger.debug('Retrieving tiddler ', title, ' from database');
     $tw.TiddlyPouch.database.get(this.mangleTitle(title), function (error, doc) {
         if (error) {
             callback(error);

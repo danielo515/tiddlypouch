@@ -1,6 +1,10 @@
 # 0.14.3
 - Deletions are now synced
-- Less verbose output on conversion
+- Added a Logger module
+  - Allows to control the verbosity level
+    - Log: normal information
+    - Debug: Only if debug mode is active
+    - Trace: only if verbose mode is active
 # 0.14.2
 - Implemented class for single individual databases configuration
 - DefaultTiddlers is loaded at startup along with StoryList

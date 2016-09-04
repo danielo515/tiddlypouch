@@ -45,7 +45,7 @@ function saveAsJsonTiddler(title, data, beautify) {
 /* for this version just copy all fields across except _rev and _id */
 function convertFromCouch(tiddlerFields) {
     var result = {};
-    this.logger && this.logger.log("Converting from ", tiddlerFields);
+    this.logger && this.logger.debug("Converting from ", tiddlerFields);
     // Transfer the fields, pulling down the `fields` hashmap
     $tw.utils.each(tiddlerFields, function (element, title, obj) {
         if (title === "fields") {
