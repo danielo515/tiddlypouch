@@ -4,7 +4,7 @@ description: {{$:/plugins/danielo515/tiddlypouch/language/revisions/Hint}}
 tags: $:/tags/ViewToolbar
 
 <$button popup=<<tiddlerInfoState>> tooltip={{$:/plugins/danielo515/tiddlypouch/language/revisions/Hint}} aria-label={{$:/plugins/danielo515/tiddlypouch/language/revisions/Caption}} class=<<tv-config-toolbar-class>>>
-<$action-setfield $tiddler="$:/config/TiddlerInfo/Default" text="$:/plugins/danielo515/tiddlypouch/ui/revisions"/>
+<$action-setfield $tiddler=<<tiddlerInfoTabState>> text="$:/plugins/danielo515/tiddlypouch/ui/revisions"/>
 <$action-sendmessage $message="tm-tp-load-revisions" $param=<<currentTiddler>>/>
 <$list filter="[<tv-config-toolbar-icons>prefix[yes]]">
 {{$:/plugins/danielo515/tiddlypouch/images/revisions}}

@@ -9,24 +9,24 @@
 - First version of module loader
 # 0.13
 - Better ui for revision handling
- - See revisions as tabs of the current tiddler
- - Open several previous revisions to check them all
- - Revisions names are shorted for readability
+  - See revisions as tabs of the current tiddler
+  - Open several previous revisions to check them all
+  - Revisions names are shorted for readability
  - pixel perfect revisions tabs
 # 0.12.1
 - Set the database name as subtitle
--- Click on it to open the control panel on the database selection tab
+  - Click on it to open the control panel on the database selection tab
 - Fixed navigate to tab to display plain text inside the link (avoid wikification)
 # 0.12
 - Basic revision handling
--- Get all revisions of a tiddler method
--- Get revision of a tiddler
--- Ui to show and reload revisions of a tiddler
+  - Get **all** revisions of a tiddler method
+  - Get revision of a tiddler
+  - Ui to show and reload revisions of a tiddler
 # 0.11.4
 - If a cookie exists, login the user automatically
 - Fixed several issues related to update conflicts:
--- Cloning a tiddler (was trying to create a new document with an existing revision)
--- Renaming a tiddler
+  - Cloning a tiddler (was trying to create a new document with an existing revision)
+  - Renaming a tiddler
 - Introduced upsert method (which allowed to solve above issues)
 # 0.11.3
 - More meaningful login message

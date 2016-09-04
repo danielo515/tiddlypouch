@@ -11,7 +11,7 @@ Saves all the tiddlers on the current database as JSON
 (function () {
 
     /*jslint node: true, browser: true */
-    /*global $tw: false */
+    /*global $tw: false, Promise */
     "use strict";
 
     var Utils = require('$:/plugins/danielo515/tiddlypouch/utils');
@@ -33,9 +33,16 @@ Saves all the tiddlers on the current database as JSON
         }
         var allTiddlers = [];
         var self = this;
-        $tw.TiddlyPouch.database.allDocs({ include_docs: true, end_key: "_design" }) /** get all documents except the design ones */
+        // There is no other way to get all the documents except the desig ones http://stackoverflow.com/a/25744823/1734815
+        Promise.all([ /** get all documents except the design ones */
+            $tw.TiddlyPouch.database.allDocs({include_docs: true, endkey: '_design'}),
+            $tw.TiddlyPouch.database.allDocs({include_docs: true, startkey: '_design\uffff'})
+            ])
+            .then(function(allDocuments){
+                return allDocuments[0].rows.concat(allDocuments[1].rows)
+            }) 
             .then(function (allDocuments) {
-                allDocuments.rows.forEach(function (row) {
+                allDocuments.forEach(function (row) {
                     allTiddlers.push(Utils.convertFromCouch(row.doc))
                 });
                 var toDownload = JSON.stringify(allTiddlers, null, $tw.config.preferences.jsonSpaces);
