@@ -127,10 +127,11 @@ PouchAdaptor.prototype.deleteTiddler = function (title, callback, options) {
         callback(null);
     }
     $tw.TiddlyPouch.database.get(title).then(function (doc) {
-        return $tw.TiddlyPouch.database.remove(doc);
-    }).then(function () { callback(null) }).catch(
-        function (err) { callback(err) }
-        );
+        doc._deleted = true;
+        return $tw.TiddlyPouch.database.put(doc);
+    })
+    .then(callback.bind(callback,null))
+    .catch(callback);
 };
 
 /** The response should include the tiddler fields as an object in the value property*/
@@ -164,15 +165,11 @@ PouchAdaptor.prototype.convertToCouch = function (tiddler, tiddlerInfo) {
                 result._attachments = element; //attachments should be stored out of fields object
                 return;
             }
-            // Convert fields to string except for tags, which
-            // must stay as an array.
-            // Fields that must be properly stringified include:
-            // modified, created (see boot/boot.js)
-            var fieldString = title === "tags" ?
-                tiddler.fields.tags :
-                tiddler.getFieldString(title);
-            result.fields[title] = fieldString;
+            // Convert fields to string
+            result.fields[title] = tiddler.getFieldString(title);
         });
+        // tags must stay as array, so fix it
+        result.fields.tags = tiddler.fields.tags;
     }
     // Default the content type
     result.fields.type = result.fields.type || "text/vnd.tiddlywiki";

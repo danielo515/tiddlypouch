@@ -1,3 +1,6 @@
+# 0.14.3
+- Deletions are now synced
+- Less verbose output on conversion
 # 0.14.2
 - Implemented class for single individual databases configuration
 - DefaultTiddlers is loaded at startup along with StoryList
