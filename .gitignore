@@ -1,2 +1,6 @@
 *config.multids
 output/
+node_modules
+.history
+.vscode
+docs
