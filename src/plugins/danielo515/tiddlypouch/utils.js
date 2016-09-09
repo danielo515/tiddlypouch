@@ -110,9 +110,9 @@ function plainToNestedObject(plain) {
 
 /**
  * Translates true/false to yes/no
- * 
- * @param {Boolean} value
- * @returns {String}
+ *
+ * @param {Boolean} value value to convert
+ * @returns {String} yes/no string
  */
 function boolToHuman(value) {
     return value ? "yes" : "no"

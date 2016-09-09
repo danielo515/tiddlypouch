@@ -1,6 +1,7 @@
 {
     "extends": "eslint:recommended",
-    "globals": { 
+    "rules": {"valid-jsdoc":["error"]},
+    "globals": {
         "require":"true",
         "exports":"true"
         }
