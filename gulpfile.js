@@ -86,6 +86,7 @@ var uglify = require("gulp-uglify")
 var jsdoc = require('gulp-jsdoc3');
 var esprima = require('gulp-esprima');
 var debug = require('gulp-debug');
+var tag_version = require('gulp-tag-version');
 
 /**** Preprocessing ************************************************/
 
@@ -142,14 +143,38 @@ gulp.task("bump_version", function(cb) {
     var mode = (argv.mode && argv.mode !== "master" ? "-" + argv.mode : "");
     argv.major && v.major++ && (v.minor = 0);
     argv.minor && v.minor++ && (v.patch = 0);
-    argv.patch && v.patch++;
+    (argv.patch || argv.production) && v.patch++;
     pluginInfo.version = v.major + "." + v.minor + "." + v.patch + mode + build;
     pluginInfo.released = new Date().toUTCString();
 
     fs.writeFileSync(pluginInfoPath, JSON.stringify(pluginInfo, null, 4));
 
     cb();
+});
 
+/**
+ * Override the version of the plugin specified in the plugin.info
+ *.
+ */
+gulp.task("patch", function(cb) {
+
+    var v = new SemVer(pluginInfo.version);
+    v.patch++;
+    pluginInfo.version = v.major + "." + v.minor + "." + v.patch;
+    pluginInfo.released = new Date().toUTCString();
+    fs.writeFileSync(pluginInfoPath, JSON.stringify(pluginInfo, null, 4));
+
+    cb();
+});
+
+/**
+ * Labels with the current tag of the plugin
+ */
+gulp.task("tag", function(cb){
+    gulp.src(pluginInfoPath).pipe(
+            tag_version(pluginInfo)
+            );
+    cb();
 });
 
 /**
@@ -223,7 +248,7 @@ gulp.task("Javascript validation", function() {
  */
 gulp.task("create docs", function(cb) {
 
-  if(!argv.production) { cb(); return; }
+  // if(!argv.production) { cb(); return; }
 
   // use require to load the jsdoc config;
   // note the extension is discarted when loading json with require!

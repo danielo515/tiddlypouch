@@ -3,6 +3,9 @@ title: $:/plugins/danielo515/tiddlypouch/startup/pouchdb-sycer.js
 type: application/javascript
 module-type: startup
 
+
+@preserve
+
 \*/
 
 (function() {
@@ -24,7 +27,7 @@ module-type: startup
     exports.startup = function(callback) {
         /* --- Declaration ZONE ---*/
         /*============================*/
-        var logger = new $tw.utils.Logger("PouchSync");
+        var logger = new $tw.TiddlyPouch.Logger("PouchSync");
 
         function PouchLog(log, info, header) {
             if ($tw.TiddlyPouch.config.debug.isActive()) {

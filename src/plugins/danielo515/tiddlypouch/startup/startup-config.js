@@ -8,6 +8,9 @@ Creates and reads the config database.
 Provides an interface to the configurations (get, set, update)
 Configuration should be inmutable and require a reboot to become active
 Only remote configuration (username, remote_name, url) may be changed in the running session.
+
+@preserve
+
 \*/
 
 (function(){
@@ -26,11 +29,16 @@ var CONFIG_PREFIX = "$:/plugins/danielo515/tiddlypouch/config/";
 var CONFIG_DATABASE = "__TP_config";
 var CONFIG_TIDDLER = CONFIG_PREFIX + "config_database";
 
-exports.startup = function(callback){
 
-    var Logger = new $tw.utils.Logger("TiddlyPouch:config");
+/**
+ * @module config-startup
+ */
+exports.startup = function(callback){
+    var LOGGER = require('$:/plugins/danielo515/tiddlypouch/utils/logger.js', true ).Logger;
+    var Logger = new LOGGER("TiddlyPouch:config");
     var PouchDB = require("$:/plugins/danielo515/tiddlypouch/lib/pouchdb.js");
     var Ui = require("$:/plugins/danielo515/tiddlypouch/ui/config.js");
+    var SingleConfig = require("$:/plugins/danielo515/tiddlypouch/config/single-db-config");
     var _config; // debug { active, verbose }, selectedDbId, databases
     var _configDB; // where the _config is persisted to 
     var currentDB; // name, remote { url, user } Only configs!, not the actual db
@@ -43,7 +51,14 @@ exports.startup = function(callback){
             selectedDbId: 'MyNotebook',
             databases: {},
         };
-        return $tw.wiki.getTiddlerData(CONFIG_TIDDLER,configDefault);
+        var config;
+        try {
+            config = JSON.parse($tw.wiki.getTiddler(CONFIG_TIDDLER).text);
+        } catch (error) {
+            console.log('No tiddler config, using default');
+            config = configDefault;
+        }
+        return config;
     }
 
     function _writeConfigTiddler(newConfig){
@@ -142,34 +157,17 @@ exports.startup = function(callback){
     }
 
     /*==== PUBLIC METHODS === */
-    function getRemoteUrl(){
-        var url = currentDB.remote && currentDB.remote.url;
-        return url;
-    }
-    function getUrl(section){
-       var URL = getRemoteUrl();
-       if(!URL) return null;
-       URL = URL.substr(-1) === '/' ? URL : URL + '/'; //Make sure it ends with slash
-       if(section){
-         URL += section;
-       }
-       return URL;
-       };
-       
-    function getRemoteName(){
-        var name = currentDB.remote && currentDB.remote.name;
-        return name || 'my_database';
-    }
     /**
      * Updates the remote config of the current database.
      * This is the only method that is allowed to modify the running config
      * changes WILL NOT be persisted
      * 
      * @param {Object} newConfig Options that extends the current configuration
-     */
+     
     function updateRemoteConfig(newConfig){
         currentDB.remote = $tw.utils.extend({}, currentDB.remote, newConfig); 
     }
+    */
 
     /**
      * Fetches the names of the databases which configuratons are saved
@@ -211,19 +209,19 @@ exports.startup = function(callback){
         Logger.log('Initializing config module');
         return _readConfigFromDB() // be aware of not breaking the promise chain!
         .then(function(config){ // All ok reading from DB.
-            Logger.log("Config read from DB - OK");
+            Logger.debug("Config read from DB - OK");
             _config = config;
             _writeConfigTiddler(); // Save current config to tiddler version 
         })
         .catch( // Error reading from db, fallback to tiddler configuration 
             function(error){
-                Logger.log("FallingBack to tiddler configuration");
+                Logger.debug("FallingBack to tiddler configuration");
                 _config = _readConfigTiddler();
                 return _config; // return something to continue the chain!
             }
         ).then(
             function(){
-                currentDB = _getDatabaseConfig(_config.selectedDbId);
+                currentDB = new SingleConfig(_getDatabaseConfig(_config.selectedDbId));
                 return _updateConfig(); //Persisted at the end of the chain because some functions may update with default values
             }
         );
@@ -234,6 +232,7 @@ exports.startup = function(callback){
             /*==== PUBLIC API === */
             /* --- TiddlyPouch namespace creation and basic initialization---*/
             $tw.TiddlyPouch = {
+                Logger: LOGGER,
                 config: {
                     getAllDBNames: getAllDBNames,
                     readConfigTiddler: _readConfigTiddler,
@@ -246,13 +245,7 @@ exports.startup = function(callback){
                         isActive: isDebugActive,
                         isVerbose: isDebugVerbose
                     },
-                    currentDB: {
-                        getUrl: getUrl,
-                        getRemoteName: getRemoteName,
-                        updateRemote: updateRemoteConfig,
-                        name: currentDB.name,
-                        remote: currentDB.remote
-                    }
+                    currentDB: currentDB
             } };
             Ui.refreshUI(_config);
             Logger.log('Configuration startup finished',_config);

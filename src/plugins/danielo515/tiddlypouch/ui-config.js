@@ -4,7 +4,12 @@ title: $:/plugins/danielo515/tiddlypouch/ui/config.js
 module-type: library
 
 Links the user interface with the configuration methods 
+
+@preserve
+
 \*/
+
+/** @module */
 
 (function(){
 
@@ -19,7 +24,7 @@ var DATABASE_NAMES = "$:/plugins/danielo515/tiddlypouch/config/database_names";
 var SELECTED_DATABASE = "$:/plugins/danielo515/tiddlypouch/config/selected_database";
 var SYNC_ICON = "$:/plugins/danielo515/tiddlypouch/ui/sync-flag";
 
-var Utils = require('/plugins/danielo515/tiddlypouch/utils');
+var Utils = require('$:/plugins/danielo515/tiddlypouch/utils');
 
 exports.refreshUI = function refreshUI(config) {
     updateDebugUI(config);
@@ -91,7 +96,13 @@ function updateDebugUI(config){
     $tw.wiki.addTiddler(new $tw.Tiddler({title: DEBUG_VERBOSE, text: Utils.boolToHuman(config.debug.verbose)}));
 }
 
-exports.updateSelectedDBHandler = function(event){
+/**
+ * Updates the databases section of the stored configuration 
+ * with new values for one database from the user interface.
+ * Note that the configuration being updated may not be the configuratin of the currentDB,
+ * the user can select a DB different from the curent one and save that config.
+ */
+exports.handlers.updateDbConfig = function(event){
     var savedConfig = $tw.TiddlyPouch.config.readConfigTiddler();
     var uiConfig = $tw.wiki.getTiddlerData(SELECTED_DATABASE);
 

@@ -6,6 +6,9 @@ module-type: startup
 This module creates the basic structure needed for the plugin.
 This included the TiddlyPouch Object namespace and the local database
 The existence of the database determines if the plugin will be active or not.
+
+@preserve
+
 \*/
 
 (function () {
@@ -21,9 +24,9 @@ The existence of the database determines if the plugin will be active or not.
     exports.synchronous = true;
 
     exports.startup = function () {
-        var logger = new $tw.utils.Logger("TiddlyPouch");
+        var logger = new $tw.TiddlyPouch.Logger("TiddlyPouch");
         var uiConnector = require("$:/plugins/danielo515/tiddlypouch/ui/config.js");
-        var Utils = require('/plugins/danielo515/tiddlypouch/utils');
+        var Utils = require('$:/plugins/danielo515/tiddlypouch/utils');
 
         /*****************************************************************************
         ########################### EVENT LISTENERS ##################################*/
@@ -79,7 +82,7 @@ The existence of the database determines if the plugin will be active or not.
         $tw.rootWidget.addEventListener("tp-sync-state", uiConnector.setSyncFlag);
         $tw.rootWidget.addEventListener("tm-TP-config-selectedDb", uiConnector.handlers.databaseHasBeenSelected);
         $tw.rootWidget.addEventListener("tm-TP-config-updateDebug", uiConnector.handlers.updateDebug);
-        $tw.rootWidget.addEventListener("tm-TP-config-updateSelectedDB", uiConnector.updateSelectedDBHandler);
+        $tw.rootWidget.addEventListener("tm-TP-config-updateSelectedDB", uiConnector.handlers.updateDbConfig);
 
     };
 
