@@ -53,7 +53,7 @@ exports.startup = function(callback){
         };
         var config;
         try {
-            config = JSON.parse($tw.wiki.getTiddler(CONFIG_TIDDLER).text);
+            config = JSON.parse($tw.wiki.getTiddler(CONFIG_TIDDLER).fields.text);
         } catch (error) {
             console.log('No tiddler config, using default');
             config = configDefault;
