@@ -51,7 +51,14 @@ exports.startup = function(callback){
             selectedDbId: 'MyNotebook',
             databases: {},
         };
-        return $tw.wiki.getTiddlerData(CONFIG_TIDDLER,configDefault);
+        var config;
+        try {
+            config = JSON.parse($tw.wiki.getTiddler(CONFIG_TIDDLER).text);
+        } catch (error) {
+            console.log('No tiddler config, using default');
+            config = configDefault;
+        }
+        return config;
     }
 
     function _writeConfigTiddler(newConfig){
