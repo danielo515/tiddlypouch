@@ -236,12 +236,31 @@ DbStore.prototype._validateRevision = function validateRevision(rev) {
 
 /**============================ TIDDLER STORE METHODS ======== */
 
+/**
+ * Adds a tiddler to the database.
+ * It handles all the required conversions for making it compatible with CouchDB or PouchDB
+ * 
+ * @param {object} tiddler A tiddler fields object. Not a regular tiddler.
+ * @param {object} options Metadata about this tiddler. Usually provided by the syncer
+ * @return {promise} fulfills when the tiddler is saved failed to save.
+ */
 DbStore.prototype.addTiddler = function (tiddler, options) {
     var self = this;
     var convertedTiddler = this._convertToCouch(tiddler, options.tiddlerInfo);
     this.logger.debug("Saving ", convertedTiddler);
     return self._upsert(convertedTiddler);
 };
+
+DbStore.prototype.deleteTiddler = function (title) {
+    var self = this;
+    var docID = self._mangleTitle(title);
+    return self._db.get(docID)
+        .then(function (doc) {
+            doc._deleted = true;
+            return self._db.put(doc);
+        })
+        .catch(self.logger.log.bind(self.logger, 'Something went wrong deleting ' + title))
+}
 
 DbStore.prototype.getTiddler = function (title, revision) {
     var self = this;
@@ -251,11 +270,11 @@ DbStore.prototype.getTiddler = function (title, revision) {
      * we create an array that dinamycally adds the extra options only if they are required.
      * This way, we can call the get function without passing any undefined value
      */
-    if(self._validateRevision(revision)){ 
-        query.push({ rev: revision }); 
+    if (self._validateRevision(revision)) {
+        query.push({ rev: revision });
     }
     self.logger.debug('Retrieving tiddler ', title, ' from database');
-    return self._db.get.apply(self._db,query)
+    return self._db.get.apply(self._db, query)
         .then(self._convertFromCouch.bind(self))
         .catch(function (err) {
             self.logger.log('Error getting tiddler ' + title + ' from DB', err);

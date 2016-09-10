@@ -83,6 +83,7 @@ function httpRequest(options) {
 /**
 Reverse what mangleTitle does. Used to obtain title from _id (in convertFromSkinnyTiddler).
 */
+//TODO Move to DbStore class
 PouchAdaptor.prototype.demangleTitle = function (title) {
     if (title.length < 3) {
         return title;
@@ -105,10 +106,7 @@ PouchAdaptor.prototype.deleteTiddler = function (title, callback, options) {
         /* not on server, just return OK */
         callback(null);
     }
-    $tw.TiddlyPouch.database.get(title).then(function (doc) {
-        doc._deleted = true;
-        return $tw.TiddlyPouch.database.put(doc);
-    })
+    $tw.TiddlyPouch.database.deleteTiddler(title)
     .then(callback.bind(callback,null))
     .catch(callback);
 };
@@ -283,4 +281,3 @@ if ($tw.browser && $tw.TiddlyPouch.database) {
     /*Only works if we are on browser and there is a database*/
     exports.adaptorClass = PouchAdaptor;
 }
-
