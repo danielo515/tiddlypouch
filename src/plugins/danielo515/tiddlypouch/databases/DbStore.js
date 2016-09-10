@@ -12,8 +12,11 @@ Manages insertions, extractions, deletions of tiddlers to a database.
 'use strict';
 /* global PouchDB */
 /*jslint node: true, browser: true */
-/* global $tw */
+/* global $tw, module */
 
+/**====================== EXPORTS  ========================== */
+
+module.exports = DbStore;
 
 /**
  * @classdesc Handles the operations related to fetching and saving tiddlers to a database.
@@ -24,11 +27,56 @@ Manages insertions, extractions, deletions of tiddlers to a database.
  * @param {String} dbName The name should match the PouchDB name
  * @param {PouchDB} [db] An already existing PouchDB database object to wrap .
  */
-function DbStore(dbName/**String */,db /**PouchDB db Optional */) {
+function DbStore(dbName/**String */, db /**PouchDB db Optional */) {
     this.name = dbName;
     this._db = db instanceof PouchDB ? db : new PouchDB(dbName);
+    this.logger = new $tw.TiddlyPouch.Logger("DbStore:" + dbName);
 }
 
+
+/**====================== PURE DB METHODS ========================== */
+
+/**
+ * Creates generic conflict-handler functions.
+ * The returned function logs a default message to the console in case of conflict,
+ * otherwise it throws the error so the next catch on the promise chain can handle it 
+ * 
+ * @param {any} message the message the returned handler will log to the console in case of conflict
+ * @returns {function} handler a function ready to be used inside a catch statement in a promise chain
+ * @static
+ */
+DbStore.prototype._Conflict = function conflict(message) {
+    var self = this;
+    return function (err) {
+        if (err.status == 409) {
+            return self.logger.log(message);
+        }
+        throw err;
+    }
+}
+
+// Source: https://pouchdb.com/2014/05/01/secondary-indexes-have-landed-in-pouchdb.html
+/**
+ * Creates an index with the given name. In CouchDB this means a design document 
+ * with a map function that emits the key to be indexed
+ * @example createIndex('by_type' , function(doc){ emit(doc.fields.type) })
+ * @public 
+ * @param {String} name The name of the index, ej: by_type
+ * @param {function} mapFunction A couch map function that will be used to build the index
+ * @return {promise} A promise that fulfills when the design document is inserted
+ */
+DbStore.prototype.createIndex = function createDesignDoc(name, mapFunction) {
+    var ddoc = {
+        _id: '_design/' + name,
+        views: {
+        }
+    };
+    ddoc.views[name] = { map: mapFunction.toString() };
+    this.logger.debug('Creating index' + name + '...')
+    return this._db.put(ddoc)
+        .then(this.logger.debug.bind(this.logger, 'Index ' + name + ' created'))
+        .catch(this._Conflict('Index ' + name + ' exists already'));
+}
 
 /**
  * Updates a document on the database if it exists.
@@ -72,6 +120,8 @@ DbStore.prototype._upsert = function (document) {
 
 };
 
+
+/**===================== CONVERSIONS BETWEEN TW AND PouchDB ============= */
 /**
 * CouchDB does not like document IDs starting with '_'.
 * Convert leading '_' to '%5f' and leading '%' to '%25'
@@ -94,7 +144,7 @@ DbStore.prototype._mangleTitle = function mangleTitle(title) {
     else {
         return title;
     }
-}
+};
 
 /**
  * Copy all fields to "fields" sub-object except for the "revision" field.
@@ -130,14 +180,42 @@ DbStore.prototype._convertToCouch = function convertToCouch(tiddler, tiddlerInfo
     }
     // Default the content type
     result.fields.type = result.fields.type || "text/vnd.tiddlywiki";
-    result._id = this.mangleTitle(tiddler.fields.title);
+    result._id = this._mangleTitle(tiddler.fields.title);
     result._rev = tiddler.fields.revision; //Temporary workaround. Remove
     if (tiddlerInfo.adaptorInfo && tiddlerInfo.adaptorInfo._rev) {
         result._rev = tiddlerInfo.adaptorInfo._rev;
     }
     result._rev = this._validateRevision(result._rev);
     return result;
-}
+};
+
+/**
+ * Transforms a pouchd document extracting just the fields that should be 
+ * part of the tiddler discarding all the metadata related to PouchDB.
+ * For this version just copy all fields across except _rev and _id
+ * @static 
+ * @param {object} document - The fields 
+ * @returns {object} fields ready for being added to a wiki store
+ */
+DbStore.prototype._convertFromCouch = function convertFromCouch(doc) {
+    var result = {};
+    this.logger && this.logger.debug("Converting from ", doc);
+    // Transfer the fields, pulling down the `fields` hashmap
+    $tw.utils.each(doc, function (element, field, obj) {
+        if (field === "fields") {
+            $tw.utils.each(element, function (element, subTitle, obj) {
+                result[subTitle] = element;
+            });
+        } else if (field === "_id" || field === "_rev") {
+            /* skip these */
+        } else {
+            result[field] = doc[field];
+        }
+    });
+    result["revision"] = doc["_rev"];
+    //console.log("Conversion result ", result);
+    return result;
+};
 
 /**
  * Validates the passed revision according to PouchDB revision format.
@@ -154,4 +232,33 @@ DbStore.prototype._validateRevision = function validateRevision(rev) {
         return rev
     }
     return null
-}
+};
+
+/**============================ TIDDLER STORE METHODS ======== */
+
+DbStore.prototype.addTiddler = function (tiddler, options) {
+    var self = this;
+    var convertedTiddler = this._convertToCouch(tiddler, options.tiddlerInfo);
+    this.logger.debug("Saving ", convertedTiddler);
+    return self._upsert(convertedTiddler);
+};
+
+DbStore.prototype.getTiddler = function (title, revision) {
+    var self = this;
+    var query = [self._mangleTitle(title)]
+    /** Because PouchDB uses the arguments object we can not pass an undefined value as 
+     * second parameter, they try to use it. So to be able to make the query in just one call
+     * we create an array that dinamycally adds the extra options only if they are required.
+     * This way, we can call the get function without passing any undefined value
+     */
+    if(self._validateRevision(revision)){ 
+        query.push({ rev: revision }); 
+    }
+    self.logger.debug('Retrieving tiddler ', title, ' from database');
+    return self._db.get.apply(self._db,query)
+        .then(self._convertFromCouch.bind(self))
+        .catch(function (err) {
+            self.logger.log('Error getting tiddler ' + title + ' from DB', err);
+            throw err;
+        });
+};

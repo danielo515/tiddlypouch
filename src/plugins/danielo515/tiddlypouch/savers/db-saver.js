@@ -35,15 +35,15 @@ Saves all the tiddlers on the current database as JSON
         var self = this;
         // There is no other way to get all the documents except the desig ones http://stackoverflow.com/a/25744823/1734815
         Promise.all([ /** get all documents except the design ones */
-            $tw.TiddlyPouch.database.allDocs({include_docs: true, endkey: '_design'}),
-            $tw.TiddlyPouch.database.allDocs({include_docs: true, startkey: '_design\uffff'})
+            $tw.TiddlyPouch.database._db.allDocs({include_docs: true, endkey: '_design'}),
+            $tw.TiddlyPouch.database._db.allDocs({include_docs: true, startkey: '_design\uffff'})
             ])
             .then(function(allDocuments){
                 return allDocuments[0].rows.concat(allDocuments[1].rows)
             }) 
             .then(function (allDocuments) {
                 allDocuments.forEach(function (row) {
-                    allTiddlers.push(Utils.convertFromCouch(row.doc))
+                    allTiddlers.push($tw.TiddlyPouch.database._convertFromCouch(row.doc))
                 });
                 var toDownload = JSON.stringify(allTiddlers, null, $tw.config.preferences.jsonSpaces);
                 self.downloader.save(toDownload, method, callback, options)

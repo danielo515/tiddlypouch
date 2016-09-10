@@ -18,13 +18,13 @@ module-type: startup
     exports.name = "pouchdb-sycer";
     exports.after = ["pouchdb"];
     exports.platforms = ["browser"];
-    exports.synchronous = false;
+    exports.synchronous = true;
 
     var SYNC_STATE = "$:/state/tiddlypouch/sync/status";
     var SYNC_ERRORS = "$:/state/tiddlypouch/sync/Log"; // for now, log everything to the same place
     var SYNC_LOG = "$:/state/tiddlypouch/sync/Log";
 
-    exports.startup = function(callback) {
+    exports.startup = function() {
         /* --- Declaration ZONE ---*/
         /*============================*/
         var logger = new $tw.TiddlyPouch.Logger("PouchSync");
@@ -66,7 +66,7 @@ module-type: startup
                 }
             });
             function start(info) { //Function that actually starts the sync
-                var sync = $tw.TiddlyPouch.PouchDB.sync($tw.TiddlyPouch.database, remoteDB, {
+                var sync = PouchDB.sync($tw.TiddlyPouch.database._db, remoteDB, {
                     live: true,
                     retry: true,
                     filter: 'TiddlyPouch/tiddlers'
@@ -112,7 +112,7 @@ module-type: startup
             }
             $tw.rootWidget.dispatchEvent({ type: "tp-sync-state", param: "online" });
 
-            return $tw.TiddlyPouch.PouchDB(URL + Databasename, { auth: authOptions });
+            return new PouchDB(URL + Databasename, { auth: authOptions });
         }
 
         /** Sync methos implantation */

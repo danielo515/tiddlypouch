@@ -36,7 +36,6 @@ var CONFIG_TIDDLER = CONFIG_PREFIX + "config_database";
 exports.startup = function(callback){
     var LOGGER = require('$:/plugins/danielo515/tiddlypouch/utils/logger.js', true ).Logger;
     var Logger = new LOGGER("TiddlyPouch:config");
-    var PouchDB = require("$:/plugins/danielo515/tiddlypouch/lib/pouchdb.js");
     var Ui = require("$:/plugins/danielo515/tiddlypouch/ui/config.js");
     var SingleConfig = require("$:/plugins/danielo515/tiddlypouch/config/single-db-config");
     var _config; // debug { active, verbose }, selectedDbId, databases
@@ -233,6 +232,7 @@ exports.startup = function(callback){
             /* --- TiddlyPouch namespace creation and basic initialization---*/
             $tw.TiddlyPouch = {
                 Logger: LOGGER,
+                DbStore: require('$:/plugins/danielo515/tiddlypouch/DbStore.js'),
                 config: {
                     getAllDBNames: getAllDBNames,
                     readConfigTiddler: _readConfigTiddler,
