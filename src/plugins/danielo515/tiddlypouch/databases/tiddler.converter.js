@@ -130,25 +130,7 @@ function tiddlerConverter(db) {
  * @return {promise} Skinnytiddlers a promise that fulfills to an array of skinny tiddlers
  */
     db.getSkinnyTiddlers = function () {
-        var self = this;
-        return self._db.query("skinny_tiddlers")
-            .then(function (result) {
-                self.logger.trace("Skinny raw: ", result.rows);
-                return result.rows
-            })
-            .then(function (rows) { 
-                /** query Api returns documents in a different format, we have to convert them to the format convertFromCouch expects */
-                return rows.map(function (doc) {
-                    return {
-                        _id: doc.id,
-                        fields: doc.value
-                    }
-                })
-            }).then(function (documents) {
-                return documents.map(self._convertFromCouch.bind(self));
-            })
-            .catch(self.logger.log.bind(self.logger));
-
+       return this.getTiddlers('skinny_tiddlers',null,false)
     };
 
     return db;

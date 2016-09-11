@@ -192,6 +192,44 @@ DbStore.prototype.getTiddler = function (title, revision) {
 };
 
 /**
+ * Queries an existing index (not controlled) for tiddlers.
+ *  
+ * @param {String} index          - an existing database index that you want to use for the search 
+ * @param {String} [search_term]  -  it will be used as key search (the first value emited on the map function)
+ * @param {Boolean} [includeDocs] - Defaults to true. If the documents of the search result should be included or not.
+ *                                  There are some scenarios where you don't want the document to be included,
+ *                                  querying for skinny tiddlers for example
+ * @return {promise} fulfills to an array of already converted tiddlers 
+ */
+DbStore.prototype.getTiddlers = function( index, search_term, includeDocs ){
+     var self = this;
+     var queryOptions = { include_docs: (undefined === includeDocs ) ? true : includeDocs };
+
+     if( search_term ){
+         queryOptions.key = search_term;
+     }
+
+        return self._db.query(index, queryOptions)
+            .then(function (result) {
+                self.logger.trace("Query to ",index," searching for ", search_term," : ", result.rows);
+                return result.rows
+            })
+            .then(function (rows) { 
+                /** query Api returns documents in a different format, we have to convert them to the format convertFromCouch expects */
+                return rows.map(function (doc) {
+                    return doc.doc ? doc.doc : { // if doc is included just retur it or try to make a conversion otherwhise
+                        // the key is missed! maybe provide a conversion function as parameter?
+                        _id: doc.id,
+                        fields: doc.value
+                    }
+                })
+            }).then(function (documents) {
+                return documents.map(self._convertFromCouch.bind(self));
+            })
+            .catch(self.logger.log.bind(self.logger));
+};
+
+/**
  * returns the revisions of a given tiddler.
  * Only available revisions are returned
  * @param {string} title The tiddler's title you want the revisions
