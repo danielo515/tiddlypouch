@@ -232,7 +232,7 @@ exports.startup = function(callback){
             /* --- TiddlyPouch namespace creation and basic initialization---*/
             $tw.TiddlyPouch = {
                 Logger: LOGGER,
-                DbStore: require('$:/plugins/danielo515/tiddlypouch/DbStore.js'),
+                DbStore: require('$:/plugins/danielo515/tiddlypouch/dbstore/factory'),
                 config: {
                     getAllDBNames: getAllDBNames,
                     readConfigTiddler: _readConfigTiddler,

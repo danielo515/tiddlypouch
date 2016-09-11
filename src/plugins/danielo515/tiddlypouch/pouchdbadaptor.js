@@ -118,25 +118,6 @@ PouchAdaptor.prototype.convertFromSkinnyTiddler = function (row) {
 }
 
 
-/**
- * returns the revisions of a given tiddler.
- * Only available revisions are returned
- * @param {string} title The tiddler's title you want the revisions
- * @return {promise} promise that fulfills to an array of revisions
- */
-PouchAdaptor.prototype.getRevisions = function (title) {
-    var db = $tw.TiddlyPouch.database;
-    return db.get(title, { revs_info: true })
-        .then(function (document) {
-            var revisions = document._revs_info.filter(onlyAvailable).map(getRevisionId);
-            return revisions;
-        });
-
-    function onlyAvailable(rev) { return rev.status === "available"; }
-    function getRevisionId(rev) { return rev.rev; }
-}
-
-
 /*****************************************************
  ****** Tiddlywiki required methods
  *****************************************************/
@@ -210,7 +191,11 @@ PouchAdaptor.prototype.getSkinnyTiddlers = function (callback) {
 };
 
 /**
- * 
+ * Saves a tiddler to the current db store
+ * @param  {Tiddler} tiddler - tiddlers to be converted 
+ * @param  {function} callback - the callback that should be called when the operation completes
+ * @param  {object} options - the options that the syncer provides, fo rexample tiddlerInfo metadata
+ * @return {undefined} this does not returns anything
  */
 PouchAdaptor.prototype.saveTiddler = function (tiddler, callback, options) {
     this.logger.trace("Tiddler info ",options.tiddlerInfo);

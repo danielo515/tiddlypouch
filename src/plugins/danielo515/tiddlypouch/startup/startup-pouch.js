@@ -69,7 +69,7 @@ The existence of the database determines if the plugin will be active or not.
 
         /* Here is where startup stuff really starts */
 
-        $tw.TiddlyPouch.database = new $tw.TiddlyPouch.DbStore($tw.TiddlyPouch.config.currentDB.name);
+        $tw.TiddlyPouch.database = $tw.TiddlyPouch.DbStore($tw.TiddlyPouch.config.currentDB.name);
         logger.log("Client side pochdb started");
         if ($tw.TiddlyPouch.config.debug.isActive()) {
             $tw.TiddlyPouch.database._db.on('error', function (err) { logger.log(err); });

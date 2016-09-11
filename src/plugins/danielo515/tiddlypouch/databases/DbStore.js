@@ -22,6 +22,11 @@ module.exports = DbStore;
  * @classdesc Handles the operations related to fetching and saving tiddlers to a database.
  * it is the PouchDB equivalent to the wiki store.
  * 
+ * It expects some methods to be injected: _convertFromCouch, _convertToCouch, _mangleTitle
+ * such injection is responsibility of the factory that instantiates this objects.
+ * 
+ * @see DbStore.factory
+ * 
  * If the database does not exist it will be created
  * @class
  * @param {String} dbName The name should match the PouchDB name
@@ -121,102 +126,6 @@ DbStore.prototype._upsert = function (document) {
 };
 
 
-/**===================== CONVERSIONS BETWEEN TW AND PouchDB ============= */
-/**
-* CouchDB does not like document IDs starting with '_'.
-* Convert leading '_' to '%5f' and leading '%' to '%25'
-* Only used to compute _id / URL for a tiddler. Does not affect 'title' field.
-* @param {String} title The title of the tiddler to mangle
-* @return {String} The same title ready to be inserted into PouchDB/couchdb
-*/
-DbStore.prototype._mangleTitle = function mangleTitle(title) {
-    if (title.length == 0) {
-        return title;
-    }
-    var firstChar = title.charAt(0);
-    var restOfIt = title.substring(1);
-    if (firstChar === '_') {
-        return '%5f' + restOfIt;
-    }
-    else if (firstChar === '%') {
-        return '%25' + restOfIt;
-    }
-    else {
-        return title;
-    }
-};
-
-/**
- * Copy all fields to "fields" sub-object except for the "revision" field.
- * See also: TiddlyWebAdaptor.prototype.convertTiddlerToTiddlyWebFormat.
- * 
- * @param {Tiddler} tiddler - the tiddler to convert to CouchDB format
- * @param {object} tiddlerInfo - The metadata about the tiddler that the sync mechanism of tiddlywiki provides.
- *                               This includes the revision and other metadata related to the tiddler that is not
- *                               included in the tiddler.
- * @static 
- * @private 
- * @returns {object} doc - An document object that represents the tiddler. Ready to be inserted into CouchDB 
- */
-DbStore.prototype._convertToCouch = function convertToCouch(tiddler, tiddlerInfo) {
-    var result = { fields: {} };
-    if (tiddler) {
-        $tw.utils.each(tiddler.fields, function (element, title, object) {
-            if (title === "revision") {
-                /* do not store revision as a field */
-                return;
-            }
-            if (title === "_attachments" && !tiddler.isDraft()) {
-                //Since the draft and the original tiddler are not the same document
-                //the draft does not has the attachments
-                result._attachments = element; //attachments should be stored out of fields object
-                return;
-            }
-            // Convert fields to string
-            result.fields[title] = tiddler.getFieldString(title);
-        });
-        // tags must stay as array, so fix it
-        result.fields.tags = tiddler.fields.tags;
-    }
-    // Default the content type
-    result.fields.type = result.fields.type || "text/vnd.tiddlywiki";
-    result._id = this._mangleTitle(tiddler.fields.title);
-    result._rev = tiddler.fields.revision; //Temporary workaround. Remove
-    if (tiddlerInfo.adaptorInfo && tiddlerInfo.adaptorInfo._rev) {
-        result._rev = tiddlerInfo.adaptorInfo._rev;
-    }
-    result._rev = this._validateRevision(result._rev);
-    return result;
-};
-
-/**
- * Transforms a pouchd document extracting just the fields that should be 
- * part of the tiddler discarding all the metadata related to PouchDB.
- * For this version just copy all fields across except _rev and _id
- * @static 
- * @param {object} document - The fields 
- * @returns {object} fields ready for being added to a wiki store
- */
-DbStore.prototype._convertFromCouch = function convertFromCouch(doc) {
-    var result = {};
-    this.logger && this.logger.debug("Converting from ", doc);
-    // Transfer the fields, pulling down the `fields` hashmap
-    $tw.utils.each(doc, function (element, field, obj) {
-        if (field === "fields") {
-            $tw.utils.each(element, function (element, subTitle, obj) {
-                result[subTitle] = element;
-            });
-        } else if (field === "_id" || field === "_rev") {
-            /* skip these */
-        } else {
-            result[field] = doc[field];
-        }
-    });
-    result["revision"] = doc["_rev"];
-    //console.log("Conversion result ", result);
-    return result;
-};
-
 /**
  * Validates the passed revision according to PouchDB revision format.
  * If the revision passes the validation then it is returned.
@@ -281,3 +190,20 @@ DbStore.prototype.getTiddler = function (title, revision) {
             throw err;
         });
 };
+
+/**
+ * returns the revisions of a given tiddler.
+ * Only available revisions are returned
+ * @param {string} title The tiddler's title you want the revisions
+ * @return {promise} promise that fulfills to an array of revisions
+ */
+DbStore.prototype.getTiddlerRevisions = function (title) {
+    return this._db.get(this._mangleTitle(title), { revs_info: true })
+        .then(function (document) {
+            var revisions = document._revs_info.filter(onlyAvailable).map(getRevisionId);
+            return revisions;
+        });
+
+    function onlyAvailable(rev) { return rev.status === "available"; }
+    function getRevisionId(rev) { return rev.rev; }
+}
