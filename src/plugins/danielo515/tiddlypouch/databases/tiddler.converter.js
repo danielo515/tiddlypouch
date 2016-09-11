@@ -25,7 +25,7 @@ module.exports.inject = tiddlerConverter;
  * @param {DbStore} db a database instance where methods should be injected
  * @return {DbStore} The same db with the methods already injected
  */
- function tiddlerConverter( db ) {
+function tiddlerConverter(db) {
     /**===================== CONVERSIONS BETWEEN TW AND PouchDB ============= */
     /**
     * CouchDB does not like document IDs starting with '_'.
@@ -63,7 +63,7 @@ module.exports.inject = tiddlerConverter;
      * @private 
      * @returns {object} doc - An document object that represents the tiddler. Ready to be inserted into CouchDB 
      */
-   db._convertToCouch = function convertToCouch(tiddler, tiddlerInfo) {
+    db._convertToCouch = function convertToCouch(tiddler, tiddlerInfo) {
         var result = { fields: {} };
         if (tiddler) {
             $tw.utils.each(tiddler.fields, function (element, title, object) {
@@ -92,35 +92,64 @@ module.exports.inject = tiddlerConverter;
         }
         result._rev = this._validateRevision(result._rev);
         return result;
-    },
+    };
 
-    /**
-     * Transforms a pouchd document extracting just the fields that should be 
-     * part of the tiddler discarding all the metadata related to PouchDB.
-     * For this version just copy all fields across except _rev and _id
-     * @static 
-     * @param {object} document - The fields 
-     * @returns {object} fields ready for being added to a wiki store
-     */
-    db._convertFromCouch = function convertFromCouch(doc) {
-        var result = {};
-        this.logger && this.logger.debug("Converting from ", doc);
-        // Transfer the fields, pulling down the `fields` hashmap
-        $tw.utils.each(doc, function (element, field, obj) {
-            if (field === "fields") {
-                $tw.utils.each(element, function (element, subTitle, obj) {
-                    result[subTitle] = element;
-                });
-            } else if (field === "_id" || field === "_rev") {
-                /* skip these */
-            } else {
-                result[field] = doc[field];
-            }
-        });
-        result["revision"] = doc["_rev"];
-        //console.log("Conversion result ", result);
-        return result;
-    }
+        /**
+         * Transforms a pouchd document extracting just the fields that should be 
+         * part of the tiddler discarding all the metadata related to PouchDB.
+         * For this version just copy all fields across except _rev and _id
+         * @static 
+         * @param {object} doc - A couchdb object containing a tiddler representation inside the fields sub-object
+         * @returns {object} fields ready for being added to a wiki store
+         */
+        db._convertFromCouch = function convertFromCouch(doc) {
+            var result = {};
+            this.logger && this.logger.debug("Converting from ", doc);
+            // Transfer the fields, pulling down the `fields` hashmap
+            $tw.utils.each(doc, function (element, field, obj) {
+                if (field === "fields") {
+                    $tw.utils.each(element, function (element, subTitle, obj) {
+                        result[subTitle] = element;
+                    });
+                } else if (field === "_id" || field === "_rev") {
+                    /* skip these */
+                } else {
+                    result[field] = doc[field];
+                }
+            });
+            result["revision"] = doc["_rev"];
+            //console.log("Conversion result ", result);
+            return result;
+        };
+
+/**
+ * Returns an array of skinny tiddlers (tiddlers withouth text field)
+ * They are converted from CouchDB documents to TW tiddlers.
+ * It requires that a skinny_tiddlers view exists on the database.
+ * Such index is created on the startup module startup-pouch, wich is probably a bad practice
+ * @return {promise} Skinnytiddlers a promise that fulfills to an array of skinny tiddlers
+ */
+    db.getSkinnyTiddlers = function () {
+        var self = this;
+        return self._db.query("skinny_tiddlers")
+            .then(function (result) {
+                self.logger.trace("Skinny raw: ", result.rows);
+                return result.rows
+            })
+            .then(function (rows) { 
+                /** query Api returns documents in a different format, we have to convert them to the format convertFromCouch expects */
+                return rows.map(function (doc) {
+                    return {
+                        _id: doc.id,
+                        fields: doc.value
+                    }
+                })
+            }).then(function (documents) {
+                return documents.map(self._convertFromCouch.bind(self));
+            })
+            .catch(self.logger.log.bind(self.logger));
+
+    };
 
     return db;
 }

@@ -82,8 +82,7 @@ function httpRequest(options) {
 
 /**
 Reverse what mangleTitle does. Used to obtain title from _id (in convertFromSkinnyTiddler).
-*/
-//TODO Move to DbStore class
+ This is legacy code, but I don't want to get rid of it'
 PouchAdaptor.prototype.demangleTitle = function (title) {
     if (title.length < 3) {
         return title;
@@ -99,24 +98,7 @@ PouchAdaptor.prototype.demangleTitle = function (title) {
     else {
         return title;
     }
-}
-
-PouchAdaptor.prototype.deleteTiddler = function (title, callback, options) {
-    if (!options.tiddlerInfo || !options.tiddlerInfo.adaptorInfo || typeof options.tiddlerInfo.adaptorInfo._rev == "undefined") {
-        /* not on server, just return OK */
-        callback(null);
-    }
-    $tw.TiddlyPouch.database.deleteTiddler(title)
-    .then(callback.bind(callback,null))
-    .catch(callback);
-};
-
-/** The response should include the tiddler fields as an object in the value property*/
-PouchAdaptor.prototype.convertFromSkinnyTiddler = function (row) {
-    row.value.title = this.demangleTitle(row.id); //inject the title because is not included in the fields
-    return row.value;
-}
-
+}*/
 
 /*****************************************************
  ****** Tiddlywiki required methods
@@ -167,27 +149,13 @@ PouchAdaptor.prototype.getTiddlerInfo = function (tiddler) {
 
 /**
  * Returns an array of skinny tiddlers (tiddlers withouth text field)
- * They are converted from CouchDB documents to TW tiddlers
- * Both callbacks and promises are supported.
- * @param {function} callback an optional callback to call with the converted tiddlers
+ * @param {function} callback callback to call with the converted tiddlers
  * @return {promise} Skinnytiddlers a promise that fulfills to an array of skinny tiddlers
  */
 PouchAdaptor.prototype.getSkinnyTiddlers = function (callback) {
-    var self = this;
-    return $tw.TiddlyPouch.database._db.query("TiddlyPouch/skinny-tiddlers")
-        .then(function (tiddlersList) {
-            var tiddlers = tiddlersList.rows
-            self.logger.trace("Skinnytiddlers: ", tiddlers);
-            for (var i = 0; i < tiddlers.length; i++) {
-                tiddlers[i] = self.convertFromSkinnyTiddler(tiddlers[i]);
-            }
-            if(callback){ // handle non-promise callback flows 
-                callback(null, tiddlers);
-            }
-            // Continue the chain
-            return tiddlers 
-        }).catch(callback || self.logger.log.bind(self.logger));
-
+    $tw.TiddlyPouch.database.getSkinnyTiddlers()
+    .then(callback.bind(null,null))
+    .catch(callback);
 };
 
 /**
@@ -212,6 +180,16 @@ PouchAdaptor.prototype.loadTiddler = function (title, callback) {
    .catch( callback );
 };
 
+PouchAdaptor.prototype.deleteTiddler = function (title, callback, options) {
+    if (!options.tiddlerInfo || !options.tiddlerInfo.adaptorInfo || typeof options.tiddlerInfo.adaptorInfo._rev == "undefined") {
+        /* not on server, just return OK */
+        callback(null);
+    }
+    $tw.TiddlyPouch.database.deleteTiddler(title)
+    .then(callback.bind(callback,null))
+    .catch(callback);
+};
+
 PouchAdaptor.prototype.isReady = function () {
     // Since pouchdb handles the sync to the server we declare ourselves allways ready.
     return true;
@@ -220,22 +198,6 @@ PouchAdaptor.prototype.isReady = function () {
 
 PouchAdaptor.prototype.login = function (username, password, callback) {
     var self = this;
-    /* Instead of manual logging, let's allow that task to Pouchdb
-    var options = {
-        url: self.sessionUrl,
-        type: "POST",
-        data: {
-            name: username,
-            password: password
-        },
-        withCredentials: true,
-        callback: function(err, data) {
-            callback(err);
-        }
-    };
-
-    httpRequest(options);*/
-
     self.logger.log('Trying to sync...');
 
     var onlineDB = $tw.TiddlyPouch.newOnlineDB({ username: username, password: password });

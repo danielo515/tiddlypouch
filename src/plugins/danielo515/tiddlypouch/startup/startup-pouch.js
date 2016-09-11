@@ -23,30 +23,11 @@ The existence of the database determines if the plugin will be active or not.
     exports.platforms = ["browser"];
     exports.synchronous = false;
 
-    var CONFIG_PREFIX = "$:/plugins/danielo515/tiddlypouch/config/";
-
     exports.startup = function (callback) {
         /* --- Declaration ZONE ---*/
         //============================
 
         var logger = new $tw.TiddlyPouch.Logger("PouchStartup");
-
-        // This function creates just the skinny view.
-        // it is legacy code, but makes TP compatible with couchdb plugin
-        // because it installs the required view on the server.
-        function buildDesignDocument() {
-            /* This builds the design document.
-               Each tiddler conforming the design document elements should be a  tiddler
-               with just one anonimous function*/
-            var design_document = JSON.parse($tw.wiki.getTiddler(CONFIG_PREFIX + "design_document").fields.text),
-                /*To be valid json functions should be just one line of text. That's why we remove line breaks*/
-                skinny_view = $tw.wiki.getTiddler(CONFIG_PREFIX + "skinny-tiddlers-view").fields.text.replace(/\r?\n/, ' '),
-                filter = $tw.wiki.getTiddler(CONFIG_PREFIX + "design_document/filter").fields.text.replace(/\r?\n/, ' ');
-
-            design_document.views['skinny-tiddlers'].map = skinny_view;
-            design_document.filters.tiddlers = filter;
-            return design_document;
-        }
 
         /**
          * Creates generic conflict-handler functions.
@@ -65,8 +46,6 @@ The existence of the database determines if the plugin will be active or not.
             }
         }
 
-        $tw.TiddlyPouch.designDocument = buildDesignDocument();
-
         /* Here is where startup stuff really starts */
 
         $tw.TiddlyPouch.database = $tw.TiddlyPouch.DbStore($tw.TiddlyPouch.config.currentDB.name);
@@ -74,14 +53,19 @@ The existence of the database determines if the plugin will be active or not.
         if ($tw.TiddlyPouch.config.debug.isActive()) {
             $tw.TiddlyPouch.database._db.on('error', function (err) { logger.log(err); });
         }
-
-        $tw.TiddlyPouch.database._db.put($tw.TiddlyPouch.designDocument)
+        /** Create the required index to operate the DB  */
+        $tw.TiddlyPouch.database.createIndex('by_type', function (doc) { doc.fields.type && emit(doc.fields.type) })
             .then(function () {
-                logger.log("Skinny tiddlers view created");
-            }).catch(
-            conflict("Design document exists already")
-            ).then(function () {
-                return $tw.TiddlyPouch.database.createIndex('by_type', function (doc) { doc.fields.type && emit(doc.fields.type) });
+                return $tw.TiddlyPouch.database.createIndex('skinny_tiddlers', function (doc) {
+                    var fields = {};
+                    for (var field in doc.fields) {
+                        if (['text'].indexOf(field) === -1) {
+                            fields[field] = doc.fields[field];
+                        }
+                    }
+                    fields.revision = doc._rev;
+                    emit(doc._id, fields);
+                })
             })
             /*Fetch and add the StoryList before core tries to save it*/
             .then(function () {
