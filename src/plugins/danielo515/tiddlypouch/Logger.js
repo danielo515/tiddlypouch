@@ -16,8 +16,13 @@ A basic logging implementation
 
 var Super = require('$:/core/modules/utils/logger.js').Logger;
 
-/*
-Make a new logger
+/**
+* Make a new logger
+* @class
+* @param {String} componentName - This will be displayed on the logging messages as header
+* @param {Object|boolean} debug - A debug config object with debug and verbose booleans or a boolean indicating that debug level is active
+* @param {boolean} verbose - if verbose debug level is active (used on trace method)
+*
 */
 function Logger(componentName, debug , verbose ) {
     Super.call(this,componentName);
@@ -35,6 +40,7 @@ Logger.prototype.constructor = Super;
 
 /**
  * Log only if there is debug enabled
+ * @returns {undefined} returns nothing
  */
 Logger.prototype.debug = function(){
     if(!this.isDebug){
@@ -45,6 +51,7 @@ Logger.prototype.debug = function(){
 
 /**
  * Log only if debug is verbose
+ * @returns {undefined} returns nothing
  */
 Logger.prototype.trace = function(){
     if(!this.isVerbose){
