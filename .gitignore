@@ -5,3 +5,4 @@ node_modules
 .vscode
 docs
 jsconfig.json
+.github_changelog_generator
