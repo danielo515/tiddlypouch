@@ -55,7 +55,7 @@ The existence of the database determines if the plugin will be active or not.
          */
         $tw.rootWidget.addEventListener("tm-tp-load-revisions",
             function (event) {
-                $tw.syncadaptor.getRevisions(event.param)
+                $tw.TiddlyPouch.database.getTiddlerRevisions(event.param)
                     .then(function (revisionsList) {
                         var title = "$:/temp/revisions:" + event.param
                         Utils.saveAsJsonTiddler(title, revisionsList);
@@ -66,7 +66,7 @@ The existence of the database determines if the plugin will be active or not.
          */
         $tw.rootWidget.addEventListener("tm-tp-load-certain-revision",
             function (event) {
-                $tw.syncadaptor.loadRevision(event.param, event.paramObject.revision)
+                $tw.TiddlyPouch.database.getTiddler(event.param, event.paramObject.revision)
                     .then(function (tiddler) {
                         tiddler.title = "$:/temp/revision:" + event.paramObject.revision.slice(0,6) + ":" + event.param;
                         $tw.wiki.addTiddler(tiddler);  

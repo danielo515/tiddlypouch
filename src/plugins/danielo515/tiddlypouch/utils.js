@@ -28,7 +28,6 @@ var utils =
         plainToNestedObject: plainToNestedObject,
         flattenObject: flattenObject,
         saveAsJsonTiddler: saveAsJsonTiddler,
-        convertFromCouch: convertFromCouch
     };
 
 module.exports = utils;
@@ -41,28 +40,6 @@ function saveAsJsonTiddler(title, data, beautify) {
         text: JSON.stringify(data, null, formatParameters)
     }));
 }
-
-/* for this version just copy all fields across except _rev and _id */
-function convertFromCouch(tiddlerFields) {
-    var result = {};
-    this.logger && this.logger.debug("Converting from ", tiddlerFields);
-    // Transfer the fields, pulling down the `fields` hashmap
-    $tw.utils.each(tiddlerFields, function (element, title, obj) {
-        if (title === "fields") {
-            $tw.utils.each(element, function (element, subTitle, obj) {
-                result[subTitle] = element;
-            });
-        } else if (title === "_id" || title === "_rev") {
-            /* skip these */
-        } else {
-            result[title] = tiddlerFields[title];
-        }
-    });
-    result["revision"] = tiddlerFields["_rev"];
-    //console.log("Conversion result ", result);
-    return result;
-}
-
 
 // source: https://gist.github.com/gdibble/9e0f34f0bb8a9cf2be43
 function flattenObject(ob) {

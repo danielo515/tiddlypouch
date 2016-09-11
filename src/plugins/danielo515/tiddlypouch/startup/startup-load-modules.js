@@ -29,10 +29,10 @@ This includes javascript macros, deserializers, globals etc
 
         console.log('Registering javascript modules....');
 
-         $tw.TiddlyPouch.database.query('by_type', {key: 'application/javascript', include_docs: true })
+         $tw.TiddlyPouch.database._db.query('by_type', {key: 'application/javascript', include_docs: true })
          .then(function(docs){
              docs.rows.forEach(function(row){
-                 $tw.wiki.addTiddler(Utils.convertFromCouch(row.doc));
+                 $tw.wiki.addTiddler($tw.TiddlyPouch.database._convertFromCouch(row.doc));
              });
              $tw.wiki.defineTiddlerModules();
              cb();

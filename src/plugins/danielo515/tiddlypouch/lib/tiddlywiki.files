@@ -3,12 +3,11 @@
 		{
 			"file": "pouchdb-5.4.5.min.js",
 			"fields": {
-				"type": "application/javascript",
 				"title": "$:/plugins/danielo515/tiddlypouch/lib/pouchdb.js",
-				"module-type": "library"
+                "tags": "$:/core/wiki/rawmarkup"
 			},
-			"prefix": "",
-			"suffix": ""
+			"prefix": "<script>",
+			"suffix": "</script>"
 		}        
 	]
 }

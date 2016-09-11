@@ -1,3 +1,7 @@
+# 0.14.4
+## Bugfixes
+- Fixed #1 blank screen on oppening
+- Fixed version 0.14.3+1 doesn't allow to change the selected database #12
 # 0.14.3
 - Deletions are now synced
 - Added a Logger module

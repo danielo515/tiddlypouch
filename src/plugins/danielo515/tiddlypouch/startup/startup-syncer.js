@@ -8,7 +8,7 @@ module-type: startup
 
 \*/
 
-(function() {
+(function () {
 
     /*jslint node: true, browser: true */
     /*global $tw: false */
@@ -18,13 +18,14 @@ module-type: startup
     exports.name = "pouchdb-sycer";
     exports.after = ["pouchdb"];
     exports.platforms = ["browser"];
-    exports.synchronous = false;
+    exports.synchronous = true;
 
     var SYNC_STATE = "$:/state/tiddlypouch/sync/status";
     var SYNC_ERRORS = "$:/state/tiddlypouch/sync/Log"; // for now, log everything to the same place
     var SYNC_LOG = "$:/state/tiddlypouch/sync/Log";
+    var CONFIG_PREFIX = "$:/plugins/danielo515/tiddlypouch/config/";
 
-    exports.startup = function(callback) {
+    exports.startup = function () {
         /* --- Declaration ZONE ---*/
         /*============================*/
         var logger = new $tw.TiddlyPouch.Logger("PouchSync");
@@ -66,7 +67,7 @@ module-type: startup
                 }
             });
             function start(info) { //Function that actually starts the sync
-                var sync = $tw.TiddlyPouch.PouchDB.sync($tw.TiddlyPouch.database, remoteDB, {
+                var sync = PouchDB.sync($tw.TiddlyPouch.database._db, remoteDB, {
                     live: true,
                     retry: true,
                     filter: 'TiddlyPouch/tiddlers'
@@ -112,10 +113,28 @@ module-type: startup
             }
             $tw.rootWidget.dispatchEvent({ type: "tp-sync-state", param: "online" });
 
-            return $tw.TiddlyPouch.PouchDB(URL + Databasename, { auth: authOptions });
+            return new PouchDB(URL + Databasename, { auth: authOptions });
+        }
+
+        // This function creates just the skinny view.
+        // it is legacy code, but makes TP compatible with couchdb plugin
+        // because it installs the required view on the server.
+        function buildDesignDocument() {
+            /* This builds the design document.
+               Each tiddler conforming the design document elements should be a  tiddler
+               with just one anonimous function*/
+            var design_document = JSON.parse($tw.wiki.getTiddler(CONFIG_PREFIX + "design_document").fields.text),
+                /*To be valid json functions should be just one line of text. That's why we remove line breaks*/
+                skinny_view = $tw.wiki.getTiddler(CONFIG_PREFIX + "skinny-tiddlers-view").fields.text.replace(/\r?\n/, ' '),
+                filter = $tw.wiki.getTiddler(CONFIG_PREFIX + "design_document/filter").fields.text.replace(/\r?\n/, ' ');
+
+            design_document.views['skinny-tiddlers'].map = skinny_view;
+            design_document.filters.tiddlers = filter;
+            return design_document;
         }
 
         /** Sync methos implantation */
+        $tw.TiddlyPouch.designDocument = buildDesignDocument();
         $tw.TiddlyPouch.startSync = startSync;
         $tw.TiddlyPouch.newOnlineDB = newOnlineDB;
 

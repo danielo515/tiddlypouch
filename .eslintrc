@@ -2,7 +2,9 @@
     "extends": "eslint:recommended",
     "rules": {"valid-jsdoc":["error"]},
     "globals": {
-        "require":"true",
-        "exports":"true"
+        "require":true,
+        "exports":true,
+        "module":true,
+        "PouchDB":true
         }
 }

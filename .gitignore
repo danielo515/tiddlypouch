@@ -4,3 +4,4 @@ node_modules
 .history
 .vscode
 docs
+jsconfig.json
