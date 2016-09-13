@@ -28,27 +28,12 @@ The existence of the database determines if the plugin will be active or not.
         //============================
 
         var logger = new $tw.TiddlyPouch.Logger("PouchStartup");
-
-        /**
-         * Creates generic conflict-handler functions.
-         * The returned function logs a default message to the console in case of conflict,
-         * otherwise it throws the error so the next catch on the promise chain can handle it 
-         * 
-         * @param {any} message the message the returned handler will log to the console in case of conflict
-         * @returns {function} handler a function ready to be used inside a catch statement in a promise chain
-         */
-        function conflict(message) {
-            return function (err) {
-                if (err.status == 409) {
-                    return logger.log(message);
-                }
-                throw err;
-            }
-        }
+        var DbRouter = require("$:/plugins/danielo515/tiddlypouch/database/router.js");
 
         /* Here is where startup stuff really starts */
 
         $tw.TiddlyPouch.database = $tw.TiddlyPouch.DbStore($tw.TiddlyPouch.config.currentDB.name);
+        $tw.TiddlyPouch.router = DbRouter.createRouter( $tw.TiddlyPouch.database );
         logger.log("Client side pochdb started");
         if ($tw.TiddlyPouch.config.debug.isActive()) {
             $tw.TiddlyPouch.database._db.on('error', function (err) { logger.log(err); });

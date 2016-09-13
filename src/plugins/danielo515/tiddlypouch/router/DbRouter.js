@@ -36,7 +36,8 @@ var defaultRoute = {
 };
 
 /**
- * Route interface
+ * Route interface.
+ * Routes used with the {@link DbRouter} class should implement this interface
  * 
  * @interface Route
  */
@@ -48,7 +49,15 @@ var defaultRoute = {
  * @param {object} tiddler - The tiddler to be routed
  * @returns {boolean} true if this route is capable of routing the given tiddler. False otherwhise
  */
-
+/**
+ * 
+ * 
+ * @function 
+ * @name Route#route
+ * @param {object} tiddler - The tiddler to be routed
+ * @param {object} destinations - The hasmap of destinations that the current @DbRouter has
+ * @returns {string} The name of the destination database. Will be used by @DbRouter to find it on the map of destinations
+ */
 
 /**
  * 
@@ -66,10 +75,19 @@ function DbRouter ( defaultDb ){
 }
 
 /**
+ * Factory method for instantiating constructors
+ * @name DbRouter#createRouter
+ * @static 
+ */
+DbRouter.createRouter = function( defaultDb ){
+    return new DbRouter(defaultDb);
+}
+
+/**
  * Adds a route at the ond of the routes array.
  * It checks that the route conforms with the required API (AKA interface)
  * @param {object} route - The route to add to the list of routes. Should implement the  {@link Route} interface
- * @return {DbRouter} a reference to the current router for method chaining.
+ * @return {DbRouter} - a reference to the current router for method chaining.
  */
 DbRouter.prototype.addRoute = function( route ){
     if( (typeof route === 'object') && ( typeof route.canRoute === 'function' ) && (typeof route.route === 'function') ) {
@@ -93,7 +111,7 @@ DbRouter.prototype.addDestination = function ( database , name ){
 }
 
 DbRouter.prototype.findRoute = function ( tiddler ){
-    for(var i = this.routes.lengt, route = this.routes[i]; i>-1; --i ) {
+    for(var i = this.routes.length-1, route = this.routes[i]; i>-1; --i ) {
         if(route.canRoute(tiddler)){
             return route
         }
