@@ -8,5 +8,8 @@ tags: $:/tags/RawMarkup
         window.$TPouch = window.$TPouch || Object.create(null);
         window.$TPouch.plugins = window.$TPouch.plugins || new PouchDB('__TP_plugins');
 
+        window.$tw = window.$tw || Object.create(null);
+        $tw.boot = $tw.boot || Object.create(null);
+
     })(window);
 </script>
