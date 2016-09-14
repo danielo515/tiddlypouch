@@ -1,0 +1,11 @@
+title: $:/plugins/danielo515/tiddlypouch/boot
+tags: $:/tags/RawMarkup
+
+<script>
+    (function($TPouch , window){
+        'use strict';
+
+        window.$TPouch = $TPouch || { plugins: new PouchDB('__TP_plugins') }
+
+    })(window.$TPouch , window);
+</script>

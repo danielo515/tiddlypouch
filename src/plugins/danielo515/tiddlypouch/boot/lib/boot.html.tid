@@ -1,8 +1,0 @@
-title: $:/plugins/danielo515/tiddlypouch/boot.js
-tags: $:/tags/RawMarkup
-
-<script>
-    window.$TPouch = {
-        plugins: new Pouchdb('__TP_plugins')
-    }
-</script>
