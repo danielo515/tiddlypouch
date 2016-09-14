@@ -27,21 +27,21 @@ The existence of the database determines if the plugin will be active or not.
         /* --- Declaration ZONE ---*/
         //============================
 
-        var logger = new $tw.TiddlyPouch.Logger("PouchStartup");
+        var logger = new $TPouch.Logger("PouchStartup");
         var DbRouter = require("$:/plugins/danielo515/tiddlypouch/database/router.js");
 
         /* Here is where startup stuff really starts */
 
-        $tw.TiddlyPouch.database = $tw.TiddlyPouch.DbStore($tw.TiddlyPouch.config.currentDB.name);
-        $tw.TiddlyPouch.router = DbRouter.createRouter( $tw.TiddlyPouch.database );
+        $TPouch.database = $TPouch.DbStore($TPouch.config.currentDB.name);
+        $TPouch.router = DbRouter.createRouter( $TPouch.database );
         logger.log("Client side pochdb started");
-        if ($tw.TiddlyPouch.config.debug.isActive()) {
-            $tw.TiddlyPouch.database._db.on('error', function (err) { logger.log(err); });
+        if ($TPouch.config.debug.isActive()) {
+            $TPouch.database._db.on('error', function (err) { logger.log(err); });
         }
         /** Create the required index to operate the DB  */
-        $tw.TiddlyPouch.database.createIndex('by_type', function (doc) { doc.fields.type && emit(doc.fields.type) })
+        $TPouch.database.createIndex('by_type', function (doc) { doc.fields.type && emit(doc.fields.type) })
             .then(function () {
-                return $tw.TiddlyPouch.database.createIndex('skinny_tiddlers', function (doc) {
+                return $TPouch.database.createIndex('skinny_tiddlers', function (doc) {
                     var fields = {};
                     for (var field in doc.fields) {
                         if (['text'].indexOf(field) === -1) {
@@ -54,11 +54,11 @@ The existence of the database determines if the plugin will be active or not.
             })
             /*Fetch and add the StoryList before core tries to save it*/
             .then(function () {
-                return $tw.TiddlyPouch.database.getTiddler("$:/StoryList")
+                return $TPouch.database.getTiddler("$:/StoryList")
             }).then(function (tiddlerFields) {
                 $tw.wiki.addTiddler(tiddlerFields);
                 logger.debug("StoryList was already in database ", tiddlerFields);
-                return $tw.TiddlyPouch.database.getTiddler("$:/DefaultTiddlers")
+                return $TPouch.database.getTiddler("$:/DefaultTiddlers")
             }).then(function (tiddlerFields) {
                 $tw.wiki.addTiddler(tiddlerFields);
                 logger.log("Default tiddlers loaded from database ", tiddlerFields);

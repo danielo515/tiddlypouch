@@ -230,7 +230,7 @@ exports.startup = function(callback){
         function(){
             /*==== PUBLIC API === */
             /* --- TiddlyPouch namespace creation and basic initialization---*/
-            $tw.TiddlyPouch = {
+            $TPouch = {
                 Logger: LOGGER,
                 DbStore: require('$:/plugins/danielo515/tiddlypouch/dbstore/factory'),
                 config: {
