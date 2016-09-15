@@ -29,11 +29,18 @@ The existence of the database determines if the plugin will be active or not.
 
         var logger = new $TPouch.Logger("PouchStartup");
         var DbRouter = require("$:/plugins/danielo515/tiddlypouch/database/router.js");
+        var Routes = require("$:/plugins/danielo515/tiddlypouch/database/routes");
 
         /* Here is where startup stuff really starts */
 
         $TPouch.database = $TPouch.DbStore($TPouch.config.currentDB.name);
         $TPouch.router = DbRouter.createRouter( $TPouch.database );
+        /**Add the plugins route and database to the router.
+         * Plugins database is created even beofore $tw boots see {@link boot/boot.html.tid} 
+         */
+        $TPouch.router.addRoute(Routes.plugins);
+        $TPouch.router.addDestination('__TP_plugins', $TPouch.DbStore('__TP_plugins', 'plugins' , $TPouch.plugins )); // wrap the raw PouchDB into a DbStore object
+
         logger.log("Client side pochdb started");
         if ($TPouch.config.debug.isActive()) {
             $TPouch.database._db.on('error', function (err) { logger.log(err); });

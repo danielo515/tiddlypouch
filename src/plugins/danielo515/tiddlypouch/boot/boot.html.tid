@@ -10,6 +10,7 @@ tags: $:/tags/RawMarkup
 
         window.$tw = window.$tw || Object.create(null);
         $tw.boot = $tw.boot || Object.create(null);
+        //$tw.boot.suppressBoot
 
     })(window);
 </script>

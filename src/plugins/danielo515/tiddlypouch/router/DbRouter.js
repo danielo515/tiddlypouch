@@ -20,10 +20,10 @@ module.exports = DbRouter;
 
 
 
-/**====================== DEFAULTS  ========================== */
+/**====================== DEFAULT ROUTE  ========================== */
 
-function defaultRouter(tiddler, destinations ){
-    if( destinations.default ){
+function defaultRouter(tiddler){
+    if( this.destinations.default ){
             return 'default';
         }
     throw new Error('There is no default route set!')
@@ -37,7 +37,8 @@ var defaultRoute = {
 
 /**
  * Route interface.
- * Routes used with the {@link DbRouter} class should implement this interface
+ * Routes used with the {@link DbRouter} class should implement this interface.
+ * All route methods are called with their `this` context pointing to the DbRouter instance they belong to
  * 
  * @interface Route
  */
@@ -105,14 +106,15 @@ DbRouter.prototype.addRoute = function( route ){
  * @param {string} name - The name the database will have in the destinations map. It can override any existing destination.
  * @return {DbRouter} a reference to the current router for method chaining
  */
-DbRouter.prototype.addDestination = function ( database , name ){
+DbRouter.prototype.addDestination = function ( name , database ){
     this.destinations[name] = database;
     return this;
 }
 
 DbRouter.prototype.findRoute = function ( tiddler ){
-    for(var i = this.routes.length-1, route = this.routes[i]; i>-1; --i ) {
-        if(route.canRoute(tiddler)){
+    for(var i = this.routes.length-1; i>-1; --i ) {
+        var route = this.routes[i];
+        if(route.canRoute.call(this,tiddler)){
             return route
         }
     }
@@ -120,7 +122,7 @@ DbRouter.prototype.findRoute = function ( tiddler ){
 
 DbRouter.prototype.route = function(tiddler){
     var route = this.findRoute(tiddler);
-    var dest = route.route(tiddler, this.destinations )
+    var dest = route.route.call(this,tiddler);
     return this.destinations[dest];
 }
 
