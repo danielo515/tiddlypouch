@@ -23,9 +23,9 @@ A sync adaptor module for synchronising with local PouchDB
  */
 function PouchAdaptor(options) {
     this.wiki = options.wiki;
-    var Debug = $tw.TiddlyPouch.config.debug;
-    this.logger = new $tw.TiddlyPouch.Logger("PouchAdaptor", Debug.isActive(), Debug.isVerbose() );
-    this.sessionUrl = $tw.TiddlyPouch.config.currentDB.getUrl("_session"); // save the URL on startup
+    var Debug = $TPouch.config.debug;
+    this.logger = new $TPouch.Logger("PouchAdaptor", Debug.isActive(), Debug.isVerbose() );
+    this.sessionUrl = $TPouch.config.currentDB.getUrl("_session"); // save the URL on startup
     //this.readConfig()
 }
 
@@ -135,7 +135,7 @@ PouchAdaptor.prototype.getStatus = function (callback) {
             // If we are logged but there is no onlineDB means that there is a cookie
             // We have to create the database which will pick up the cookie.
             // TW will not call the login method if we are already logged in, even if the user clicks on login.
-            if (isLoggedIn && !$tw.TiddlyPouch.onlineDB) {
+            if (isLoggedIn && !$TPouch.onlineDB) {
                 self.login(); // this creates the online database
             }
             callback(null, isLoggedIn, username);
@@ -153,21 +153,21 @@ PouchAdaptor.prototype.getTiddlerInfo = function (tiddler) {
  * @return {promise} Skinnytiddlers a promise that fulfills to an array of skinny tiddlers
  */
 PouchAdaptor.prototype.getSkinnyTiddlers = function (callback) {
-    $tw.TiddlyPouch.database.getSkinnyTiddlers()
+    $TPouch.database.getSkinnyTiddlers()
     .then(callback.bind(null,null))
     .catch(callback);
 };
 
 /**
  * Saves a tiddler to the current db store
- * @param  {Tiddler} tiddler - tiddlers to be converted 
+ * @param  {Tiddler} tiddler - instance of $tw.Tiddler to be converted 
  * @param  {function} callback - the callback that should be called when the operation completes
  * @param  {object} options - the options that the syncer provides, fo rexample tiddlerInfo metadata
  * @return {undefined} this does not returns anything
  */
 PouchAdaptor.prototype.saveTiddler = function (tiddler, callback, options) {
     this.logger.trace("Tiddler info ",options.tiddlerInfo);
-    $tw.TiddlyPouch.database.addTiddler(tiddler,options)
+    $TPouch.router.route(tiddler,options).addTiddler(tiddler,options)
         .then(function (saveInfo) {
             callback(null, { _rev: saveInfo.rev }, saveInfo.rev);
         })
@@ -175,7 +175,7 @@ PouchAdaptor.prototype.saveTiddler = function (tiddler, callback, options) {
 };
 
 PouchAdaptor.prototype.loadTiddler = function (title, callback) {
-   $tw.TiddlyPouch.database.getTiddler(title)
+   $TPouch.database.getTiddler(title)
    .then( callback.bind(null,null)) // callback with null as error
    .catch( callback );
 };
@@ -185,7 +185,7 @@ PouchAdaptor.prototype.deleteTiddler = function (title, callback, options) {
         /* not on server, just return OK */
         callback(null);
     }
-    $tw.TiddlyPouch.database.deleteTiddler(title)
+    $TPouch.database.deleteTiddler(title)
     .then(callback.bind(callback,null))
     .catch(callback);
 };
@@ -200,13 +200,13 @@ PouchAdaptor.prototype.login = function (username, password, callback) {
     var self = this;
     self.logger.log('Trying to sync...');
 
-    var onlineDB = $tw.TiddlyPouch.newOnlineDB({ username: username, password: password });
+    var onlineDB = $TPouch.newOnlineDB({ username: username, password: password });
     if (!onlineDB) {
         self.logger.log("Warning, sync is not possible because no onlineDB");
         return callback('There is no online DB set');
     }
-    $tw.TiddlyPouch.onlineDB = onlineDB;
-    $tw.TiddlyPouch.startSync(onlineDB).then(callback);
+    $TPouch.onlineDB = onlineDB;
+    $TPouch.startSync(onlineDB).then(callback);
 }
 
 PouchAdaptor.prototype.logout = function (callback) {
@@ -224,7 +224,7 @@ PouchAdaptor.prototype.logout = function (callback) {
 
 //--- END TEMPT COMMENT */
 
-if ($tw.browser && $tw.TiddlyPouch.database) {
+if ($tw.browser && $TPouch.database) {
     /*Only works if we are on browser and there is a database*/
     exports.adaptorClass = PouchAdaptor;
 }

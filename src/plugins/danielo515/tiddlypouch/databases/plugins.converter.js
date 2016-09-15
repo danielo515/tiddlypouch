@@ -1,9 +1,9 @@
 /*\
-title: $:/plugins/danielo515/tiddlypouch/converters/tiddler
+title: $:/plugins/danielo515/tiddlypouch/converters/plugins
 type: application/javascript
 module-type: library
 
-a conversor that makes tiddlers compatible with pouchdb. This injects the required methods into the db store to handle conversions between regular tiddlers and couchdb
+Decorator that convert tiddlywiki plugins into PouchDB documents
 
 @preserve
 
@@ -14,26 +14,28 @@ a conversor that makes tiddlers compatible with pouchdb. This injects the requir
 /*jslint node: true, browser: true */
 /*global $tw: false */
 /* global module */
-/** @namespace {converters} tiddler.converter */
+/** @namespace {converters} plugins.converter */
 
-module.exports.decorate = tiddlerConverter;
+module.exports.decorate = pluginConverter;
 
-/**====================== Tiddler conversor dependency  ========================== */
-var BaseConverter = require('$:/plugins/danielo515/tiddlypouch/converters/converter.js');
+/**====================== plugins conversor dependency  ========================== */
+var BaseConverter = require('$:/plugins/danielo515/tiddlypouch/converters/converter.js')
 
 /**
- * Injects methods to handle conversions between regular TW tiddlers and CouchDB 
+ * Injects methods to handle conversions between regular TW tiddlers and CouchDB.
+ * getSkinnyTiddlers is not implemented because it does not makes sense on the plugins database
  * 
- * @param {DbStore} db a database instance where methods should be injected
+ * @param {DbStore} db - a database instance where methods should be injected
  * @return {DbStore} The same db with the methods already injected
  */
-function tiddlerConverter(db) {
+function pluginConverter(db) {
     /**===================== CONVERSIONS BETWEEN TW AND PouchDB ============= */
 
+    /** decorate with the base methods */
     db = BaseConverter.decorate(db);
 
     /**
-     * Copy all fields to "fields" sub-object except for the "revision" field.
+     * Copy all fields to "fields" except the "revision" field.
      * See also: TiddlyWebAdaptor.prototype.convertTiddlerToTiddlyWebFormat.
      * 
      * @param {Tiddler} tiddler - the tiddler to convert to CouchDB format
@@ -47,19 +49,10 @@ function tiddlerConverter(db) {
     db._convertToCouch = function convertToCouch(tiddler, tiddlerInfo) {
         var result = { fields: {} };
         if (tiddler) {
-            $tw.utils.each(tiddler.fields, function (element, title, object) {
-                if (title === "revision") {
-                    /* do not store revision as a field */
-                    return;
-                }
-                if (title === "_attachments" && !tiddler.isDraft()) {
-                    //Since the draft and the original tiddler are not the same document
-                    //the draft does not has the attachments
-                    result._attachments = element; //attachments should be stored out of fields object
-                    return;
-                }
+            $tw.utils.each(tiddler.fields, function (element, field) {
+                if (field === "revision") { return; } // Skip revision
                 // Convert fields to string
-                result.fields[title] = tiddler.getFieldString(title);
+                result.fields[field] = tiddler.getFieldString(field);
             });
             // tags must stay as array, so fix it
             result.fields.tags = tiddler.fields.tags;
@@ -79,6 +72,7 @@ function tiddlerConverter(db) {
          * Transforms a pouchd document extracting just the fields that should be 
          * part of the tiddler discarding all the metadata related to PouchDB.
          * For this version just copy all fields across except _rev and _id
+         * In the next implementation maybe remove the usedIn field, which indicates which wikis uses this plugin
          * @static 
          * @param {object} doc - A couchdb object containing a tiddler representation inside the fields sub-object
          * @returns {object} fields ready for being added to a wiki store
@@ -103,16 +97,5 @@ function tiddlerConverter(db) {
             return result;
         };
 
-/**
- * Returns an array of skinny tiddlers (tiddlers withouth text field)
- * They are converted from CouchDB documents to TW tiddlers.
- * It requires that a skinny_tiddlers view exists on the database.
- * Such index is created on the startup module startup-pouch, wich is probably a bad practice
- * @return {promise} Skinnytiddlers a promise that fulfills to an array of skinny tiddlers
- */
-    db.getSkinnyTiddlers = function () {
-       return this.getTiddlers('skinny_tiddlers',null,false)
-    };
-
-    return db;
+        return db;
 }

@@ -35,7 +35,7 @@ module.exports = DbStore;
 function DbStore(dbName/**String */, db /**PouchDB db Optional */) {
     this.name = dbName;
     this._db = db instanceof PouchDB ? db : new PouchDB(dbName);
-    this.logger = new $tw.TiddlyPouch.Logger("DbStore:" + dbName);
+    this.logger = new $TPouch.Logger("DbStore:" + dbName);
 }
 
 

@@ -43,7 +43,7 @@ function setSyncFlag(mode) {
         i can take both, a message param or just a plain function execution.
         take a look at startup-syncer for the emit of the events
     */
-    if (mode === "offline" || !$tw.TiddlyPouch.config.currentDB.getUrl()) {
+    if (mode === "offline" || !$TPouch.config.currentDB.getUrl()) {
         /* We don't want sync status icon on sidebar*/
         return $tw.wiki.addTiddler(new $tw.Tiddler(sincStatusFlag,{tags: []})); //Remove tags
     }
@@ -54,7 +54,7 @@ function setSyncFlag(mode) {
 exports.setSyncFlag = setSyncFlag;
 
 function setSiteSubtitleToDatabaseName() {
-    var text = "<<tiddlypouch-tab " + $tw.TiddlyPouch.config.currentDB.name + " Database >>";
+    var text = "<<tiddlypouch-tab " + $TPouch.config.currentDB.name + " Database >>";
     $tw.wiki.addTiddler({ title: "$:/SiteSubtitle", text: text });
 }
 
@@ -63,8 +63,8 @@ function setSiteSubtitleToDatabaseName() {
  * to remote URL of the current database.  
  */
 function setLoginMessage() {
-    var loginDestination = $tw.TiddlyPouch.config.currentDB.getUrl();
-    var databaseName = $tw.TiddlyPouch.config.currentDB.getRemoteName();
+    var loginDestination = $TPouch.config.currentDB.getUrl();
+    var databaseName = $TPouch.config.currentDB.getRemoteName();
     var message = "Login to remote database <b>" + databaseName + "</b> at: " + loginDestination;
     $tw.wiki.addTiddler({
         title: "$:/language/LoginToTiddlySpace" ,
@@ -74,16 +74,16 @@ function setLoginMessage() {
 }
 
 function refreshDatabaseNamesUI() {
-    var namesList = $tw.TiddlyPouch.config.getAllDBNames();
+    var namesList = $TPouch.config.getAllDBNames();
     $tw.wiki.addTiddler({title: DATABASE_NAMES , list: namesList, text: "{{!!list}}" })
 }
 
 exports.handlers.updateDebug = function(event){
     var Active = $tw.wiki.getTiddlerText(DEBUG_ACTIVE) === 'yes';
     var Verbose = $tw.wiki.getTiddlerText(DEBUG_VERBOSE) === 'yes';
-    var savedConfig = $tw.TiddlyPouch.config.readConfigTiddler();
+    var savedConfig = $TPouch.config.readConfigTiddler();
     savedConfig.debug = {active: Active, verbose: Verbose};
-    $tw.TiddlyPouch.config.update(savedConfig);
+    $TPouch.config.update(savedConfig);
 }
 
 /**
@@ -103,12 +103,12 @@ function updateDebugUI(config){
  * the user can select a DB different from the curent one and save that config.
  */
 exports.handlers.updateDbConfig = function(event){
-    var savedConfig = $tw.TiddlyPouch.config.readConfigTiddler();
+    var savedConfig = $TPouch.config.readConfigTiddler();
     var uiConfig = $tw.wiki.getTiddlerData(SELECTED_DATABASE);
 
     savedConfig.selectedDbId = uiConfig.name;
     savedConfig.databases[uiConfig.name] = Utils.plainToNestedObject(uiConfig);
-    $tw.TiddlyPouch.config.update(savedConfig);
+    $TPouch.config.update(savedConfig);
 }
 
 /**
@@ -117,7 +117,7 @@ exports.handlers.updateDbConfig = function(event){
  */
 exports.handlers.databaseHasBeenSelected = function(event) {
     var dbName = event.param;
-    var dbConfig = $tw.TiddlyPouch.config.getDatabaseConfig(dbName);
+    var dbConfig = $TPouch.config.getDatabaseConfig(dbName);
     refreshSelectedDBUI(dbConfig);
 }
 

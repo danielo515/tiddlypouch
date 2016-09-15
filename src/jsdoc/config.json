@@ -13,7 +13,7 @@
         "footer"                : "",
         "copyright"             : "Copyright © 2014 Danielo Rodríguez Rivero",
         "navType"               : "vertical",
-        "theme"                 : "simplex",
+        "theme"                 : "sandstone",
         "linenums"              : true,
         "collapseSymbols"       : false,
         "inverseNav"            : true,

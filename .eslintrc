@@ -5,6 +5,7 @@
         "require":true,
         "exports":true,
         "module":true,
-        "PouchDB":true
+        "PouchDB":true,
+        "$TPouch": true
         }
 }
