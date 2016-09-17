@@ -26,7 +26,6 @@ Only remote configuration (username, remote_name, url) may be changed in the run
     exports.synchronous = false;
 
     var CONFIG_PREFIX = "$:/plugins/danielo515/tiddlypouch/config/";
-    var CONFIG_DATABASE = "__TP_config";
     var CONFIG_TIDDLER = CONFIG_PREFIX + "config_database";
 
 
@@ -111,20 +110,19 @@ Only remote configuration (username, remote_name, url) may be changed in the run
          * - Rejects if no config exists or it is invalid 
          */
         function _readConfigFromDB() {
-            var promise = _configDB.get('configuration');
-            promise = promise.then(function (config) {
+            return _configDB.get('configuration')
+            .then(function (config) {
+
                 if (_isValidConfig(config)) {
                     return config;
                 }
                 throw new Error('Config was read, but it was invalid');
-            });
-            promise = promise.catch(
-                function (err) {
+            })
+            .catch(function (err) {
+
                     Logger.log('Config read from DB - ERROR', err);
                     throw err;
-                });
-
-            return promise;
+                });   
         }
 
         /*==== HELPER METHODS === */
@@ -204,7 +202,7 @@ Only remote configuration (username, remote_name, url) may be changed in the run
          * @returns	{Promise} When fullfilled the configuration is ready to be used 
          */
         function init() {
-            _configDB = new PouchDB(CONFIG_DATABASE);
+            _configDB = $TPouch._configDb;
             Logger.log('Initializing config module');
             return _readConfigFromDB() // be aware of not breaking the promise chain!
                 .then(function (config) { // All ok reading from DB.

@@ -5,12 +5,36 @@ tags: $:/tags/RawMarkup
     (function(window){
         'use strict';
 
-        window.$TPouch = window.$TPouch || Object.create(null);
-        window.$TPouch.plugins = window.$TPouch.plugins || new PouchDB('__TP_plugins');
+        var $TPouch = window.$TPouch || Object.create(null);
+        $TPouch.plugins = $TPouch.plugins || new PouchDB('__TP_plugins');
+        $TPouch._configDb = $TPouch._configDb || new PouchDB('__TP_config');
 
-        window.$tw = window.$tw || Object.create(null);
+        var $tw = window.$tw || Object.create(null);
         $tw.boot = $tw.boot || Object.create(null);
-        //$tw.boot.suppressBoot
+        $tw.boot.suppressBoot = true
+
+        window.$TPouch = $TPouch;
+        window.$tw = $tw;
+
+        // $TPouch._configDB.get('configuration').then(function(config){
+        //     if(!config.selectedDbId){
+        //         throw new Error('The configuration stored on the db was invalid!')
+        //     }
+        //     $TPouch.database = new PouchDB(config.selectedDbId);
+        // })
+        $TPouch.plugins.allDocs( { include_docs: true } )
+        .then(function(all){
+
+            console.log('Injecting ', all.total_rows, ' plugins into tw');
+            var plugins = all.rows.map(function(row){
+
+                return row.doc.fields
+            });
+            window.$tw.preloadTiddlers = plugins;
+            window.$tw.boot.boot();
+        });
+        
+        
 
     })(window);
 </script>
