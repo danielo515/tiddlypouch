@@ -14,13 +14,13 @@ It is the responsability of the entity that is requesting the routing to act on 
 
 /*jslint node: true, browser: true */
 
-/**====================== EXPORTS  ========================== */
+/***====================== EXPORTS  ========================== */
 
 module.exports = DbRouter;
 
 
 
-/**====================== DEFAULT ROUTE  ========================== */
+/***====================== DEFAULT ROUTE  ========================== */
 
 function defaultRouter(tiddler){
     if( this.destinations.default ){
@@ -39,21 +39,21 @@ var defaultRoute = {
  * Route interface.
  * Routes used with the {@link DbRouter} class should implement this interface.
  * All route methods are called with their `this` context pointing to the DbRouter instance they belong to
- * 
+ *
  * @interface Route
  */
 /**
- * 
- * 
- * @function 
+ *
+ *
+ * @function
  * @name Route#canRoute
  * @param {object} Tiddler - The tiddler to be routed
  * @returns {boolean} true if this route is capable of routing the given tiddler. False otherwhise
  */
 /**
- * 
- * 
- * @function 
+ *
+ *
+ * @function
  * @name Route#route
  * @param {object} Tiddler - The tiddler to be routed
  * @param {object} destinations - The hasmap of destinations that the current @DbRouter has
@@ -61,12 +61,12 @@ var defaultRoute = {
  */
 
 /**
- * 
- * Creates a new instance of the databases router.  
+ *
+ * Creates a new instance of the databases router.
  * It is responsible of returning a valid db destination for a given tiddler.
  * The caller should know what to do with the returned database, it is out of the scope of this Class.
  * @class
- *  
+ *
  * @param {any} defaultDb - The database used as fallback if there is no route that can route the current tiddler
  * @return {null} This should be called with the new operator.
  */
@@ -78,7 +78,7 @@ function DbRouter ( defaultDb ){
 /**
  * Factory method for instantiating constructors
  * @name DbRouter#createRouter
- * @static 
+ * @static
  */
 DbRouter.createRouter = function( defaultDb ){
     return new DbRouter(defaultDb);

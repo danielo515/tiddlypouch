@@ -14,19 +14,19 @@ Manages insertions, extractions, deletions of tiddlers to a database.
 /*jslint node: true, browser: true */
 /* global $tw, module */
 
-/**====================== EXPORTS  ========================== */
+/***====================== EXPORTS  ========================== */
 
 module.exports = DbStore;
 
 /**
  * @classdesc Handles the operations related to fetching and saving tiddlers to a database.
  * it is the PouchDB equivalent to the wiki store.
- * 
+ *
  * It expects some methods to be injected: _convertFromCouch, _convertToCouch, _mangleTitle
  * such injection is responsibility of the factory that instantiates this objects.
- * 
+ *
  * @see DbStore.factory
- * 
+ *
  * If the database does not exist it will be created
  * @class
  * @param {String} dbName The name should match the PouchDB name
@@ -39,13 +39,13 @@ function DbStore(dbName/**String */, db /**PouchDB db Optional */) {
 }
 
 
-/**====================== PURE DB METHODS ========================== */
+/***====================== PURE DB METHODS ========================== */
 
 /**
  * Creates generic conflict-handler functions.
  * The returned function logs a default message to the console in case of conflict,
- * otherwise it throws the error so the next catch on the promise chain can handle it 
- * 
+ * otherwise it throws the error so the next catch on the promise chain can handle it
+ *
  * @param {any} message the message the returned handler will log to the console in case of conflict
  * @returns {function} handler a function ready to be used inside a catch statement in a promise chain
  * @static
@@ -62,10 +62,10 @@ DbStore.prototype._Conflict = function conflict(message) {
 
 // Source: https://pouchdb.com/2014/05/01/secondary-indexes-have-landed-in-pouchdb.html
 /**
- * Creates an index with the given name. In CouchDB this means a design document 
+ * Creates an index with the given name. In CouchDB this means a design document
  * with a map function that emits the key to be indexed
  * @example createIndex('by_type' , function(doc){ emit(doc.fields.type) })
- * @public 
+ * @public
  * @param {String} name The name of the index, ej: by_type
  * @param {function} mapFunction A couch map function that will be used to build the index
  * @return {promise} A promise that fulfills when the design document is inserted
@@ -130,11 +130,11 @@ DbStore.prototype._upsert = function (document) {
  * Validates the passed revision according to PouchDB revision format.
  * If the revision passes the validation then it is returned.
  * If it does not, null is returned
- * 
+ *
  * @param {string} rev - the revision to validate
- * @static 
- * @private 
- * @returns {String|null} The revision if it has the correct format, null otherwhise 
+ * @static
+ * @private
+ * @returns {String|null} The revision if it has the correct format, null otherwhise
  */
 DbStore.prototype._validateRevision = function validateRevision(rev) {
     if (/\d+-[A-z0-9]*/.test(rev)) {
@@ -143,12 +143,12 @@ DbStore.prototype._validateRevision = function validateRevision(rev) {
     return null
 };
 
-/**============================ TIDDLER STORE METHODS ======== */
+/***============================ TIDDLER STORE METHODS ======== */
 
 /**
  * Adds a tiddler to the database.
  * It handles all the required conversions for making it compatible with CouchDB or PouchDB
- * 
+ *
  * @param {object} tiddler A tiddler fields object. Not a regular tiddler.
  * @param {object} options Metadata about this tiddler. Usually provided by the syncer
  * @return {promise} fulfills when the tiddler is saved failed to save.
@@ -174,7 +174,7 @@ DbStore.prototype.deleteTiddler = function (title) {
 DbStore.prototype.getTiddler = function (title, revision) {
     var self = this;
     var query = [self._mangleTitle(title)]
-    /** Because PouchDB uses the arguments object we can not pass an undefined value as 
+    /** Because PouchDB uses the arguments object we can not pass an undefined value as
      * second parameter, they try to use it. So to be able to make the query in just one call
      * we create an array that dinamycally adds the extra options only if they are required.
      * This way, we can call the get function without passing any undefined value
@@ -193,13 +193,13 @@ DbStore.prototype.getTiddler = function (title, revision) {
 
 /**
  * Queries an existing index (not controlled) for tiddlers.
- *  
- * @param {String} index          - an existing database index that you want to use for the search 
+ *
+ * @param {String} index          - an existing database index that you want to use for the search
  * @param {String} [search_term]  -  it will be used as key search (the first value emited on the map function)
  * @param {Boolean} [includeDocs] - Defaults to true. If the documents of the search result should be included or not.
  *                                  There are some scenarios where you don't want the document to be included,
  *                                  querying for skinny tiddlers for example
- * @return {promise} fulfills to an array of already converted tiddlers 
+ * @return {promise} fulfills to an array of already converted tiddlers
  */
 DbStore.prototype.getTiddlers = function( index, search_term, includeDocs ){
      var self = this;
@@ -214,7 +214,7 @@ DbStore.prototype.getTiddlers = function( index, search_term, includeDocs ){
                 self.logger.trace("Query to ",index," searching for ", search_term," : ", result.rows);
                 return result.rows
             })
-            .then(function (rows) { 
+            .then(function (rows) {
                 /** query Api returns documents in a different format, we have to convert them to the format convertFromCouch expects */
                 return rows.map(function (doc) {
                     return doc.doc ? doc.doc : { // if doc is included just retur it or try to make a conversion otherwhise

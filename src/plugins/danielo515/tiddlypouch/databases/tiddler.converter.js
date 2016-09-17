@@ -18,31 +18,31 @@ a conversor that makes tiddlers compatible with pouchdb. This injects the requir
 
 module.exports.decorate = tiddlerConverter;
 
-/**====================== Tiddler conversor dependency  ========================== */
+/***====================== Tiddler conversor dependency  ========================== */
 var BaseConverter = require('$:/plugins/danielo515/tiddlypouch/converters/converter.js');
 
 /**
- * Injects methods to handle conversions between regular TW tiddlers and CouchDB 
- * 
+ * Injects methods to handle conversions between regular TW tiddlers and CouchDB
+ *
  * @param {DbStore} db a database instance where methods should be injected
  * @return {DbStore} The same db with the methods already injected
  */
 function tiddlerConverter(db) {
-    /**===================== CONVERSIONS BETWEEN TW AND PouchDB ============= */
+    /***===================== CONVERSIONS BETWEEN TW AND PouchDB ============= */
 
     db = BaseConverter.decorate(db);
 
     /**
      * Copy all fields to "fields" sub-object except for the "revision" field.
      * See also: TiddlyWebAdaptor.prototype.convertTiddlerToTiddlyWebFormat.
-     * 
+     *
      * @param {Tiddler} tiddler - the tiddler to convert to CouchDB format
      * @param {object} tiddlerInfo - The metadata about the tiddler that the sync mechanism of tiddlywiki provides.
      *                               This includes the revision and other metadata related to the tiddler that is not
      *                               included in the tiddler.
-     * @static 
-     * @private 
-     * @returns {object} doc - An document object that represents the tiddler. Ready to be inserted into CouchDB 
+     * @static
+     * @private
+     * @returns {object} doc - An document object that represents the tiddler. Ready to be inserted into CouchDB
      */
     db._convertToCouch = function convertToCouch(tiddler, tiddlerInfo) {
         var result = { fields: {} };
@@ -76,10 +76,10 @@ function tiddlerConverter(db) {
     };
 
         /**
-         * Transforms a pouchd document extracting just the fields that should be 
+         * Transforms a pouchd document extracting just the fields that should be
          * part of the tiddler discarding all the metadata related to PouchDB.
          * For this version just copy all fields across except _rev and _id
-         * @static 
+         * @static
          * @param {object} doc - A couchdb object containing a tiddler representation inside the fields sub-object
          * @returns {object} fields ready for being added to a wiki store
          */
