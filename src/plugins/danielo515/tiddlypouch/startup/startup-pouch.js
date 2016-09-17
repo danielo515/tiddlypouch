@@ -52,6 +52,9 @@ The existence of the database determines if the plugin will be active or not.
         Promise.all([
             $TPouch.database.createIndex('by_type', function (doc) { doc.fields.type && emit(doc.fields.type) })
             , $TPouch.database.createIndex('skinny_tiddlers', function (doc) {
+                if(doc.fields['plugin-type']){ // skip plugins!
+                    return;
+                }
                 var fields = {};
                 for (var field in doc.fields) {
                     if (['text'].indexOf(field) === -1) {
