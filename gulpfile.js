@@ -95,6 +95,9 @@ var pluginNamespace = authorName + "/" + pluginName; // no trailing slash!
 var pluginTiddler = "$:/plugins/" + pluginNamespace;
 var pluginInfoPath = path.resolve(pluginSrc, pluginNamespace, "plugin.info");
 var pluginInfo = JSON.parse(fs.readFileSync(pluginInfoPath, "utf8"));
+var pckgJSON = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
+var updaterSrc = "./src/plugins/danielo515/tiddlypouch/boot/boot.html.tid";
+var updater = fs.readFileSync(updaterSrc, 'utf8');
 
 // build paths where we output our results
 var outPath = {
@@ -146,8 +149,13 @@ gulp.task("bump_version", function(cb) {
     (argv.patch || argv.production) && v.patch++;
     pluginInfo.version = v.major + "." + v.minor + "." + v.patch + mode + build;
     pluginInfo.released = new Date().toUTCString();
+    pckgJSON.version = pluginInfo.version;
+
+    updater = updater.replace(/\/\**TPOUCH_VER.*\*\// , "/***TPOUCH_VER*/'" + pluginInfo.version + "'/*TPOUCH_VER***/");
 
     fs.writeFileSync(pluginInfoPath, JSON.stringify(pluginInfo, null, 4));
+    fs.writeFileSync('./package.json', JSON.stringify(pckgJSON,null,4));
+    fs.writeFileSync(updaterSrc,updater);
 
     cb();
 });
