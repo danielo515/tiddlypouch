@@ -47,7 +47,7 @@ var defaultRoute = {
  * 
  * @function 
  * @name Route#canRoute
- * @param {object} tiddler - The tiddler to be routed
+ * @param {object} Tiddler - The tiddler to be routed
  * @returns {boolean} true if this route is capable of routing the given tiddler. False otherwhise
  */
 /**
@@ -55,7 +55,7 @@ var defaultRoute = {
  * 
  * @function 
  * @name Route#route
- * @param {object} tiddler - The tiddler to be routed
+ * @param {object} Tiddler - The tiddler to be routed
  * @param {object} destinations - The hasmap of destinations that the current @DbRouter has
  * @returns {string} The name of the destination database. Will be used by @DbRouter to find it on the map of destinations
  */

@@ -16,12 +16,6 @@ tags: $:/tags/RawMarkup
         window.$TPouch = $TPouch;
         window.$tw = $tw;
 
-        // $TPouch._configDB.get('configuration').then(function(config){
-        //     if(!config.selectedDbId){
-        //         throw new Error('The configuration stored on the db was invalid!')
-        //     }
-        //     $TPouch.database = new PouchDB(config.selectedDbId);
-        // })
         $TPouch.plugins.allDocs( { include_docs: true } )
         .then(function(all){
 
