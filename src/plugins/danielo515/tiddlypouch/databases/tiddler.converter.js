@@ -14,54 +14,35 @@ a conversor that makes tiddlers compatible with pouchdb. This injects the requir
 /*jslint node: true, browser: true */
 /*global $tw: false */
 /* global module */
-/**====================== Tiddler conversor dependency  ========================== */
 /** @namespace {converters} tiddler.converter */
 
-module.exports.inject = tiddlerConverter;
+module.exports.decorate = tiddlerConverter;
+
+/***====================== Tiddler conversor dependency  ========================== */
+var BaseConverter = require('$:/plugins/danielo515/tiddlypouch/converters/converter.js');
 
 /**
- * Injects methods to handle conversions between regular TW tiddlers and CouchDB 
- * 
+ * Injects methods to handle conversions between regular TW tiddlers and CouchDB
+ *
  * @param {DbStore} db a database instance where methods should be injected
  * @return {DbStore} The same db with the methods already injected
  */
 function tiddlerConverter(db) {
-    /**===================== CONVERSIONS BETWEEN TW AND PouchDB ============= */
-    /**
-    * CouchDB does not like document IDs starting with '_'.
-    * Convert leading '_' to '%5f' and leading '%' to '%25'
-    * Only used to compute _id / URL for a tiddler. Does not affect 'title' field.
-    * @param {String} title The title of the tiddler to mangle
-    * @return {String} The same title ready to be inserted into PouchDB/couchdb
-    */
-    db._mangleTitle = function mangleTitle(title) {
-        if (title.length == 0) {
-            return title;
-        }
-        var firstChar = title.charAt(0);
-        var restOfIt = title.substring(1);
-        if (firstChar === '_') {
-            return '%5f' + restOfIt;
-        }
-        else if (firstChar === '%') {
-            return '%25' + restOfIt;
-        }
-        else {
-            return title;
-        }
-    };
+    /***===================== CONVERSIONS BETWEEN TW AND PouchDB ============= */
+
+    db = BaseConverter.decorate(db);
 
     /**
      * Copy all fields to "fields" sub-object except for the "revision" field.
      * See also: TiddlyWebAdaptor.prototype.convertTiddlerToTiddlyWebFormat.
-     * 
+     *
      * @param {Tiddler} tiddler - the tiddler to convert to CouchDB format
      * @param {object} tiddlerInfo - The metadata about the tiddler that the sync mechanism of tiddlywiki provides.
      *                               This includes the revision and other metadata related to the tiddler that is not
      *                               included in the tiddler.
-     * @static 
-     * @private 
-     * @returns {object} doc - An document object that represents the tiddler. Ready to be inserted into CouchDB 
+     * @static
+     * @private
+     * @returns {object} doc - An document object that represents the tiddler. Ready to be inserted into CouchDB
      */
     db._convertToCouch = function convertToCouch(tiddler, tiddlerInfo) {
         var result = { fields: {} };
@@ -95,10 +76,10 @@ function tiddlerConverter(db) {
     };
 
         /**
-         * Transforms a pouchd document extracting just the fields that should be 
+         * Transforms a pouchd document extracting just the fields that should be
          * part of the tiddler discarding all the metadata related to PouchDB.
          * For this version just copy all fields across except _rev and _id
-         * @static 
+         * @static
          * @param {object} doc - A couchdb object containing a tiddler representation inside the fields sub-object
          * @returns {object} fields ready for being added to a wiki store
          */

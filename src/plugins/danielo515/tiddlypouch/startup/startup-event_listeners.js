@@ -24,7 +24,7 @@ The existence of the database determines if the plugin will be active or not.
     exports.synchronous = true;
 
     exports.startup = function () {
-        var logger = new $tw.TiddlyPouch.Logger("TiddlyPouch");
+        var logger = new $TPouch.Logger("TiddlyPouch");
         var uiConnector = require("$:/plugins/danielo515/tiddlypouch/ui/config.js");
         var Utils = require('$:/plugins/danielo515/tiddlypouch/utils');
 
@@ -32,16 +32,16 @@ The existence of the database determines if the plugin will be active or not.
         ########################### EVENT LISTENERS ##################################*/
         $tw.rootWidget.addEventListener("tm-pouch-delete-db", function (event) {
             $tw.passwordPrompt.createPrompt({
-                serviceName: $tw.language.getString("TiddlyPouch/Delete-DB", { variables: { database: $tw.TiddlyPouch.config.currentDB.name } }),
+                serviceName: $tw.language.getString("TiddlyPouch/Delete-DB", { variables: { database: $TPouch.config.currentDB.name } }),
                 noUserName: true,
                 submitText: "Confirm",
                 canCancel: true,
                 repeatPassword: false,
                 callback: function (data) {
                     if (data && data.password === 'delete') {
-                        $tw.TiddlyPouch.database.destroy().then(
+                        $TPouch.database.destroy().then(
                             function () {
-                                logger.alert("Database ", $tw.TiddlyPouch.config.currentDB.name, " deleted!!!")
+                                logger.alert("Database ", $TPouch.config.currentDB.name, " deleted!!!")
                             }
                         );
                     }
@@ -55,7 +55,7 @@ The existence of the database determines if the plugin will be active or not.
          */
         $tw.rootWidget.addEventListener("tm-tp-load-revisions",
             function (event) {
-                $tw.TiddlyPouch.database.getTiddlerRevisions(event.param)
+                $TPouch.database.getTiddlerRevisions(event.param)
                     .then(function (revisionsList) {
                         var title = "$:/temp/revisions:" + event.param
                         Utils.saveAsJsonTiddler(title, revisionsList);
@@ -66,7 +66,7 @@ The existence of the database determines if the plugin will be active or not.
          */
         $tw.rootWidget.addEventListener("tm-tp-load-certain-revision",
             function (event) {
-                $tw.TiddlyPouch.database.getTiddler(event.param, event.paramObject.revision)
+                $TPouch.database.getTiddler(event.param, event.paramObject.revision)
                     .then(function (tiddler) {
                         tiddler.title = "$:/temp/revision:" + event.paramObject.revision.slice(0,6) + ":" + event.param;
                         $tw.wiki.addTiddler(tiddler);  

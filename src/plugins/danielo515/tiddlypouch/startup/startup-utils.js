@@ -25,13 +25,13 @@ exports.platforms = ["browser"];
 exports.synchronous = true;
 
 exports.startup = function() {
-  this.logger = new $tw.TiddlyPouch.Logger("PouchDB");
+  this.logger = new $TPouch.Logger("PouchDB");
   var self = this;
-  var db = $tw.TiddlyPouch.database;
+  var db = $TPouch.database;
 
-  $tw.TiddlyPouch.utils = {};
+  $TPouch.utils = {};
   /** Removes the document with the provided title from the database*/
-  $tw.TiddlyPouch.utils.remove = function(title){
+  $TPouch.utils.remove = function(title){
      db.get(title).then(
        function(doc) {
             return db.remove(doc);
@@ -43,7 +43,7 @@ exports.startup = function() {
    };
    /** Replaces a document in the database with the provided one
      without taking in account the revision.*/
-   $tw.TiddlyPouch.utils.replace = function(newdoc){
+   $TPouch.utils.replace = function(newdoc){
        db.get(newdoc._id).then(
        function(doc) {
             return db.remove(doc);

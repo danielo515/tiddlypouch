@@ -8,6 +8,15 @@
 			},
 			"prefix": "<script>",
 			"suffix": "</script>"
-		}        
+		},
+        {
+			"file": "lie.polyfill.min.js",
+			"fields": {
+				"title": "$:/plugins/danielo515/tiddlypouch/lib/lie.js",
+                "tags": "$:/core/wiki/rawmarkup"
+			},
+			"prefix": "<script>",
+			"suffix": "</script>"
+		}         
 	]
 }

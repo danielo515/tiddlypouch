@@ -28,10 +28,10 @@ module-type: startup
     exports.startup = function () {
         /* --- Declaration ZONE ---*/
         /*============================*/
-        var logger = new $tw.TiddlyPouch.Logger("PouchSync");
+        var logger = new $TPouch.Logger("PouchSync");
 
         function PouchLog(log, info, header) {
-            if ($tw.TiddlyPouch.config.debug.isActive()) {
+            if ($TPouch.config.debug.isActive()) {
                 /*Appends info to the specified log tiddler*/
                 var oldinfo = $tw.wiki.getTiddlerText(log) + '\n';
                 if (typeof info === 'object') {
@@ -58,7 +58,7 @@ module-type: startup
             /*First make sure we have the correct design document on the remote database.
               This is mandatory for filtered replication. Filtered replication is necessary
               to avoid replicating unnecesary documents like design documents.*/
-            return remoteDB.put($tw.TiddlyPouch.designDocument).then(start).catch(function (err) {
+            return remoteDB.put($TPouch.designDocument).then(start).catch(function (err) {
                 if (err.status == 409) { // If we get a 409 the document exist on remote
                     start(); // So start sync anyway
                 } else {
@@ -67,7 +67,7 @@ module-type: startup
                 }
             });
             function start(info) { //Function that actually starts the sync
-                var sync = PouchDB.sync($tw.TiddlyPouch.database._db, remoteDB, {
+                var sync = PouchDB.sync($TPouch.database._db, remoteDB, {
                     live: true,
                     retry: true,
                     filter: 'TiddlyPouch/tiddlers'
@@ -93,7 +93,7 @@ module-type: startup
                     $tw.wiki.setText(SYNC_STATE, 'text', undefined, 'error')
                     PouchLog(SYNC_ERRORS, err, "===SYNC Error===");
                 });
-                $tw.TiddlyPouch.syncHandler = sync;
+                $TPouch.syncHandler = sync;
             }
         }
 
@@ -102,7 +102,7 @@ module-type: startup
               username: 'mysecretusername',
               password: 'mysecretpassword'
             }*/
-            var Config = $tw.TiddlyPouch.config;
+            var Config = $TPouch.config;
             var URL = Config.currentDB.getUrl();
             var Databasename = Config.currentDB.getRemoteName();
             /*If there is no URL set, then no sync*/
@@ -134,9 +134,9 @@ module-type: startup
         }
 
         /** Sync methos implantation */
-        $tw.TiddlyPouch.designDocument = buildDesignDocument();
-        $tw.TiddlyPouch.startSync = startSync;
-        $tw.TiddlyPouch.newOnlineDB = newOnlineDB;
+        $TPouch.designDocument = buildDesignDocument();
+        $TPouch.startSync = startSync;
+        $TPouch.newOnlineDB = newOnlineDB;
 
     };
 
