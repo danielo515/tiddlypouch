@@ -17,6 +17,30 @@ tags: $:/tags/RawMarkup
         window.$TPouch = $TPouch;
         window.$tw = $tw;
 
+
+        function createSplashScreen(message){
+            var splash = document.getElementById('TP_splash_screen');
+            if( splash === null){
+                splash = document.createElement("h1");
+                splash.setAttribute("id","TP_splash_screen");
+                var text = document.createTextNode(message);
+                splash.appendChild(text);
+                document.body.appendChild( splash, document.body.firstChild );
+            } else{
+                splashMessage(message);
+            }
+        }
+
+        function hideSplashScreen(){
+            var splash = document.getElementById('TP_splash_screen');
+            splash.setAttribute("display","none");
+        }
+        function splashMessage(message){
+            var splash = document.getElementById('TP_splash_screen');
+            splash.setAttribute("display","block");
+            splash.textContent = message;
+        }
+
         /**
          * Checks if the current version on the database is lower than the current version
          * if so, it deletes all the indexes so they can be recreated
@@ -31,6 +55,7 @@ tags: $:/tags/RawMarkup
                     return prom;
                 }
                 console.log('Starting update process...');
+                splashMessage('Updating database....');
                 return documentsToRemove
                 .reduce(function(prom , doc){
 
@@ -42,12 +67,19 @@ tags: $:/tags/RawMarkup
                         })
                         .catch(console.log.bind(console,'Error removing ' , doc))
                     }, prom)
-                .then(console.log.bind(console,'Update process complete'))
+                .then(function(){
+                    removeSplashScreen();
+                    console.log('Update process complete');
+                })
         }
+
+
+
 
         $TPouch._configDb.get('configuration') // we read the configuration to know which database shuld be loaded
         .then(function(config){
 
+            createSplashScreen('Loading...');
             if(!config.selectedDbId){
                 throw new Error('There is no DB selected, nothing to inject')
             }
@@ -61,7 +93,7 @@ tags: $:/tags/RawMarkup
                     })
         })
         .then(function(){
-
+            splashMessage('Loading....');
             return $TPouch._db.query('by_plugin_type', { include_docs: true })
         })
         .then(function(all){ //Actual docs are contained in the rows array
@@ -76,11 +108,20 @@ tags: $:/tags/RawMarkup
 
             console.log('Something went wrong during plugin injection ', reason);
         }).then(function(){
-
             window.$tw.boot.boot(); // boot when chain completes, even if we got some errors
+            hideSplashScreen();
         })
 
 
 
     })(window);
 </script>
+<style>
+    #TP_splash_screen {
+       text-align: center;
+       color: #CECECE;
+       font-size: 15em;
+       position: fixed;
+       width: 100%;
+    }
+</style>
