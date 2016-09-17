@@ -18,7 +18,7 @@ Decorator that convert tiddlywiki plugins into PouchDB documents
 
 module.exports.decorate = pluginConverter;
 
-/**====================== plugins conversor dependency  ========================== */
+/***====================== plugins conversor dependency  ========================== */
 var BaseConverter = require('$:/plugins/danielo515/tiddlypouch/converters/converter.js')
 
 /**
@@ -29,7 +29,7 @@ var BaseConverter = require('$:/plugins/danielo515/tiddlypouch/converters/conver
  * @return {DbStore} The same db with the methods already injected
  */
 function pluginConverter(db) {
-    /**===================== CONVERSIONS BETWEEN TW AND PouchDB ============= */
+    /***===================== CONVERSIONS BETWEEN TW AND PouchDB ============= */
 
     /** decorate with the base methods */
     db = BaseConverter.decorate(db);
@@ -68,36 +68,29 @@ function pluginConverter(db) {
         return result;
     };
 
-        /** TODO: turn this into a dummy method. TW will never try to load a plugin from the sync adaptor.
-         * We should also turn the loadTiddler into a dummy one that throws an error.
-         * Even if TW tries to lazy-load a plugin (maybe because it was not injected on boot) the router will route that request to the default db
-         *
-         * Transforms a pouchd document extracting just the fields that should be
-         * part of the tiddler discarding all the metadata related to PouchDB.
-         * For this version just copy all fields across except _rev and _id
-         * In the next implementation maybe remove the usedIn field, which indicates which wikis uses this plugin
-         * @static
-         * @param {object} doc - A couchdb object containing a tiddler representation inside the fields sub-object
-         * @returns {object} fields ready for being added to a wiki store
+        /**
+         * Dummy method. TW should never try to load a plugin from the sync adaptor.
+         * Even if TW tries to lazy-load a plugin (because any error handling the tiddler)
+         * the router will route that request to the default DbStore
+         * @return {null} nothing is returned
          */
-        db._convertFromCouch = function convertFromCouch(doc) {
-            var result = {};
-            this.logger && this.logger.debug("Converting from ", doc);
-            // Transfer the fields, pulling down the `fields` hashmap
-            $tw.utils.each(doc, function (element, field, obj) {
-                if (field === "fields") {
-                    $tw.utils.each(element, function (element, subTitle, obj) {
-                        result[subTitle] = element;
-                    });
-                } else if (field === "_id" || field === "_rev") {
-                    /* skip these */
-                } else {
-                    result[field] = doc[field];
-                }
-            });
-            result["revision"] = doc["_rev"];
-            //console.log("Conversion result ", result);
-            return result;
+        db._convertFromCouch = function convertFromCouch() {
+            var err = new Error('Tiddlers should not be loaded from the plugins database!');
+            err.status = 403;
+            throw err
+        };
+
+        /**
+         * Dummy method.
+         * Tiddlers should never be deleted through the plugins DbStore
+         * Even if TW tries to delete a plugin (because any error handling the tiddler)
+         * the router will route that request to the default DbStore
+         * @return {null} nothing is returned
+         */
+        db.deleteTiddler = function() {
+            var err = new Error('Tiddlers should not be deleted through the plugins database!');
+            err.status = 403;
+            throw err
         };
 
         return db;

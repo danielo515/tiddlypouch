@@ -31,12 +31,7 @@ var converters = {
  *
  * It is responsible of injecting the tiddler conversion logic into the instantiated database.
  * Conversion logic is extracted from a list of converter modules.
- * Each converther should inject the following interface:
- * <pre>
- *  _convertFromCouch: returns a document representation of the tiddler
- * _convertToCouch: returns a tiddler fields representation of the given object
- * _mangleTitle: returns a title compatible with the destination database based on the given title
- * </pre>
+ * Each converther should decorate the database with the {@link DbDecorator} interface
  * @see DbStore
  *
  * @param {String} dbName the name of the database to instantiate. It will be created if it does not exist
@@ -53,3 +48,39 @@ function factory( dbName, dbType , dbToWrap ){
     return converter.decorate(db);
 
 }
+
+
+/**
+ * Should decorate any given {@link DbStore} with the following methods.
+ * Monkey patching is the method used
+ *
+ * @interface DbDecorator
+ */
+/**
+ *
+ *
+ * @function
+ * @name DbDecorator#_convertToCouch
+ *
+ * @param {Tiddler} tiddler - the tiddler to convert to CouchDB format
+ * @param {object} tiddlerInfo - The metadata about the tiddler that the sync mechanism of tiddlywiki provides.
+ *                               This includes the revision and other metadata related to the tiddler that is not
+ *                               included in the tiddler.
+ * @returns {object} doc - An document object that represents the tiddler. Ready to be inserted into CouchDB
+ */
+/**
+ * This method should handle any required conversion to create a document id from a tiddler title.
+ * It should be static and have no side effects.
+ * @function
+ * @name DbDecorator#_mangleTitle
+ * @param {String} title - Any tiddler title
+ * @returns {String} title compatible with the destination database
+ */
+/**
+ * Transforms a pouchd document extracting just the fields that should be
+ * part of the tiddler discarding all the metadata related to PouchDB.
+ * @function
+ * @name DbDecorator#_convertFromCouch
+ * @param {object} doc - A couchdb object containing a tiddler representation inside the fields sub-object
+ * @returns {object} fields ready for being added to a wiki store
+ */

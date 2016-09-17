@@ -3,7 +3,7 @@ title: $:/plugins/danielo515/tiddlypouch/converters/converter.js
 type: application/javascript
 module-type: library
 
-Basic converter. Used by other decorators (AKA converters) 
+Basic converter. Used by other decorators (AKA converters)
 
 @preserve
 
@@ -16,17 +16,17 @@ Basic converter. Used by other decorators (AKA converters)
 /* global module */
 /** @namespace {converters} converter */
 
-/**====================EXPORTS============================ */
+/***====================EXPORTS============================ */
 module.exports.decorate = Converter;
 
 /**
  * Base converter decorator
- * 
+ *
  * @param {any} db - database to decorate with this converter methods
  * @returns {any} db - the same db but decorated with the methods of this converter
  */
 function Converter(db) {
-    /**===================== CONVERSIONS BETWEEN TW AND PouchDB ============= */
+    /***===================== CONVERSIONS BETWEEN TW AND PouchDB ============= */
     /**
     * CouchDB does not like document IDs starting with '_'.
     * Convert leading '_' to '%5f' and leading '%' to '%25'
