@@ -1,0 +1,127 @@
+title: $:/plugins/danielo515/tiddlypouch/boot
+tags: $:/tags/RawMarkup
+
+<script>
+    (function(window){
+        'use strict';
+
+        var $TPouch = window.$TPouch || Object.create(null);
+        $TPouch._configDb = $TPouch._configDb || new PouchDB('__TP_config');
+        /*** The version section is automatically updated by build scripts,  Dont delete the below comment */
+        $TPouch.VERSION = /***TPOUCH_VER*/'0.15.0+1'/*TPOUCH_VER***/;
+
+        var $tw = window.$tw || Object.create(null);
+        $tw.boot = $tw.boot || Object.create(null);
+        $tw.boot.suppressBoot = true
+
+        window.$TPouch = $TPouch;
+        window.$tw = $tw;
+
+
+        function createSplashScreen(message){
+            var splash = document.getElementById('TP_splash_screen');
+            if( splash === null){
+                splash = document.createElement("h1");
+                splash.setAttribute("id","TP_splash_screen");
+                var text = document.createTextNode(message);
+                splash.appendChild(text);
+                document.body.appendChild( splash, document.body.firstChild );
+            } else{
+                splashMessage(message);
+            }
+        }
+
+        function hideSplashScreen(){
+            var splash = document.getElementById('TP_splash_screen');
+            splash.setAttribute("display","none");
+        }
+        function splashMessage(message){
+            var splash = document.getElementById('TP_splash_screen');
+            splash.setAttribute("display","block");
+            splash.textContent = message;
+        }
+
+        /**
+         * Checks if the current version on the database is lower than the current version
+         * if so, it deletes all the indexes so they can be recreated
+         * @param {string} version - The version of TiddlyPouch that the database being updated has
+         * @param {PouchDB} db - The actual Pouch database that we are updating
+         * @returns {promise} - promise that fulfills when all the indexes have been processed, removed or failed removing
+         */
+        function updater( version , db){
+            var documentsToRemove = ['_design/by_type','_design/skinny_tiddlers','_design/by_plugin_type'];
+            var prom = Promise.resolve();
+                if ( version && !(parseInt(version.split('.').join('')) < parseInt($TPouch.VERSION.split('.').join('')) )) {
+                    return prom;
+                }
+                console.log('Starting update process...');
+                splashMessage('Updating database....');
+                return documentsToRemove
+                .reduce(function(prom , doc){
+
+                        return prom
+                        .then(function(){return db.get(doc)})
+                        .then(function(docu){
+                            console.log('Removing index ',doc);
+                            return db.remove(docu)
+                        })
+                        .catch(console.log.bind(console,'Error removing ' , doc))
+                    }, prom)
+                .then(function(){
+                    removeSplashScreen();
+                    console.log('Update process complete');
+                })
+        }
+
+
+
+
+        $TPouch._configDb.get('configuration') // we read the configuration to know which database shuld be loaded
+        .then(function(config){
+
+            createSplashScreen('Loading...');
+            if(!config.selectedDbId){
+                throw new Error('There is no DB selected, nothing to inject')
+            }
+            /** Create the default db, it should be wrapped later on the boot proces in a {@link DbStore} */
+            $TPouch._db = new PouchDB(config.selectedDbId);
+            var oldVer = config.databases[config.selectedDbId].version;
+            return updater(oldVer , $TPouch._db)
+                    .then(function(){ /** After the update process, flag the db with latest version */
+                        config.databases[config.selectedDbId].version = $TPouch.VERSION;
+                        return $TPouch._configDb.put(config);
+                    })
+        })
+        .then(function(){
+            splashMessage('Loading....');
+            return $TPouch._db.query('by_plugin_type', { include_docs: true })
+        })
+        .then(function(all){ //Actual docs are contained in the rows array
+
+            console.log('Injecting ', all.total_rows, ' plugins into tw');
+            var plugins = all.rows.map(function(row){
+
+                return row.doc.fields
+            });
+            window.$tw.preloadTiddlers = plugins;
+        }).catch(function(reason){ // catch any possible error and continue the chain
+
+            console.log('Something went wrong during plugin injection ', reason);
+        }).then(function(){
+            window.$tw.boot.boot(); // boot when chain completes, even if we got some errors
+            hideSplashScreen();
+        })
+
+
+
+    })(window);
+</script>
+<style>
+    #TP_splash_screen {
+       text-align: center;
+       color: #CECECE;
+       font-size: 15em;
+       position: fixed;
+       width: 100%;
+    }
+</style>
