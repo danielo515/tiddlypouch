@@ -19,6 +19,6 @@ module.exports.plugins = {
         return '__TP_plugins';
     },
     canRoute: function(tiddler){
-        return tiddler.isPlugin();
+        return tiddler && tiddler.isPlugin && tiddler.isPlugin();
     }
 }

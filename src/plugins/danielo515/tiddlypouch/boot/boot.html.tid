@@ -6,7 +6,6 @@ tags: $:/tags/RawMarkup
         'use strict';
 
         var $TPouch = window.$TPouch || Object.create(null);
-        $TPouch.plugins = $TPouch.plugins || new PouchDB('__TP_plugins');
         $TPouch._configDb = $TPouch._configDb || new PouchDB('__TP_config');
 
         var $tw = window.$tw || Object.create(null);
@@ -16,7 +15,15 @@ tags: $:/tags/RawMarkup
         window.$TPouch = $TPouch;
         window.$tw = $tw;
 
-        $TPouch.plugins.allDocs( { include_docs: true } )
+        $TPouch._configDb.get('configuration')
+        .then(function(config){
+
+            if(!config.selectedDbId){
+                throw new Error('There is no DB selected, nothing to inject')
+            }
+            $TPouch._db = new PouchDB(config.selectedDbId);
+            return $TPouch._db.query('by_plugin_type', { include_docs: true })
+        })
         .then(function(all){
 
             console.log('Injecting ', all.total_rows, ' plugins into tw');
@@ -25,10 +32,15 @@ tags: $:/tags/RawMarkup
                 return row.doc.fields
             });
             window.$tw.preloadTiddlers = plugins;
-            window.$tw.boot.boot();
-        });
-        
-        
+        }).catch(function(reason){ // catch any possible error and continue the chain
+
+            console.log('Something went wrong during plugin injection ', reason);
+        }).then(function(){
+
+            window.$tw.boot.boot(); // boot when chain completes, even if we got some errors
+        })
+
+
 
     })(window);
 </script>

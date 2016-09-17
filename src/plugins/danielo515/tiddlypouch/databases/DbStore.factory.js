@@ -21,14 +21,14 @@ var DbStore = require('$:/plugins/danielo515/tiddlypouch/DbStore.js');
 /** This list should be built automatically based on some kind of module system,
  * but for the moment, just create it manually
  */
-var converters = { 
-    'tiddler': require('$:/plugins/danielo515/tiddlypouch/converters/tiddler'),
+var converters = {
+    'tiddlers': require('$:/plugins/danielo515/tiddlypouch/converters/tiddler'),
     'plugins': require('$:/plugins/danielo515/tiddlypouch/converters/plugins')
-}; 
+};
 
 /**
  * Factory that instantiates DbStores.
- * 
+ *
  * It is responsible of injecting the tiddler conversion logic into the instantiated database.
  * Conversion logic is extracted from a list of converter modules.
  * Each converther should inject the following interface:
@@ -38,15 +38,15 @@ var converters = {
  * _mangleTitle: returns a title compatible with the destination database based on the given title
  * </pre>
  * @see DbStore
- * 
+ *
  * @param {String} dbName the name of the database to instantiate. It will be created if it does not exist
- * @param {String} dbType the type of database you want. This determines the conversion logic, 
+ * @param {String} dbType the type of database you want. This determines the conversion logic,
  *                        so basically this is a converter name.
  * @param {PouchDB} [dbToWrap] - An already existing database to wrap, instead of being created
  * @returns {DbStore} a ready to use instance of DbStore class with the conversion logic injected
  */
 function factory( dbName, dbType , dbToWrap ){
-    dbType = dbType || 'tiddler';
+    dbType = dbType || 'tiddlers';
     var converter = converters[dbType];
 
     var db = new DbStore(dbName , dbToWrap);

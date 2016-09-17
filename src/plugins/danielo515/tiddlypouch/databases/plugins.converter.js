@@ -24,7 +24,7 @@ var BaseConverter = require('$:/plugins/danielo515/tiddlypouch/converters/conver
 /**
  * Injects methods to handle conversions between regular TW tiddlers and CouchDB.
  * getSkinnyTiddlers is not implemented because it does not makes sense on the plugins database
- * 
+ *
  * @param {DbStore} db - a database instance where methods should be injected
  * @return {DbStore} The same db with the methods already injected
  */
@@ -37,14 +37,14 @@ function pluginConverter(db) {
     /**
      * Copy all fields to "fields" except the "revision" field.
      * See also: TiddlyWebAdaptor.prototype.convertTiddlerToTiddlyWebFormat.
-     * 
+     *
      * @param {Tiddler} tiddler - the tiddler to convert to CouchDB format
      * @param {object} tiddlerInfo - The metadata about the tiddler that the sync mechanism of tiddlywiki provides.
      *                               This includes the revision and other metadata related to the tiddler that is not
      *                               included in the tiddler.
-     * @static 
-     * @private 
-     * @returns {object} doc - An document object that represents the tiddler. Ready to be inserted into CouchDB 
+     * @static
+     * @private
+     * @returns {object} doc - An document object that represents the tiddler. Ready to be inserted into CouchDB
      */
     db._convertToCouch = function convertToCouch(tiddler, tiddlerInfo) {
         var result = { fields: {} };
@@ -68,12 +68,15 @@ function pluginConverter(db) {
         return result;
     };
 
-        /**
-         * Transforms a pouchd document extracting just the fields that should be 
+        /** TODO: turn this into a dummy method. TW will never try to load a plugin from the sync adaptor.
+         * We should also turn the loadTiddler into a dummy one that throws an error.
+         * Even if TW tries to lazy-load a plugin (maybe because it was not injected on boot) the router will route that request to the default db
+         *
+         * Transforms a pouchd document extracting just the fields that should be
          * part of the tiddler discarding all the metadata related to PouchDB.
          * For this version just copy all fields across except _rev and _id
          * In the next implementation maybe remove the usedIn field, which indicates which wikis uses this plugin
-         * @static 
+         * @static
          * @param {object} doc - A couchdb object containing a tiddler representation inside the fields sub-object
          * @returns {object} fields ready for being added to a wiki store
          */

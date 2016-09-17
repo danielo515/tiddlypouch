@@ -6,6 +6,7 @@
         "exports":true,
         "module":true,
         "PouchDB":true,
-        "$TPouch": true
+        "$TPouch": true,
+        "Promise":true
         }
 }
