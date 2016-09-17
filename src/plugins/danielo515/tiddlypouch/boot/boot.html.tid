@@ -6,6 +6,9 @@ tags: $:/tags/RawMarkup
         'use strict';
 
         var $TPouch = window.$TPouch || Object.create(null);
+        if($TPouch.supressBoot){ /** Allow external JS to avoid boot */
+            return
+        }
         $TPouch._configDb = $TPouch._configDb || new PouchDB('__TP_config');
         /*** The version section is automatically updated by build scripts,  Dont delete the below comment */
         $TPouch.VERSION = /***TPOUCH_VER*/'0.15.0+1'/*TPOUCH_VER***/;
@@ -68,7 +71,7 @@ tags: $:/tags/RawMarkup
                         .catch(console.log.bind(console,'Error removing ' , doc))
                     }, prom)
                 .then(function(){
-                    removeSplashScreen();
+                    hideSplashScreen();
                     console.log('Update process complete');
                 })
         }
