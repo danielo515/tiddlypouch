@@ -12,7 +12,7 @@ tags: $:/tags/RawMarkup
         $TPouch._configDb = $TPouch._configDb || new PouchDB('__TP_config');
         $TPouch.splashScreen = $TPouch.splashScreen || Object.create(null);
         /*** The version section is automatically updated by build scripts,  Dont delete the below comment */
-        $TPouch.VERSION = /***TPOUCH_VER*/'0.15.0+2'/*TPOUCH_VER***/;
+        $TPouch.VERSION = /***TPOUCH_VER*/'0.15.1'/*TPOUCH_VER***/;
 
         var $tw = window.$tw || Object.create(null);
         $tw.boot = $tw.boot || Object.create(null);
@@ -114,7 +114,12 @@ tags: $:/tags/RawMarkup
 
             console.log('Something went wrong during plugin injection ', reason);
         }).then(function(){
-            window.$tw.boot.boot(); // boot when chain completes, even if we got some errors
+            try{
+                $tw.boot.boot(); // boot when chain completes, even if we got some errors
+            }catch(err){
+                console.error('Something went wrong booting tiddlywiki ',err);
+                window.location.reload();
+            }
             $TPouch.splashScreen.hide();
         })
 
