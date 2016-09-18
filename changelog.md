@@ -1,5 +1,40 @@
 # Change Log
 
+## [v0.15.0](https://github.com/danielo515/tiddlypouch/tree/v0.15.0) (2016-09-17)
+[Full Changelog](https://github.com/danielo515/tiddlypouch/compare/v0.14.5...v0.15.0)
+
+**Implemented enhancements:**
+
+- Provide a method to auto-update existing databases [\#43](https://github.com/danielo515/tiddlypouch/issues/43)
+- Make sure that no tiddler is tried to be loaded or deleted from the pluginsStore [\#39](https://github.com/danielo515/tiddlypouch/issues/39)
+- Exclude plugins from skinny tiddlers index [\#38](https://github.com/danielo515/tiddlypouch/issues/38)
+- Use Promise.all for boost performance [\#37](https://github.com/danielo515/tiddlypouch/issues/37)
+- Save plugins to the same DB as the regular tiddlers. Keep them as two DBs conceptually [\#36](https://github.com/danielo515/tiddlypouch/issues/36)
+- Add promise polifyl [\#34](https://github.com/danielo515/tiddlypouch/issues/34)
+- Allow config db as dependency injection on config module [\#31](https://github.com/danielo515/tiddlypouch/issues/31)
+- Basic reading of config database before boot for selecting appropiate plugins [\#30](https://github.com/danielo515/tiddlypouch/issues/30)
+- Inject plugins into the $tw object based on the selected database [\#29](https://github.com/danielo515/tiddlypouch/issues/29)
+- Call routes binded to DbRouter object [\#28](https://github.com/danielo515/tiddlypouch/issues/28)
+- Prevent $tw boot, then inject tiddlers and boot after the process completes. [\#26](https://github.com/danielo515/tiddlypouch/issues/26)
+- Implement plugin convert DB decorator [\#25](https://github.com/danielo515/tiddlypouch/issues/25)
+- Implement a route to route plugins to a plugins db [\#24](https://github.com/danielo515/tiddlypouch/issues/24)
+- Make TiddlyPouch a global object [\#22](https://github.com/danielo515/tiddlypouch/issues/22)
+- Fix the old changelog file [\#19](https://github.com/danielo515/tiddlypouch/issues/19)
+- Remove subtitle from getting started panel [\#18](https://github.com/danielo515/tiddlypouch/issues/18)
+- Create Router class [\#4](https://github.com/danielo515/tiddlypouch/issues/4)
+- Load plugins at startup before TW boots [\#2](https://github.com/danielo515/tiddlypouch/issues/2)
+
+**Fixed bugs:**
+
+- Make sure that no tiddler is tried to be loaded or deleted from the pluginsStore [\#39](https://github.com/danielo515/tiddlypouch/issues/39)
+- Exclude plugins from skinny tiddlers index [\#38](https://github.com/danielo515/tiddlypouch/issues/38)
+- Version 0.14.4 does not allow to load revisions  [\#20](https://github.com/danielo515/tiddlypouch/issues/20)
+
+**Closed issues:**
+
+- Create a Base converter decorator [\#27](https://github.com/danielo515/tiddlypouch/issues/27)
+- Move tiddlers between DBs [\#9](https://github.com/danielo515/tiddlypouch/issues/9)
+
 ## [v0.14.5](https://github.com/danielo515/tiddlypouch/tree/v0.14.5) (2016-09-11)
 [Full Changelog](https://github.com/danielo515/tiddlypouch/compare/v0.14.4...v0.14.5)
 
@@ -81,18 +116,18 @@
 - More meaningful login message
 # 0.11.2
 - Plugin deactivation detection mechanism has been removed
--- It was obsolete. Instead we are now using the default tiddlywiki method for the home page
+  - It was obsolete. Instead we are now using the default tiddlywiki method for the home page
 # 0.11.1
 - Update ui when a different Database is selected
 - Started to move selected database logic to a separate module
 - Utils moved to a module
 # 0.11
 - Updates to UX when saving config
--- On config update user is asked to reload the window
--- Better ui to select one of the existing databases
--- Macro to navigate directly to config tab
--- Button tiddler to save Database config
--- Clearer Getting started tid
+  - On config update user is asked to reload the window
+  - Better ui to select one of the existing databases
+  - Macro to navigate directly to config tab
+  - Button tiddler to save Database config
+  - Clearer Getting started tid
 - Removed old control panel `server`
 - Check if there is URL configured before check login status
 - Fixed promise chaining on config init
