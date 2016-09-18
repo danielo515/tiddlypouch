@@ -1,5 +1,25 @@
 # Change Log
 
+## [Unreleased](https://github.com/danielo515/tiddlypouch/tree/HEAD)
+
+[Full Changelog](https://github.com/danielo515/tiddlypouch/compare/v0.15.1...HEAD)
+
+**Implemented enhancements:**
+
+- Methods to show and hide splash screen on $TPouch object [\#46](https://github.com/danielo515/tiddlypouch/issues/46)
+- Provide a splash screen [\#7](https://github.com/danielo515/tiddlypouch/issues/7)
+
+**Fixed bugs:**
+
+- Weird issues when first loading [\#45](https://github.com/danielo515/tiddlypouch/issues/45)
+
+**Closed issues:**
+
+- Create a plugin library served over https [\#44](https://github.com/danielo515/tiddlypouch/issues/44)
+
+## [v0.15.1](https://github.com/danielo515/tiddlypouch/tree/v0.15.1) (2016-09-17)
+[Full Changelog](https://github.com/danielo515/tiddlypouch/compare/v0.15.0...v0.15.1)
+
 ## [v0.15.0](https://github.com/danielo515/tiddlypouch/tree/v0.15.0) (2016-09-17)
 [Full Changelog](https://github.com/danielo515/tiddlypouch/compare/v0.14.5...v0.15.0)
 
