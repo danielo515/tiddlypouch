@@ -10,6 +10,7 @@ tags: $:/tags/RawMarkup
             return
         }
         $TPouch._configDb = $TPouch._configDb || new PouchDB('__TP_config');
+        $TPouch.splashScreen = $TPouch.splashScreen || Object.create(null);
         /*** The version section is automatically updated by build scripts,  Dont delete the below comment */
         $TPouch.VERSION = /***TPOUCH_VER*/'0.15.0+1'/*TPOUCH_VER***/;
 
@@ -22,6 +23,7 @@ tags: $:/tags/RawMarkup
 
 
         function createSplashScreen(message){
+
             var splash = document.getElementById('TP_splash_screen');
             if( splash === null){
                 splash = document.createElement("h1");
@@ -32,17 +34,19 @@ tags: $:/tags/RawMarkup
             } else{
                 splashMessage(message);
             }
+
+            $TPouch.splashScreen.node = splash;
         }
 
-        function hideSplashScreen(){
-            var splash = document.getElementById('TP_splash_screen');
-            splash.setAttribute("display","none");
-        }
-        function splashMessage(message){
-            var splash = document.getElementById('TP_splash_screen');
-            splash.setAttribute("display","block");
-            splash.textContent = message;
-        }
+        $TPouch.splashScreen.hide = function hideSplashScreen(){
+
+            $TPouch.splashScreen.node.style.display = "none";
+        };
+        $TPouch.splashScreen.showMessage = function splashMessage(message){
+
+            $TPouch.splashScreen.node.style.display = "block";
+            $TPouch.splashScreen.node.textContent = message;
+        };
 
         /**
          * Checks if the current version on the database is lower than the current version
@@ -58,7 +62,7 @@ tags: $:/tags/RawMarkup
                     return prom;
                 }
                 console.log('Starting update process...');
-                splashMessage('Updating database....');
+                $TPouch.splashScreen.showMessage('Updating database....');
                 return documentsToRemove
                 .reduce(function(prom , doc){
 
@@ -71,7 +75,6 @@ tags: $:/tags/RawMarkup
                         .catch(console.log.bind(console,'Error removing ' , doc))
                     }, prom)
                 .then(function(){
-                    hideSplashScreen();
                     console.log('Update process complete');
                 })
         }
@@ -96,7 +99,7 @@ tags: $:/tags/RawMarkup
                     })
         })
         .then(function(){
-            splashMessage('Loading....');
+            $TPouch.splashScreen.showMessage('Loading....');
             return $TPouch._db.query('by_plugin_type', { include_docs: true })
         })
         .then(function(all){ //Actual docs are contained in the rows array
@@ -112,7 +115,7 @@ tags: $:/tags/RawMarkup
             console.log('Something went wrong during plugin injection ', reason);
         }).then(function(){
             window.$tw.boot.boot(); // boot when chain completes, even if we got some errors
-            hideSplashScreen();
+            $TPouch.splashScreen.hide();
         })
 
 
