@@ -67,7 +67,7 @@ module-type: startup
                 }
             });
             function start(info) { //Function that actually starts the sync
-                var sync = PouchDB.sync($TPouch.database._db, remoteDB, {
+                var sync = $TPouch.database._db.sync(remoteDB, {
                     live: true,
                     retry: true,
                     filter: 'TiddlyPouch/tiddlers'
