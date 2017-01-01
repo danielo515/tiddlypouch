@@ -7,7 +7,7 @@
 			},
 			"prefix": "",
 			"suffix": ""
-		}
+		},
 		{
 			"file": "cloud-error.svg",
 			"fields": {
@@ -15,7 +15,7 @@
 			},
 			"prefix": "",
 			"suffix": ""
-		}
+		},
 		{
 			"file": "cloud-ok.svg",
 			"fields": {
@@ -23,7 +23,7 @@
 			},
 			"prefix": "",
 			"suffix": ""
-		}
+		},
 		{
 			"file": "cloud-spinning.svg",
 			"fields": {

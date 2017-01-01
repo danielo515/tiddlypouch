@@ -5,5 +5,9 @@ title: $:/plugins/danielo515/tiddlypouch/ui/sync-flag
 </$reveal>
 
 <$reveal type="nomatch" state="$:/state/tiddlypouch/sync/status" text="offline">
-{{$:/state/tiddlypouch/sync/status}}
+<$button class="tc-btn-invisible">
+<$reveal type="match" state="$:/state/tiddlypouch/sync/status" text="error">{{$:/plugins/danielo515/tiddlypouch/images/cloud-error}}</$reveal>
+<$reveal type="match" state="$:/state/tiddlypouch/sync/status" text="paused">{{$:/plugins/danielo515/tiddlypouch/images/cloud-ok}}</$reveal>
+<$reveal type="match" state="$:/state/tiddlypouch/sync/status" text="syncing">{{$:/plugins/danielo515/tiddlypouch/images/cloud-spinning}}</$reveal>
+</$button>
 </$reveal>
