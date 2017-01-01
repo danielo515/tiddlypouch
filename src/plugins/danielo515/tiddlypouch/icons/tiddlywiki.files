@@ -8,5 +8,29 @@
 			"prefix": "",
 			"suffix": ""
 		}
+		{
+			"file": "cloud-error.svg",
+			"fields": {
+				"title": "$:/plugins/danielo515/tiddlypouch/images/cloud-error"
+			},
+			"prefix": "",
+			"suffix": ""
+		}
+		{
+			"file": "cloud-ok.svg",
+			"fields": {
+				"title": "$:/plugins/danielo515/tiddlypouch/images/cloud-ok"
+			},
+			"prefix": "",
+			"suffix": ""
+		}
+		{
+			"file": "cloud-spinning.svg",
+			"fields": {
+				"title": "$:/plugins/danielo515/tiddlypouch/images/cloud-spinning"
+			},
+			"prefix": "",
+			"suffix": ""
+		}
 	]
 }
