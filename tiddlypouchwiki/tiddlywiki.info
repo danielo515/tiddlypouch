@@ -16,7 +16,7 @@
 		"favicon": [
 			"--savetiddler","$:/favicon.ico","favicon.ico"],
 		"readme": [
-			"--rendertiddler","ReadMe","readme.md","text/html",
+			"--rendertiddler","$:/plugins/danielo515/tiddlypouch/readme","readme.md","text/html",
 			"--rendertiddler","License","license.md","text/html"]
 	}
 }

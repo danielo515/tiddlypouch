@@ -58,7 +58,7 @@ module-type: startup
             /*First make sure we have the correct design document on the remote database.
               This is mandatory for filtered replication. Filtered replication is necessary
               to avoid replicating unnecesary documents like design documents.*/
-            return remoteDB.put($TPouch.designDocument).then(start).catch(function (err) {
+            return remoteDB.put(buildFilterView()).then(start).catch(function (err) {
                 if (err.status == 409) { // If we get a 409 the document exist on remote
                     start(); // So start sync anyway
                 } else {
@@ -70,7 +70,7 @@ module-type: startup
                 var sync = $TPouch.database._db.sync(remoteDB, {
                     live: true,
                     retry: true,
-                    filter: 'TiddlyPouch/tiddlers'
+                    filter: 'filtered_replication/only_tiddlers'
                 }).on('change', function (info) {
                     PouchLog(SYNC_LOG, info, "===SYNC Change===");
                 }).on('paused', function (err) {
@@ -92,6 +92,16 @@ module-type: startup
                 }).on('error', function (err) {
                     $tw.wiki.setText(SYNC_STATE, 'text', undefined, 'error')
                     PouchLog(SYNC_ERRORS, err, "===SYNC Error===");
+                });
+                /* For filtered replication to work, we need the filter view both on the remote DB and the local DB
+                * Please check https://pouchdb.com/2015/04/05/filtered-replication.html for more info
+                */
+                $TPouch.database._db
+                .put(buildFilterView())
+                .catch(function (err) {
+                    if (err.status !== 409) {
+                        PouchLog(SYNC_ERRORS, 'Filtered replication may not work, we were unable to store the required doc on the local DB', "===SYNC Error starting===");
+                    }
                 });
                 $TPouch.syncHandler = sync;
             }
@@ -116,25 +126,18 @@ module-type: startup
             return new PouchDB(URL + Databasename, { auth: authOptions });
         }
 
-        // This function creates just the skinny view.
-        // it is legacy code, but makes TP compatible with couchdb plugin
-        // because it installs the required view on the server.
-        function buildDesignDocument() {
-            /* This builds the design document.
-               Each tiddler conforming the design document elements should be a  tiddler
-               with just one anonimous function*/
-            var design_document = JSON.parse($tw.wiki.getTiddler(CONFIG_PREFIX + "design_document").fields.text),
-                /*To be valid json functions should be just one line of text. That's why we remove line breaks*/
-                skinny_view = $tw.wiki.getTiddler(CONFIG_PREFIX + "skinny-tiddlers-view").fields.text.replace(/\r?\n/, ' '),
-                filter = $tw.wiki.getTiddler(CONFIG_PREFIX + "design_document/filter").fields.text.replace(/\r?\n/, ' ');
-
-            design_document.views['skinny-tiddlers'].map = skinny_view;
-            design_document.filters.tiddlers = filter;
-            return design_document;
-        }
+        function buildFilterView() {
+            return {
+                "_id": "_design/filtered_replication",
+                "filters": {
+                    "only_tiddlers": function (doc) {
+                        return doc.hasOwnProperty('fields')
+                    }.toString()
+                }
+            }
+        };
 
         /** Sync methos implantation */
-        $TPouch.designDocument = buildDesignDocument();
         $TPouch.startSync = startSync;
         $TPouch.newOnlineDB = newOnlineDB;
 
