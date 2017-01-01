@@ -1,0 +1,8 @@
+title: $:/plugins/danielo515/tiddlypouch/ui/revisions/transclude-template
+
+<!-- This template should be used with the tabs macro  -->
+<$list filter="[is[current]!field:title<currentTab>]">
+<$tiddler tiddler=<<currentTab>>>
+<$transclude tiddler="$:/core/ui/ViewTemplate"/>
+</$tiddler>
+</$list>

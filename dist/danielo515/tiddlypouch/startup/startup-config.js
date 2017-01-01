@@ -1,0 +1,15 @@
+/*\
+title: $:/plugins/danielo515/tiddlypouch/startup/config.js
+type: application/javascript
+module-type: startup
+
+Module responsible of managing the config.
+Creates and reads the config database.
+Provides an interface to the configurations (get, set, update)
+Configuration should be inmutable and require a reboot to become active
+Only remote configuration (username, remote_name, url) may be changed in the running session.
+
+@preserve
+
+\*/
+(function(){"use strict";exports.name="TiddlyPouch-config";exports.before=["pouchdb"];exports.platforms=["browser"];exports.synchronous=false;var e="$:/plugins/danielo515/tiddlypouch/config/";var t=e+"config_database";exports.startup=function(e){var n=require("$:/plugins/danielo515/tiddlypouch/utils/logger.js",true).Logger;var i=new n("TiddlyPouch:config");var r=require("$:/plugins/danielo515/tiddlypouch/ui/config.js");var o=require("$:/plugins/danielo515/tiddlypouch/config/single-db-config");var u;var a;var c;function d(){var e={debug:{active:true,verbose:false},selectedDbId:"MyNotebook",databases:{}};var n;try{n=JSON.parse($tw.wiki.getTiddler(t).fields.text)}catch(i){console.log("No tiddler config, using default");n=e}return n}function s(e){var n=e||u;var i=JSON.stringify(n);$tw.wiki.addTiddler(new $tw.Tiddler({title:t,type:"application/json",text:i}));return true}function f(e){var t=$tw.utils.extend({},u,e);if(!t||!p(t)){i.log("Updating config to DB - ERROR","Tried to persist an invalid config");return}return g(t).then(s).then(function(){$tw.rootWidget&&$tw.rootWidget.dispatchEvent({type:"tm-tp-config-saved",param:true})})}function g(e){var t=$tw.utils.extend({},e);t._id=t._id||"configuration";return a.put(t).then(function(e){i.log("Persist config to DB - OK",e);return l()}).catch(i.log.bind(i,"Persist config to DB - ERROR"))}function l(){return a.get("configuration").then(function(e){if(p(e)){return e}throw new Error("Config was read, but it was invalid")}).catch(function(e){i.log("Config read from DB - ERROR",e);throw e})}function p(e){var t=false;t=!!(e&&e.debug);t=!!(e&&e.selectedDbId);return t}function b(e){var t={name:e,remote:{name:null,username:null,ur:null}};u.databases[e]=u.databases[e]||t;return u.databases[e]}function h(){var e=[];$tw.utils.each(u.databases,function(t){e.push(t.name)});return e}function v(){return u.debug.active}function w(){return u.debug.verbose}function $(){a=$TPouch._configDb;i.log("Initializing config module");return l().then(function(e){i.debug("Config read from DB - OK");u=e;s()}).catch(function(e){i.debug("FallingBack to tiddler configuration");u=d();return u}).then(function(){c=new o(b(u.selectedDbId));return f()})}return $().then(function(){$TPouch.Logger=n;$TPouch.DbStore=require("$:/plugins/danielo515/tiddlypouch/dbstore/factory");$TPouch.config={getAllDBNames:h,readConfigTiddler:d,getDatabaseConfig:b,update:f,selectedDB:u.selectedDbId,_configDB:a,_config:u,debug:{isActive:v,isVerbose:w},currentDB:c};r.refreshUI(u);i.log("Configuration startup finished",u);e()})}})();
