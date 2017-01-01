@@ -1,7 +1,7 @@
 {
 	"tiddlers": [
 		{
-			"file": "pouchdb-5.4.5.min.js",
+			"file": "pouchdb-6.1.0.min.js",
 			"fields": {
 				"title": "$:/plugins/danielo515/tiddlypouch/lib/pouchdb.js",
                 "tags": "$:/core/wiki/rawmarkup"
