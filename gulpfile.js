@@ -196,6 +196,13 @@ gulp.task("copy vanilla files", function() {
 
 });
 
+gulp.task("copy libraries", function() {
+
+  return gulp.src(pluginSrc + "/**/*.min.js")
+             .pipe(gulp.dest(outPath.dist));
+
+});
+
 /**
  * Will compile the scss stylesheets and minify the code if
  * in production mode. After the sass compiler finished, the
@@ -234,7 +241,7 @@ gulp.task("compile and move scripts", function() {
     preserveComments: "some"
   };
 
-  return gulp.src(pluginSrc + "/**/*.js")
+  return gulp.src([pluginSrc + "/**/*.js","!" + pluginSrc + "/**/*.min.js"])
              .pipe(gulpif(argv.production, uglify(opts)))
              .pipe(gulp.dest(outPath.dist));
 
@@ -324,6 +331,7 @@ gulp.task("default", function(cb) {
     [
       "create docs",
       "copy vanilla files",
+      "copy libraries",
       "compile and move styles",
       "compile and move scripts"
     ],

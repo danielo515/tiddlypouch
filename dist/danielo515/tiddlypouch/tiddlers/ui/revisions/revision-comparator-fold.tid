@@ -1,0 +1,12 @@
+title: $:/plugins/danielo515/tiddlypouch/ui/revisions/review-tabs
+list-after: $:/core/ui/ViewTemplate/title
+tags: $:/tags/ViewTemplate
+
+<$list filter="[prefix[$:/temp/revision:]suffix<currentTiddler>!field:title<currentTiddler>limit[1]]" variable="ui-null">
+<$macrocall $name="revision-tabs"
+tabsList="[prefix[$:/temp/revision:]suffix<currentTiddler>]"
+default=<<currentTiddler>>
+state="$:/state/review/tabs"
+class="tc-review-tabs"
+template="$:/plugins/danielo515/tiddlypouch/ui/revisions/transclude-template" />
+</$list>

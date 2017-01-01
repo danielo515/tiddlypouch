@@ -1,8 +1,21 @@
 # Change Log
 
-## [Unreleased](https://github.com/danielo515/tiddlypouch/tree/HEAD)
+## [v0.17.16+20](https://github.com/danielo515/tiddlypouch/tree/v0.17.16+20) (2017-01-01)
+[Full Changelog](https://github.com/danielo515/tiddlypouch/compare/v.0.15.2...v0.17.16+20)
 
-[Full Changelog](https://github.com/danielo515/tiddlypouch/compare/v0.15.1...HEAD)
+**Implemented enhancements:**
+
+- Remove legacy design document  [\#50](https://github.com/danielo515/tiddlypouch/issues/50)
+- Update pouchdb to version 6 [\#47](https://github.com/danielo515/tiddlypouch/issues/47)
+- Fix sync problems [\#51](https://github.com/danielo515/tiddlypouch/pull/51) ([danielo515](https://github.com/danielo515))
+
+**Fixed bugs:**
+
+- Two way replication issues on desktop browsers [\#49](https://github.com/danielo515/tiddlypouch/issues/49)
+- Fix sync problems [\#51](https://github.com/danielo515/tiddlypouch/pull/51) ([danielo515](https://github.com/danielo515))
+
+## [v.0.15.2](https://github.com/danielo515/tiddlypouch/tree/v.0.15.2) (2016-09-18)
+[Full Changelog](https://github.com/danielo515/tiddlypouch/compare/v0.15.0...v.0.15.2)
 
 **Implemented enhancements:**
 
@@ -17,11 +30,11 @@
 
 - Create a plugin library served over https [\#44](https://github.com/danielo515/tiddlypouch/issues/44)
 
-## [v0.15.1](https://github.com/danielo515/tiddlypouch/tree/v0.15.1) (2016-09-17)
-[Full Changelog](https://github.com/danielo515/tiddlypouch/compare/v0.15.0...v0.15.1)
-
 ## [v0.15.0](https://github.com/danielo515/tiddlypouch/tree/v0.15.0) (2016-09-17)
-[Full Changelog](https://github.com/danielo515/tiddlypouch/compare/v0.14.5...v0.15.0)
+[Full Changelog](https://github.com/danielo515/tiddlypouch/compare/v0.15.1...v0.15.0)
+
+## [v0.15.1](https://github.com/danielo515/tiddlypouch/tree/v0.15.1) (2016-09-17)
+[Full Changelog](https://github.com/danielo515/tiddlypouch/compare/v0.14.5...v0.15.1)
 
 **Implemented enhancements:**
 
