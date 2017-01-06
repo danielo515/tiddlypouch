@@ -3,9 +3,9 @@ title: GettingStarted
 \define lingo-base() $:/language/ControlPanel/Basics/
 Welcome to ~NoteSelf and the ~TiddlyWiki community
 
-You can start using your notebook right now to collect ideas, make lists, take notes, as a diary...
+You can start using your notebook right NOW. Go ahead and collect ideas, make lists, take notes, start a diary...
 You can have as many notebooks as you want.
-Just change the `Notebook Name` , save and reload. New notes will be saved to that database.
+Just change the `Notebook Name` and hit the save config button. New notes will be saved to that notebook.
 
 In case you want automatic synchronization fill the fields of the synchronization section below
 
