@@ -25,6 +25,21 @@ tags: $:/tags/RawMarkup
             font-size: 12em;
         }
     }
+    #TP_splash_screen:before {
+        content: attr(data-text);
+        position: fixed;
+        overflow: hidden;
+        max-width: 5.5em;
+        white-space: nowrap;
+        color: #93cf93;
+        animation: loading 6s linear;
+    }
+    @keyframes loading {
+        0% {
+            max-width: 0;
+        }
+    }
+
 </style>
 
 
@@ -39,7 +54,7 @@ tags: $:/tags/RawMarkup
         $TPouch._configDb = $TPouch._configDb || new PouchDB('__TP_config');
         $TPouch.splashScreen = $TPouch.splashScreen || Object.create(null);
         /*** The version section is automatically updated by build scripts,  Dont delete the below comment */
-        $TPouch.VERSION = /***TPOUCH_VER*/'0.18.1+13'/*TPOUCH_VER***/;
+        $TPouch.VERSION = /***TPOUCH_VER*/'0.18.1+18'/*TPOUCH_VER***/;
 
         var $tw = window.$tw || Object.create(null);
         $tw.boot = $tw.boot || Object.create(null);
@@ -63,6 +78,7 @@ tags: $:/tags/RawMarkup
             if( splash === null){
                 splash = document.createElement("h1");
                 splash.setAttribute("id","TP_splash_screen");
+                splash.setAttribute("data-text",message);
                 var text = document.createTextNode(message);
                 splash.appendChild(text);
                 tryToAppend(splash);
@@ -156,7 +172,7 @@ tags: $:/tags/RawMarkup
                 console.error('Something went wrong booting tiddlywiki ',err);
                 window.location.reload();
             }
-            $TPouch.splashScreen.hide();
+
         })
 
 
