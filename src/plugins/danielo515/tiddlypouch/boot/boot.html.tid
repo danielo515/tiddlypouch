@@ -1,6 +1,33 @@
 title: $:/plugins/danielo515/tiddlypouch/boot
 tags: $:/tags/RawMarkup
 
+<style>
+    #TP_splash_screen {
+       text-align: center;
+       color: #CECECE;
+       font-size: 5.5em;
+       position: fixed;
+       width: 100%;
+       top: 0;
+       left: 0;
+       word-wrap: break-word;
+       font-weight: 300;
+       margin: 0.67em 0;
+       line-height: 1.2;
+       font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", "DejaVu Sans", sans-serif;
+       text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      -webkit-box-sizing: border-box;
+      box-sizing: border-box;
+    }
+    @media (min-width: 1200px) {
+        #TP_splash_screen {
+            font-size: 12em;
+        }
+    }
+</style>
+
+
 <script>
     (function(window){
         'use strict';
@@ -24,13 +51,21 @@ tags: $:/tags/RawMarkup
 
         function createSplashScreen(message){
 
+            /* This function waits until document.body exists*/
+            function tryToAppend(node){
+                if(!document.body){
+                    return setTimeout(tryToAppend.bind(null,node),1);
+                }
+                document.body.appendChild( node, document.body.firstChild );
+            }
+
             var splash = document.getElementById('TP_splash_screen');
             if( splash === null){
                 splash = document.createElement("h1");
                 splash.setAttribute("id","TP_splash_screen");
                 var text = document.createTextNode(message);
                 splash.appendChild(text);
-                document.body.appendChild( splash, document.body.firstChild );
+                tryToAppend(splash);
             } else{
                 splashMessage(message);
             }
@@ -82,11 +117,11 @@ tags: $:/tags/RawMarkup
 
 
 
+        createSplashScreen('Loading ...');
 
         $TPouch._configDb.get('configuration') // we read the configuration to know which database shuld be loaded
         .then(function(config){
 
-            createSplashScreen('Loading...');
             if(!config.selectedDbId){
                 throw new Error('There is no DB selected, nothing to inject')
             }
@@ -100,7 +135,7 @@ tags: $:/tags/RawMarkup
                     })
         })
         .then(function(){
-            $TPouch.splashScreen.showMessage('Loading....');
+
             return $TPouch._db.query('by_plugin_type', { include_docs: true })
         })
         .then(function(all){ //Actual docs are contained in the rows array
@@ -128,12 +163,3 @@ tags: $:/tags/RawMarkup
 
     })(window);
 </script>
-<style>
-    #TP_splash_screen {
-       text-align: center;
-       color: #CECECE;
-       font-size: 15em;
-       position: fixed;
-       width: 100%;
-    }
-</style>
