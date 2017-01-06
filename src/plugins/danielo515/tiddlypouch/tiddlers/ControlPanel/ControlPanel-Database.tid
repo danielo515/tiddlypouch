@@ -18,7 +18,7 @@ Name: {{$:/plugins/danielo515/tiddlypouch/ui/database-name}}
 
 !!! Connection Info
 Fill the fields below if you want to synchronize your local database with a remote
-couch-like server. 
+couch-like server.
 This information will be saved as metadata of the selected local database.
 
 ~CouchDB URL: {{$:/plugins/danielo515/tiddlypouch/ui/remote-url}}
@@ -29,11 +29,6 @@ This information will be saved as metadata of the selected local database.
 Remote database name: {{$:/plugins/danielo515/tiddlypouch/ui/remote-name}}
 @@color:#c0c0c0;
 ,,//Local database will be synced to this database. ''Must exist on server''. //,,
-@@
-
-User: {{$:/plugins/danielo515/tiddlypouch/ui/remote-user}}
-@@color:#c0c0c0;
-,,//A user with rights to write to the remote database. //,,
 @@
 
 {{$:/plugins/danielo515/tiddlypouch/ui/save-database-config}}

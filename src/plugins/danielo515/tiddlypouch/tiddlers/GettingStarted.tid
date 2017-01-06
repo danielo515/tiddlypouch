@@ -4,7 +4,7 @@ title: GettingStarted
 Welcome to ~NoteSelf and the ~TiddlyWiki community
 
 You can start using your notebook right now to collect ideas, make lists, take notes, as a diary...
-You can have as many notebooks as you want. 
+You can have as many notebooks as you want.
 Just change the `Notebook Name` , save and reload. New notes will be saved to that database.
 
 In case you want automatic synchronization fill the fields of the synchronization section below
@@ -19,7 +19,6 @@ In case you want automatic synchronization fill the fields of the synchronizatio
 |<<tiddlypouch-tab "Remote database name" "Database" >> |{{$:/plugins/danielo515/tiddlypouch/ui/remote-name}} |
 | {{$:/plugins/danielo515/tiddlypouch/ui/save-database-config}} |<|
 |<$link to="$:/SiteTitle">Page title</$link> |<$edit-text tiddler="$:/SiteTitle" default="" tag="input"/> |
-|<$link to="$:/SiteSubtitle"><<lingo Subtitle/Prompt>></$link> |<$edit-text tiddler="$:/SiteSubtitle" default="" tag="input"/> |
 |<$link to="$:/DefaultTiddlers"><<lingo DefaultTiddlers/Prompt>></$link> |<<lingo DefaultTiddlers/TopHint>><br> <$edit tag="textarea" tiddler="$:/DefaultTiddlers"/><br>//<<lingo DefaultTiddlers/BottomHint>>// |
 </div>
 
