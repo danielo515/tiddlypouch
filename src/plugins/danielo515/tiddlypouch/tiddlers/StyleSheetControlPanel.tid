@@ -13,3 +13,6 @@ tags: $:/tags/Stylesheet
     width: auto;
 }
 
+.tc-plugin-reload-warning svg {
+    height: 1em;
+}
