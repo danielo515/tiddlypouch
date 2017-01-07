@@ -6,7 +6,7 @@
     "license": "BSD-2-Clause",
     "private": true,
     "scripts": {
-        "deploy": "gulp --production"
+        "deploy": "gulp --production && git push --tags"
     },
     "contributors": [
         {
