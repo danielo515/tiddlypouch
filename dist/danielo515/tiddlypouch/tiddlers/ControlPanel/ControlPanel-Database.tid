@@ -7,8 +7,7 @@ tags: $:/tags/TiddlyPouch/ControlPanel
 <$reveal type="match" state="$:/state/TiddlyPouch/info/databaseName" text="show">
 This is the name of your local database. Tiddlers are stored there.
 You can have as many databases as you want. Changing this value will make your wiki to save/load
-tiddlers to that database. This requires a ''save and reload'' to take effect, the `No tiddlers` option
-in the download tab of this control panel is the recommended choice for this task.
+tiddlers to/from that database. This requires a ''save and reload'' to take effect.
 </$reveal>
 
 Name: {{$:/plugins/danielo515/tiddlypouch/ui/database-name}}
@@ -18,7 +17,7 @@ Name: {{$:/plugins/danielo515/tiddlypouch/ui/database-name}}
 
 !!! Connection Info
 Fill the fields below if you want to synchronize your local database with a remote
-couch-like server. 
+couch-like server.
 This information will be saved as metadata of the selected local database.
 
 ~CouchDB URL: {{$:/plugins/danielo515/tiddlypouch/ui/remote-url}}
@@ -28,12 +27,7 @@ This information will be saved as metadata of the selected local database.
 
 Remote database name: {{$:/plugins/danielo515/tiddlypouch/ui/remote-name}}
 @@color:#c0c0c0;
-,,//Local database will be synced to this database. ''Must exist on server''. //,,
-@@
-
-User: {{$:/plugins/danielo515/tiddlypouch/ui/remote-user}}
-@@color:#c0c0c0;
-,,//A user with rights to write to the remote database. //,,
+,,//Local database will be synced to this database. ''Must exist on server'' if you are not an admin user. //,,
 @@
 
 {{$:/plugins/danielo515/tiddlypouch/ui/save-database-config}}
@@ -47,6 +41,7 @@ some couch backend or export and import the database.
 
 !!! Database delete
 This will delete your current database.
+Note that if you are syncing to other devices this will only affects the local database, not the remote ones.
 @@color:#cc0000;
 This action can not be undone!!
 @@
