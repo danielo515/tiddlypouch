@@ -127,11 +127,9 @@ function bumpVersion(){
     var v = new SemVer(pluginInfo.version);
     var build = (isIncrBuild ? "+" + (parseInt(v.build[0] || 0) + 1) : "");
     var mode = (argv.mode && argv.mode !== "master" ? "-" + argv.mode : "");
-    argv.major && v.major++ && (v.minor = 0)
-    argv.minor && v.minor++ && (v.patch = 0)
-    (argv.patch || argv.production) && v.patch++;
-    (argv.major || argv.minor || argv.patch) && (build = "");
-    pluginInfo.version = v.major + "." + v.minor + "." + v.patch + mode + build;
+    var bump_type = argv.major ? "major" : argv.minor ? "minor" : argv.patch ? "patch" : "prerelease";
+    v.inc(bump_type);
+    pluginInfo.version = v.version;
     pluginInfo.released = new Date().toUTCString();
     pckgJSON.version = pluginInfo.version;
 
