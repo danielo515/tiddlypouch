@@ -87,6 +87,7 @@ var jsdoc = require('gulp-jsdoc3');
 var esprima = require('gulp-esprima');
 var debug = require('gulp-debug');
 var tag_version = require('gulp-tag-version');
+var watch = require('gulp-watch');
 
 /**** Preprocessing ************************************************/
 
@@ -118,6 +119,30 @@ var replaceAfterSass = {
   "__breakpoint__": "{{$:/themes/tiddlywiki/vanilla/metrics/sidebarbreakpoint}}"
 };
 
+/**** Helper functions *********************/
+
+function bumpVersion(){
+
+    console.log('Bumping from version ', pluginInfo.version);
+    var v = new SemVer(pluginInfo.version);
+    var build = (isIncrBuild ? "+" + (parseInt(v.build[0] || 0) + 1) : "");
+    var mode = (argv.mode && argv.mode !== "master" ? "-" + argv.mode : "");
+    argv.major && v.major++ && (v.minor = 0);
+    argv.minor && v.minor++ && (v.patch = 0);
+    (argv.patch || argv.production) && v.patch++;
+    pluginInfo.version = v.major + "." + v.minor + "." + v.patch + mode + build;
+    pluginInfo.released = new Date().toUTCString();
+    pckgJSON.version = pluginInfo.version;
+
+    updater = updater.replace(/\/\**TPOUCH_VER.*\*\// , "/***TPOUCH_VER*/'" + pluginInfo.version + "'/*TPOUCH_VER***/");
+
+    fs.writeFileSync(pluginInfoPath, JSON.stringify(pluginInfo, null, 4));
+    fs.writeFileSync('./package.json', JSON.stringify(pckgJSON,null,4));
+    fs.writeFileSync(updaterSrc,updater);
+    console.log('New version is', pluginInfo.version);
+}
+
+
 /**** Tasks ********************************************************/
 
 /**
@@ -135,28 +160,22 @@ gulp.task("perform cleanup", function() {
 });
 
 /**
+ * Bump version on every sourcecode change
+ * */
+gulp.task('watch', function () {
+
+    return watch('src/plugins/**/!(boot.html.tid|plugin.info)', bumpVersion);
+});
+
+
+/**
  * Override the version of the plugin specified in the plugin.info
  * file. If `isIncrBuild` is true, then the build number is
  * incremented as well.
  */
 gulp.task("bump_version", function(cb) {
 
-    var v = new SemVer(pluginInfo.version);
-    var build = (isIncrBuild ? "+" + (parseInt(v.build[0] || 0) + 1) : "");
-    var mode = (argv.mode && argv.mode !== "master" ? "-" + argv.mode : "");
-    argv.major && v.major++ && (v.minor = 0);
-    argv.minor && v.minor++ && (v.patch = 0);
-    (argv.patch || argv.production) && v.patch++;
-    pluginInfo.version = v.major + "." + v.minor + "." + v.patch + mode + build;
-    pluginInfo.released = new Date().toUTCString();
-    pckgJSON.version = pluginInfo.version;
-
-    updater = updater.replace(/\/\**TPOUCH_VER.*\*\// , "/***TPOUCH_VER*/'" + pluginInfo.version + "'/*TPOUCH_VER***/");
-
-    fs.writeFileSync(pluginInfoPath, JSON.stringify(pluginInfo, null, 4));
-    fs.writeFileSync('./package.json', JSON.stringify(pckgJSON,null,4));
-    fs.writeFileSync(updaterSrc,updater);
-
+    bumpVersion();
     cb();
 });
 

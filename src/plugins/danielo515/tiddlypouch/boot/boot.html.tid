@@ -1,6 +1,65 @@
 title: $:/plugins/danielo515/tiddlypouch/boot
 tags: $:/tags/RawMarkup
 
+<style>
+    #TP_splash_screen {
+         position: fixed;
+         top: 0;
+         left: 0;
+         width: 100%;
+         height: 100%;
+         background-color: #FFF;
+         margin: 0;
+         font-size: 14px;
+
+        -webkit-transition: opacity 2s ease-in-out;
+        -moz-transition: opacity 2s ease-in-out;
+        -ms-transition: opacity 2s ease-in-out;
+        -o-transition: opacity 2s ease-in-out;
+        transition: opacity 2s ease-in-out;
+    }
+    #TP_splash_screen>h1{
+       text-align: center;
+       color: #CECECE;
+       font-size: 5.5em;
+
+       width: 100%;
+       position: relative;
+       word-wrap: break-word;
+       font-weight: 300;
+       margin: 0.67em 0;
+       line-height: 1.2;
+       font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", "DejaVu Sans", sans-serif;
+       text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      -webkit-box-sizing: border-box;
+      box-sizing: border-box;
+
+
+    }
+    @media (min-width: 1200px) {
+        #TP_splash_screen>h1 {
+            font-size: 12em;
+        }
+    }
+    #TP_splash_screen>h1:before {
+        content: attr(data-text);
+        overflow: hidden;
+        position: absolute;
+        max-width: 5.5em;
+        white-space: nowrap;
+        color: #93cf93;
+        animation: loading 6s linear;
+    }
+    @keyframes loading {
+        0% {
+            max-width: 0;
+        }
+    }
+
+</style>
+
+
 <script>
     (function(window){
         'use strict';
@@ -12,7 +71,7 @@ tags: $:/tags/RawMarkup
         $TPouch._configDb = $TPouch._configDb || new PouchDB('__TP_config');
         $TPouch.splashScreen = $TPouch.splashScreen || Object.create(null);
         /*** The version section is automatically updated by build scripts,  Dont delete the below comment */
-        $TPouch.VERSION = /***TPOUCH_VER*/'0.18.1+1'/*TPOUCH_VER***/;
+        $TPouch.VERSION = /***TPOUCH_VER*/'0.18.1+19'/*TPOUCH_VER***/;
 
         var $tw = window.$tw || Object.create(null);
         $tw.boot = $tw.boot || Object.create(null);
@@ -22,15 +81,31 @@ tags: $:/tags/RawMarkup
         window.$tw = $tw;
 
 
+        function createSplashMessageNode(message){
+
+            var h1 = document.createElement("h1");
+            h1.setAttribute("data-text",message);
+            var text = document.createTextNode(message);
+            h1.appendChild(text);
+            return h1;
+        }
+
         function createSplashScreen(message){
+
+            /* This function waits until document.body exists*/
+            function tryToAppend(node){
+                if(!document.body){
+                    return setTimeout(tryToAppend.bind(null,node),1);
+                }
+                document.body.appendChild( node, document.body.firstChild );
+            }
 
             var splash = document.getElementById('TP_splash_screen');
             if( splash === null){
-                splash = document.createElement("h1");
+                splash = document.createElement("div");
                 splash.setAttribute("id","TP_splash_screen");
-                var text = document.createTextNode(message);
-                splash.appendChild(text);
-                document.body.appendChild( splash, document.body.firstChild );
+                splash.appendChild(createSplashMessageNode(message));
+                tryToAppend(splash);
             } else{
                 splashMessage(message);
             }
@@ -40,12 +115,19 @@ tags: $:/tags/RawMarkup
 
         $TPouch.splashScreen.hide = function hideSplashScreen(){
 
-            $TPouch.splashScreen.node.style.display = "none";
+            $TPouch.splashScreen.node.style.opacity = 0;
+            setTimeout( function(){
+
+                $TPouch.splashScreen.node.style.display = "none";
+            } ,2000);
+
         };
         $TPouch.splashScreen.showMessage = function splashMessage(message){
 
-            $TPouch.splashScreen.node.style.display = "block";
-            $TPouch.splashScreen.node.textContent = message;
+            var node = $TPouch.splashScreen.node;
+            node.replaceChild(createSplashMessageNode(message), node.firstChild)
+            node.style.display = "block";
+            node.style.opacity = 1;
         };
 
         /**
@@ -56,13 +138,14 @@ tags: $:/tags/RawMarkup
          * @returns {promise} - promise that fulfills when all the indexes have been processed, removed or failed removing
          */
             function updater(version, db) {
+
                 var documentsToRemove = ['_design/by_type', '_design/skinny_tiddlers', '_design/by_plugin_type'];
 
                 if (version && !(parseInt(version.split('.').join('')) < parseInt($TPouch.VERSION.split('.').join('')))) {
                     return Promise.resolve();
                 }
                 console.log('Starting update process...');
-                $TPouch.splashScreen.showMessage('Updating database....');
+                $TPouch.splashScreen.showMessage('Updating database');
                 return Promise.all(
                     documentsToRemove
                         .map(function (doc) {
@@ -82,11 +165,11 @@ tags: $:/tags/RawMarkup
 
 
 
+        createSplashScreen('Loading');
 
         $TPouch._configDb.get('configuration') // we read the configuration to know which database shuld be loaded
         .then(function(config){
 
-            createSplashScreen('Loading...');
             if(!config.selectedDbId){
                 throw new Error('There is no DB selected, nothing to inject')
             }
@@ -100,7 +183,7 @@ tags: $:/tags/RawMarkup
                     })
         })
         .then(function(){
-            $TPouch.splashScreen.showMessage('Loading....');
+
             return $TPouch._db.query('by_plugin_type', { include_docs: true })
         })
         .then(function(all){ //Actual docs are contained in the rows array
@@ -121,19 +204,10 @@ tags: $:/tags/RawMarkup
                 console.error('Something went wrong booting tiddlywiki ',err);
                 window.location.reload();
             }
-            $TPouch.splashScreen.hide();
+
         })
 
 
 
     })(window);
 </script>
-<style>
-    #TP_splash_screen {
-       text-align: center;
-       color: #CECECE;
-       font-size: 15em;
-       position: fixed;
-       width: 100%;
-    }
-</style>
