@@ -46,12 +46,13 @@ The existence of the database determines if the plugin will be active or not.
 
         logger.log("Client side dbs created");
         if ($TPouch.config.debug.isActive()) {
-            $TPouch.database._db.on('error', function (err) { logger.log(err); });
+            $TPouch.database._db.on('error', function (err) { logger.log(err); debugger; });
         }
         /** Create the required indexes (in parallel!) to operate the DBs  */
         Promise.all([
-            $TPouch.database.createIndex('by_type', function (doc) { doc.fields.type && emit(doc.fields.type) })
-            , $TPouch.database.createIndex('skinny_tiddlers', function (doc) {
+            //   $TPouch.plugins.createIndex('by_plugin_type', function (doc) { doc.fields && doc.fields['plugin-type'] && emit(doc.fields['plugin-type']) })
+            // , $TPouch.database.createIndex('by_type', function (doc) { doc.fields.type && emit(doc.fields.type) })
+            $TPouch.database.createIndex('skinny_tiddlers', function (doc) {
                 if(doc.fields['plugin-type']){ // skip plugins!
                     return;
                 }
@@ -64,7 +65,17 @@ The existence of the database determines if the plugin will be active or not.
                 fields.revision = doc._rev;
                 emit(doc._id, fields);
             })
-            , $TPouch.plugins.createIndex('by_plugin_type', function (doc) { doc.fields && doc.fields['plugin-type'] && emit(doc.fields['plugin-type']) })
+            , $TPouch.database.createIndex('startup_tiddlers', function (doc){
+
+                doc.fields &&
+                (
+                     ( doc.fields.tags && doc.fields.tags.indexOf('$:/tags/Macro') !== -1)
+                     || doc.fields.type === 'application/javascript'
+                     || !!doc.fields['plugin-type']
+                )
+                && emit(doc.fields.title)
+
+            })
         ]).catch(function (reason) {
 
             logger.log('Something went wrong during index creation', reason)

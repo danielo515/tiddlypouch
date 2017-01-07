@@ -19,6 +19,8 @@
         "**/node_modules": true,
         "**/bower_components": true,
         ".history":true,
-        "docs":true
+        "docs":true,
+        "dist":true,
+        "bundle":true
     }
 }
