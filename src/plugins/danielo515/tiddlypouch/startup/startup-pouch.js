@@ -73,7 +73,7 @@ The existence of the database determines if the plugin will be active or not.
                      || doc.fields.type === 'application/javascript'
                      || !!doc.fields['plugin-type']
                 )
-                && emit(doc.fields.title)
+                && emit(doc.id)
 
             })
         ]).catch(function (reason) {
