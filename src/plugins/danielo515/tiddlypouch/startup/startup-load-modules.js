@@ -1,20 +1,22 @@
 /*\
 title: $:/plugins/danielo515/tiddlypouch/startup/load-modules
 type: application/javascript
-module-type: startup
+module-type: old-startup
 
 This module loads all the javascript tiddlers and stores them into the wiki store.
 That way, the actual load-modules module of TW will have a chance to register them.
-This includes javascript macros, deserializers, globals etc 
+This includes javascript macros, deserializers, globals etc
 
 @preserve
 
 \*/
+/*
 (function () {
 
     /*jslint node: true, browser: true */
     /*global $tw: false */
     /*global emit: false*/
+    /*
     "use strict";
 
     // Export name and synchronous status
@@ -42,3 +44,4 @@ This includes javascript macros, deserializers, globals etc
     }
 
 }());
+*/
