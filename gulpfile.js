@@ -126,7 +126,6 @@ function bumpVersion(){
     console.log('Bumping from version ', pluginInfo.version);
     var v = new SemVer(pluginInfo.version);
     var build = (isIncrBuild ? "+" + (parseInt(v.build[0] || 0) + 1) : "");
-    var mode = (argv.mode && argv.mode !== "master" ? "-" + argv.mode : "");
     var bump_type = argv.major ? "major" : argv.minor ? "minor" : argv.patch ? "patch" : "prerelease";
     v.inc(bump_type);
     pluginInfo.version = v.version;
