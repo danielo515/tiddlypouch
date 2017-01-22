@@ -4,7 +4,7 @@
 #
 # Serves development TW5 over HTTP at localhost:8080
 #
-TIDDLYWIKI_PLUGIN_PATH=src/plugins \
+TIDDLYWIKI_PLUGIN_PATH=../../plugins_dist \
 tiddlywiki \
 	./*wiki \
 	--verbose \

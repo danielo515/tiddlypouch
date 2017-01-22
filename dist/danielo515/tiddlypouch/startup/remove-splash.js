@@ -11,4 +11,24 @@ and not before.
 @preserve
 
 \*/
-"use strict";exports.name="TiddlyPouch-remove-splash";exports.after=["startup"];exports.platforms=["browser"];exports.synchronous=true;exports.startup=function(){$TPouch.splashScreen.hide()};
+
+
+
+/*jslint node: true, browser: true */
+/*global $tw: false */
+"use strict";
+
+// Export name and synchronous status
+exports.name = "TiddlyPouch-remove-splash";
+exports.after = ["startup"];
+exports.platforms = ["browser"];
+exports.synchronous = true;
+
+
+
+/**
+ * @module config-startup
+ */
+exports.startup = function () {
+    $TPouch.splashScreen.hide();
+}
