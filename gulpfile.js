@@ -162,7 +162,12 @@ gulp.task("perform cleanup", function() {
  * */
 gulp.task('watch', function () {
 
-    return watch('src/plugins/**/!(boot.html.tid|plugin.info)', bumpVersion);
+    // return watch('src/plugins/**/!(boot.html.tid|plugin.info)', bumpVersion);
+    gulp.watch('src/plugins/**/!(boot.html.tid|plugin.info)',[
+      "copy vanilla files",
+      "compile and move styles",
+      "compile and move scripts"
+      ]);
 });
 
 

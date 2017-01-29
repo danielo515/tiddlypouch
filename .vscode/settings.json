@@ -23,4 +23,6 @@
         "dist":true,
         "bundle":true
     }
+,
+"vsicons.presets.angular": false
 }

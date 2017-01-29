@@ -114,7 +114,9 @@ PouchAdaptor.prototype.getStatus = function (callback) {
         withCredentials: true,
         callback: function (err, data) {
             if (err) {
-                return callback(err);
+                self.logger.debug('Error during login phase',err);
+                // In case of error, just flag us as non auth
+                return callback(null, false, "NON-AUTHENTICATED")
             }
             var json = null;
             var isLoggedIn = false;

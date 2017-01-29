@@ -1,6 +1,6 @@
 {
     "name": "tiddlypouch",
-    "version": "0.20.1-0",
+    "version": "0.20.1-1",
     "author": "Danielo Rodríguez Rivero",
     "description": "Tiddlypouch brings all the power of Pouchdb into tiddlywiki. It is a key part of the NoteSelf project",
     "license": "BSD-2-Clause",
