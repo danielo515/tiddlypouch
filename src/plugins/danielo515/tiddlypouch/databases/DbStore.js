@@ -10,9 +10,9 @@ Manages insertions, extractions, deletions of tiddlers to a database.
 \*/
 
 'use strict';
-/* global PouchDB */
+/*global PouchDB */
 /*jslint node: true, browser: true */
-/* global $tw, module */
+/*global $tw, module */
 
 /***====================== EXPORTS  ========================== */
 
@@ -58,7 +58,15 @@ DbStore.prototype._Conflict = function conflict(message) {
         }
         throw err;
     }
-}
+};
+
+/**
+ * Deletes the current database
+ * @returns {Promise} A promise that fulfills when the database is destroyed
+ */
+DbStore.prototype.destroy = function destroy(){
+    return this._db.destroy();
+};
 
 // Source: https://pouchdb.com/2014/05/01/secondary-indexes-have-landed-in-pouchdb.html
 /**
