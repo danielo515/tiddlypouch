@@ -225,7 +225,7 @@ DbStore.prototype.getTiddlers = function( index, search_term, includeDocs ){
             .then(function (rows) {
                 /** query Api returns documents in a different format, we have to convert them to the format convertFromCouch expects */
                 return rows.map(function (doc) {
-                    return doc.doc ? doc.doc : { // if doc is included just retur it or try to make a conversion otherwhise
+                    return doc.doc ? doc.doc : { // if doc is included just return it or try to make a conversion otherwhise
                         // the key is missed! maybe provide a conversion function as parameter?
                         _id: doc.id,
                         fields: doc.value

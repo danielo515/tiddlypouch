@@ -1,13 +1,15 @@
 {
     "name": "tiddlypouch",
-    "version": "0.20.1-1",
+    "version": "0.20.1-2",
     "author": "Danielo Rodríguez Rivero",
     "description": "Tiddlypouch brings all the power of Pouchdb into tiddlywiki. It is a key part of the NoteSelf project",
     "license": "BSD-2-Clause",
     "private": true,
     "scripts": {
         "deploy": "gulp --production && git push --tags",
-        "bump": "gulp bump_version --minor"
+        "bump": "gulp bump_version --minor",
+        "start": "cross-env TIDDLYWIKI_PLUGIN_PATH=../../plugins_dist npm run TW",
+        "TW": "nodemon ./node_modules/tiddlywiki/tiddlywiki.js ./tiddlypouchwiki --verbose --server 8087 $:/core/save/all text/plain text/html"
     },
     "contributors": [
         {
@@ -34,6 +36,7 @@
     "devDependencies": {
         "async": "^1.5.2",
         "beepbeep": "^1.2.0",
+        "cross-env": "^3.1.4",
         "del": "^2.0.0",
         "gulp": "^3.8.10",
         "gulp-babel": "^6.1.2",
@@ -50,7 +53,7 @@
         "is-there": "^4.3.1",
         "run-sequence": "^1.1.5",
         "semver": "^5.1.0",
-        "tiddlywiki": "^5.1.13",
+        "tiddlywiki": "^5.1.14",
         "yargs": "^3.0.0"
     }
 }
