@@ -1,8 +1,0 @@
-<svg class="tc-image-file tc-image-button" width="22pt" height="22pt" viewBox="0 0 128 128">
-    <g fill-rule="nonzero">
-  <path fill="black" id="svg_2" d="m111.96811,30.5l0.03189,0l0,89.49908c0,4.41879 -3.58089,8.00092 -7.99925,8.00092l-80.0015,0c-4.41787,0 -7.99925,-3.58231 -7.99925,-8.00092l0,-111.99816c0,-4.41879 3.58089,-8.00092 7.99925,-8.00092l57.00075,0l0,0.02018c2.15899,-0.09171 4.34822,0.6869 5.99825,2.33693l22.62693,22.62693c1.5265,1.5265 2.30776,3.5158 2.34293,5.51596l0,0zm-30.96811,-22.5l-57,0l0,112l80,0l0,-89.5l-14.99965,0c-4.41847,0 -8.00035,-3.57837 -8.00035,-8.00035l0,-14.49965z"/>
-  <text font-weight="bold" stroke-linecap="round" stroke-linejoin="round" stroke="#000000" transform="matrix(3.5430981263433354,0,0,3.1603711640014467,-102.24349149601478,-63.365374592008266) " xml:space="preserve" text-anchor="middle" font-family="Sans-serif" font-size="24" id="svg_9" y="53.87227" x="46.92544" fill="#ffffff">R</text>
-  <rect id="svg_3" rx="4" height="8" width="64" y="36" x="32"/>
-  <rect id="svg_8" rx="4" height="8" width="40" y="20" x="32"/>
- </g>
-</svg>

@@ -6,3 +6,5 @@ node_modules
 docs
 jsconfig.json
 .github_changelog_generator
+debug.log
+dist
