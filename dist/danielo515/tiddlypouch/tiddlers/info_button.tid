@@ -1,8 +1,0 @@
-title: $:/plugins/danielo515/tiddlypouch/Buttons/info
-comment: this tiddler should be used as a transclude template
-
-<$reveal type="nomatch" state={{!!title}} text="show">
-<$button set={{!!title}} setTo="show" class="tc-btn-invisible"><span style="top:-9px; position: relative">{{$:/core/images/help}}</span></$button>
-</$reveal><$reveal type="match" state={{!!title}} text="show">
-<$button set={{!!title}} class="tc-btn-invisible" setTo="hide"><span style="top:-9px; position: relative">{{$:/core/images/help}}</span></$button>
-</$reveal>

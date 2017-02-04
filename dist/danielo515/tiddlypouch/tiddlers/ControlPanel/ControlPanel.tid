@@ -1,7 +1,0 @@
-title: $:/plugins/danielo515/tiddlypouch/ControlPanel
-caption: ~TiddlyPouch
-tags: $:/tags/ControlPanel
-
-<div class="tc-tiddlypouch-control-panel">
-<<tabs "[all[shadows]tag[$:/tags/TiddlyPouch/ControlPanel]]" "$:/plugins/danielo515/tiddlypouch/ControlPanel/Download" "$:/state/TiddlyPouch/tabs">>
-</div>
