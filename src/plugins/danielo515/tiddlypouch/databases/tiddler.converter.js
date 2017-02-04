@@ -98,7 +98,10 @@ function tiddlerConverter(db) {
                     result[field] = doc[field];
                 }
             });
-            result["revision"] = doc["_rev"];
+            /* If the doc has a revision field use it. 
+              Sometimes the revision field does not exists, for example, some indexes do not emit it, like the skinny_tiddlers index
+              This fixes #66*/
+            doc._rev && (result.revision = doc._rev); 
             //console.log("Conversion result ", result);
             return result;
         };
