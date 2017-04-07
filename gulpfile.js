@@ -363,3 +363,21 @@ gulp.task("default", function(cb) {
   );
 
 });
+
+/* Just builds the dist folder, no tagging, no bump version... Just for other projects that depends on this one */
+gulp.task("travis", function(cb) {
+
+  runSequence(
+    "Javascript validation",
+    "perform cleanup",
+    [
+      "copy vanilla files",
+      "copy libraries",
+      "compile and move styles",
+      "compile and move scripts"
+    ],
+    "bundle the plugin",
+    cb
+  );
+
+});
