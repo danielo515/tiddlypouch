@@ -77,7 +77,7 @@ var SemVer = require('semver');
 // once gulp 4.0 is out: remove runSequence and update
 var runSequence = require('run-sequence');
 import babel from 'gulp-babel';
-// import sourcemaps from 'gulp-sourcemaps';
+import sourcemaps from 'gulp-sourcemaps';
 var gulp = require('gulp');
 var gulpif = require('gulp-if');
 var gutil = require('gulp-util');
@@ -292,10 +292,10 @@ gulp.task('compile and move scripts', () => {
   };
 
   return gulp.src(pluginSrc + '/**/*.js')
-    // .pipe(sourcemaps.init())
+    .pipe(sourcemaps.init())
     .pipe(babel())
     .pipe(gulpif (argv.production, uglify(uglifyOpts)))
-    // .pipe(sourcemaps.write('./maps', sourceMapOpts))
+    .pipe(sourcemaps.write('./maps', sourceMapOpts))
     .pipe(gulp.dest(outPath.dist));
 
 });
