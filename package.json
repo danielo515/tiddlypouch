@@ -54,6 +54,7 @@
         "gulp-util": "^3.0.1",
         "gulp-watch": "^4.3.11",
         "is-there": "^4.4.2",
+        "nodemon": "^1.11.0",
         "run-sequence": "^1.2.2",
         "semver": "^5.1.0",
         "yargs": "^3.0.0"
