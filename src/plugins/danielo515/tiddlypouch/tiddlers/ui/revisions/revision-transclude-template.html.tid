@@ -2,7 +2,13 @@ title: $:/plugins/danielo515/tiddlypouch/ui/revisions/transclude-template
 
 <!-- This template should be used with the tabs macro  -->
 <$list filter="[is[current]!field:title<currentTab>]">
-<$tiddler tiddler=<<currentTab>>>
-<$transclude tiddler="$:/core/ui/ViewTemplate"/>
-</$tiddler>
+  <div class="tc-tiddler-frame tc-revision-controls">
+  <$button>
+    <$action-setfield $tiddler=<<currentTab>> title={{!!title}}/>
+    Restore this revision
+  </$button>
+  </div>
+  <$tiddler tiddler=<<currentTab>>>
+    <$transclude tiddler="$:/core/ui/ViewTemplate"/>
+  </$tiddler>
 </$list>
