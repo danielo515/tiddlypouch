@@ -69,6 +69,7 @@ The existence of the database determines if the plugin will be active or not.
               doc.fields &&
                 (
                      ( doc.fields.tags && doc.fields.tags.indexOf('$:/tags/Macro') !== -1)
+                     || ( doc.fields.tags && doc.fields.tags.indexOf('$:/tags/Palette') !== -1)
                      || doc.fields.type === 'application/javascript'
                      || !!doc.fields['plugin-type']
                 )
@@ -92,9 +93,9 @@ The existence of the database determines if the plugin will be active or not.
         logger.log('Default tiddlers loaded from database ', tiddlerFields);
       }).catch(function (err) {
 
-          logger.log('Error retrieving StoryList or DefaultTiddlers');
-          logger.debug(err);
-        }).then(function () {
+        logger.log('Error retrieving StoryList or DefaultTiddlers');
+        logger.debug(err);
+      }).then(function () {
 
           logger.log('Client side dbs initialized');
           callback();
