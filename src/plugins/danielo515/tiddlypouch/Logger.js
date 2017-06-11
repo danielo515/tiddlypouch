@@ -8,7 +8,6 @@ A basic logging implementation
 
 \*/
 
-(function(){
 
 /*jslint node: true, browser: true */
 /*global $tw: false */
@@ -62,4 +61,3 @@ A basic logging implementation
 
   exports.Logger = Logger;
 
-}());
