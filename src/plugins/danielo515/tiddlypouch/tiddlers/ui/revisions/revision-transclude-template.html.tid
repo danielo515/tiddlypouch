@@ -7,6 +7,7 @@ title: $:/plugins/danielo515/tiddlypouch/ui/revisions/transclude-template
     <$action-setfield $tiddler=<<currentTab>> title={{!!title}}/>
     Restore this revision
   </$button>
+  <$transclude tiddler="$:/plugins/danielo515/tiddlypouch/ui/buttons/set-diff"/>
   </div>
   <$tiddler tiddler=<<currentTab>>>
     <$transclude tiddler="$:/core/ui/ViewTemplate"/>

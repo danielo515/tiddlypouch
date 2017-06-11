@@ -8,7 +8,6 @@ A basic logging implementation
 
 \*/
 
-
 /*jslint node: true, browser: true */
 /*global $tw: false */
   'use strict';
