@@ -1,5 +1,5 @@
 /*\
-title: $:/plugins/danielo515/tiddlypouch/startup/pouchdb-sycer.js
+title: $:/plugins/danielo515/tiddlypouch/startup/pouchdb-syncer.js
 type: application/javascript
 module-type: startup
 
@@ -13,7 +13,7 @@ module-type: startup
 'use strict';
 
 // Export name and synchronous status
-exports.name = 'pouchdb-sycer';
+exports.name = 'pouchdb-syncer';
 exports.after = [ 'pouchdb' ];
 exports.platforms = [ 'browser' ];
 exports.synchronous = true;
@@ -21,7 +21,6 @@ exports.synchronous = true;
 var SYNC_STATE = '$:/state/tiddlypouch/sync/status';
 var SYNC_ERRORS = '$:/state/tiddlypouch/sync/Log'; // for now, log everything to the same place
 var SYNC_LOG = '$:/state/tiddlypouch/sync/Log';
-var CONFIG_PREFIX = '$:/plugins/danielo515/tiddlypouch/config/';
 
 exports.startup = function () {
   /* --- Declaration ZONE ---*/

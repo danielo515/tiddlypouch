@@ -18,7 +18,7 @@ Basic Utils object is created int the pouch startup module
 // Export name and synchronous status
 exports.name = 'pouchdb-utils';
 exports.after = [ 'pouchdb' ];
-exports.before = [ 'pouchdb-sycer' ];
+exports.before = [ 'pouchdb-syncer' ];
 exports.platforms = [ 'browser' ];
 exports.synchronous = true;
 
