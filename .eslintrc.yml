@@ -24,7 +24,7 @@ globals:
 
 rules:
     semi: 1 # require semicolons
-    no-unused-vars: 0
+    no-unused-vars: ['error']
     valid-jsdoc: ['error']
     quotes: [ 1, 'single' ]
     indent: [ 1, 2 ] # 2-space indentation

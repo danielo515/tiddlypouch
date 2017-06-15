@@ -30,6 +30,11 @@ function PouchAdaptor(options) {
 
 /**
 * Copied from TiddlyWiki5 core/modules/utils/dom/http.js to add support for xhr.withCredentials
+* @argument {Object} options Options to be used on the request
+* @argument {String} [options.type] Which verb to use (GET,POST,PUT,DELETE)
+* @argument {Bool} [options.withCredentials] Use with credentials option on the request
+* @argument {Object|String} [options.data] Data to be included as form data of the request
+* @returns {Promise} resolves if the returned status is 200,201 or 204, reject otherwise
 */
 function httpRequest(options) {
   var type = options.type || 'GET',
@@ -53,95 +58,116 @@ function httpRequest(options) {
   if (options.withCredentials) {
     request.withCredentials = true;
   }
-    // Set up the state change handler
-  request.onreadystatechange = function () {
-    if (this.readyState === 4) {
-      if (this.status === 200 || this.status === 201 || this.status === 204) {
-                // Success!
-        options.callback(null, this.responseText, this);
-        return;
-      }
-            // Something went wrong
-      options.callback('XMLHttpRequest error code: ' + this.status);
-    }
-  };
-    // Make the request
-  request.open(type, options.url, true);
-  if (headers) {
-    $tw.utils.each(headers, function (header, headerTitle, object) {
-      request.setRequestHeader(headerTitle, header);
-    });
-  }
-  if (data && !$tw.utils.hop(headers, 'Content-type')) {
-    request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=UTF-8');
-  }
-  request.send(data);
-  return request;
-}
 
-/**
-Reverse what mangleTitle does. Used to obtain title from _id (in convertFromSkinnyTiddler).
- This is legacy code, but I don't want to get rid of it'
-PouchAdaptor.prototype.demangleTitle = function (title) {
-    if (title.length < 3) {
-        return title;
+  return new Promise((resolve,reject) => {
+
+      // Set up the state change handler
+    request.onreadystatechange = function() {
+      if (this.readyState === 4) {
+        if (this.status === 200 || this.status === 201 || this.status === 204) {
+          // Success!
+          return resolve(this.responseText);
+        }
+        // Something went wrong
+        return reject('XMLHttpRequest error code: ' + this.status);
+      }
+    };
+      // Make the request
+    request.open(type, options.url, true);
+    if (headers) {
+      $tw.utils.each(headers, function (header, headerTitle) {
+        request.setRequestHeader(headerTitle, header);
+      });
     }
-    var firstThree = title.substring(0, 3);
-    var restOfIt = title.substring(3);
-    if (firstThree === '%5f') {
-        return '_' + restOfIt;
+    if (data && !$tw.utils.hop(headers, 'Content-type')) {
+      request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=UTF-8');
     }
-    else if (firstThree === '%25') {
-        return '%' + restOfIt;
-    }
-    else {
-        return title;
-    }
-}*/
+    request.send(data);
+  });
+}
 
 /*****************************************************
  ****** Tiddlywiki required methods
  *****************************************************/
 
 PouchAdaptor.prototype.getStatus = function (callback) {
+
   var self = this;
+
   if (!self.sessionUrl) {
     return callback(null, false, 'NON-AUTHENTICATED');
   }
-  httpRequest({
+
+  return httpRequest({
+    url: self.sessionUrl,
+    withCredentials: true
+  })
+  .then((data) => {
+
+    var json = null;
+    var isLoggedIn = false;
+    var username = null;
+    try {
+      json = JSON.parse(data);
+    } catch (e) {}
+    if (json && json.userCtx) {
+      username = json.userCtx.name;
+      isLoggedIn = (username !== null);
+      if (!isLoggedIn && json.userCtx.roles.length == 1 && json.userCtx.roles[0] === '_admin') {
+                    // admin party mode
+        self.logger('Warning! Server is on admin party mode!');
+        isLoggedIn = true;
+      }
+    }
+    // If we are logged but there is no onlineDB means that there is a cookie
+    // We have to create the database which will pick up the cookie.
+    // TW will not call the login method if we are already logged in, even if the user clicks on login.
+    if (isLoggedIn && !$TPouch.onlineDB) {
+      $TPouch.onlineDB = $TPouch.newOnlineDB( );
+      $TPouch.startSync($TPouch.onlineDB);
+    }
+    callback(null, isLoggedIn, username);
+  })
+  .catch( err => {
+    self.logger.debug('Error during login phase',err);
+    // In case of error, just flag us as non auth
+    return callback(null, false, 'NON-AUTHENTICATED');
+  });
+};
+
+PouchAdaptor.prototype.login = function (username, password, callback) {
+  var self = this;
+  const logger = this.logger;
+  logger.log('About to log in...');
+
+  return httpRequest({
+    type: 'POST',
     url: self.sessionUrl,
     withCredentials: true,
-    callback: function (err, data) {
-      if (err) {
-        self.logger.debug('Error during login phase',err);
-                // In case of error, just flag us as non auth
-        return callback(null, false, 'NON-AUTHENTICATED');
-      }
-      var json = null;
-      var isLoggedIn = false;
-      var username = null;
-      try {
-        json = JSON.parse(data);
-      } catch (e) {
-      }
-      if (json && json.userCtx) {
-        username = json.userCtx.name;
-        isLoggedIn = (username !== null);
-        if (!isLoggedIn && json.userCtx.roles.length == 1 && json.userCtx.roles[0] === '_admin') {
-                    // admin party mode
-          self.logger('Warning! Server is on admin party mode!');
-          isLoggedIn = true;
-        }
-      }
-            // If we are logged but there is no onlineDB means that there is a cookie
-            // We have to create the database which will pick up the cookie.
-            // TW will not call the login method if we are already logged in, even if the user clicks on login.
-      if (isLoggedIn && !$TPouch.onlineDB) {
-        self.login(); // this creates the online database
-      }
-      callback(null, isLoggedIn, username);
-    }
-  });
+    data: {name: username, password }
+  })
+  .then(() => {
+    logger.log('Login succeed');
+    callback();
+  })
+  .catch( err => {
+    logger.log('Login failed', err);
+    logger.alert('Login failed');
+    callback(err);
+  } );
+};
+
+PouchAdaptor.prototype.logout = function (callback) {
+  var self = this;
+  var options = {
+    url: self.sessionUrl,
+    type: 'DELETE',
+    withCredentials: true,
+  };
+
+  return httpRequest(options)
+  .then( () => callback() )
+  .catch(callback);
 };
 
 PouchAdaptor.prototype.getTiddlerInfo = function (tiddler) {
@@ -195,35 +221,6 @@ PouchAdaptor.prototype.isReady = function () {
     // Since pouchdb handles the sync to the server we declare ourselves allways ready.
   return true;
 };
-
-
-PouchAdaptor.prototype.login = function (username, password, callback) {
-  var self = this;
-  self.logger.log('Trying to sync...');
-
-  var onlineDB = $TPouch.newOnlineDB({ username: username, password: password });
-  if (!onlineDB) {
-    self.logger.log('Warning, sync is not possible because no onlineDB');
-    return callback('There is no online DB set');
-  }
-  $TPouch.onlineDB = onlineDB;
-  $TPouch.startSync(onlineDB).then(callback);
-};
-
-PouchAdaptor.prototype.logout = function (callback) {
-  var self = this;
-  var options = {
-    url: self.sessionUrl,
-    type: 'DELETE',
-    withCredentials: true,
-    callback: function (err) {
-      callback(err);
-    }
-  };
-  httpRequest(options);
-};
-
-//--- END TEMPT COMMENT */
 
 if ($tw.browser && $TPouch.database) {
     /*Only works if we are on browser and there is a database*/
