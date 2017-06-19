@@ -115,7 +115,7 @@ PouchAdaptor.prototype.getStatus = function (callback) {
       isLoggedIn = (username !== null);
       if (!isLoggedIn && json.userCtx.roles.length == 1 && json.userCtx.roles[0] === '_admin') {
                     // admin party mode
-        self.logger('Warning! Server is on admin party mode!');
+        self.logger.debug('Warning! Server is on admin party mode!');
         isLoggedIn = true;
       }
     }
