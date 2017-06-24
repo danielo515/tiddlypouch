@@ -69,24 +69,34 @@ exports.startup = function () {
         retry: true,
         filter: 'filtered_replication/only_tiddlers'
       }).on('change', function (info) {
+
         PouchLog(SYNC_LOG, info, '===SYNC Change===');
+        if (info.direction === 'pull'){
+        // If we just fetch new documents then make tiddlywiki update the new information.
+          $tw.syncer.syncFromServer();
+        }
       }).on('paused', function (err) {
+
         $tw.wiki.setText(SYNC_STATE, 'text', undefined, 'paused');
         if (err)
           PouchLog(SYNC_LOG, err, '===SYNC PAUSED===');
         else
           PouchLog(SYNC_LOG, '===SYNC PAUSED===');
       }).on('active', function () {
+
         $tw.wiki.setText(SYNC_STATE, 'text', undefined, 'syncing');
         PouchLog(SYNC_LOG, '===SYNC ACTIVE===');
         PouchLog(SYNC_LOG, 'replicate resumed');
       }).on('denied', function (info) {
+
         // a document failed to replicate
         PouchLog(SYNC_ERRORS, info, '===SYNC Denied===');
       }).on('complete', function (info) {
+
         $tw.wiki.setText(SYNC_STATE, 'text', undefined, 'completed');
         PouchLog(SYNC_LOG, info, '===SYNC Completed===');
       }).on('error', function (err) {
+
         $tw.wiki.setText(SYNC_STATE, 'text', undefined, 'error');
         PouchLog(SYNC_ERRORS, err, '===SYNC Error===');
       });
@@ -106,8 +116,8 @@ exports.startup = function () {
 
   function newOnlineDB(authOptions) {
     /* authOptions: {
-      username: 'mysecretusername',
-      password: 'mysecretpassword'
+      username: 'mySecretUsername',
+      password: 'mySecretPassword'
     }*/
     var Config = $TPouch.config;
     var URL = Config.currentDB.getUrl();
@@ -128,7 +138,7 @@ exports.startup = function () {
       '_id': '_design/filtered_replication',
       'filters': {
         'only_tiddlers': function (doc) {
-          return doc.hasOwnProperty('fields');
+          return (doc.hasOwnProperty('fields') && doc.fields.title !== '$:/StoryList');
         }.toString()
       }
     };

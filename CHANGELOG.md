@@ -1,3 +1,14 @@
+<a name="0.24.0"></a>
+# [0.24.0](https://github.com/danielo515/tiddlypouch/compare/v0.23.1-1...v0.24.0) (2017-06-24)
+
+
+### Features
+
+* **startup:** load palette tiddler at startup ([774c515](https://github.com/danielo515/tiddlypouch/commit/774c515)), closes [#73](https://github.com/danielo515/tiddlypouch/issues/73)
+* **syncrhonization:**  Better multi user syncrhonization (RT and no StoryList) ([71c5164](https://github.com/danielo515/tiddlypouch/commit/71c5164)), closes [#73](https://github.com/danielo515/tiddlypouch/issues/73)
+
+
+
 <a name="0.23.1-1"></a>
 ## [0.23.1-1](https://github.com/danielo515/tiddlypouch/compare/v0.23.1-0...v0.23.1-1) (2017-06-24)
 
