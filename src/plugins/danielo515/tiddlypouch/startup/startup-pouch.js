@@ -47,10 +47,11 @@ exports.startup = function (callback) {
   if ($TPouch.config.debug.isActive()) {
     $TPouch.database._db.on('error', function (err) { logger.log(err); debugger; });
   }
-  /** Create the required indexes (in parallel!) to operate the DBs  */
+  /** ========= Create the required indexes (in parallel!) to operate the DBs =======*/
   Promise.all([
     //   $TPouch.plugins.createIndex('by_plugin_type', function (doc) { doc.fields && doc.fields['plugin-type'] && emit(doc.fields['plugin-type']) })
     // , $TPouch.database.createIndex('by_type', function (doc) { doc.fields.type && emit(doc.fields.type) })
+    /*  ==== SKINNY TIDDLERS INDEX ===*/
     $TPouch.database.createIndex('skinny_tiddlers', function (doc) {
       if (doc.fields['plugin-type']) { // skip plugins!
         return;
@@ -64,12 +65,15 @@ exports.startup = function (callback) {
       fields.revision = doc._rev;
       emit(doc._id, fields);
     })
+    /*  ==== STARTUP TIDDLERS INDEX ===*/
     , $TPouch.database.createIndex('startup_tiddlers', function (doc) {
 
+      const titles = [ '$:/palette' ]; // list of startup titles
       doc.fields &&
         (
           (doc.fields.tags && doc.fields.tags.indexOf('$:/tags/Macro') !== -1)
           || (doc.fields.tags && doc.fields.tags.indexOf('$:/tags/Palette') !== -1)
+          || titles.indexOf(doc.fields.title) !== -1
           || doc.fields.type === 'application/javascript'
           || !!doc.fields['plugin-type']
         )
