@@ -1,0 +1,14 @@
+created: 20170611145021006
+modified: 20170611145812396
+tags:
+title: $:/plugins/danielo515/tiddlypouch/ui/buttons/set-diff
+type: text/vnd.tiddlywiki
+
+<!--This button only works when transcluded inside the revision-transclude-template
+    It sets the currently opened revision to be compared side by side with the most recent revision of the current tiddler -->
+<$button>
+Diff
+<$action-setfield $tiddler="$:/state/diff/left" text=<<currentTiddler>>/>
+<$action-setfield $tiddler="$:/state/diff/right" text=<<currentTab>>/>
+<$action-setfield $tiddler=<<tv-revisions-tab-state>> text="Diff"/>
+</$button>

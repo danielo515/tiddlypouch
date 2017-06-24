@@ -1,0 +1,57 @@
+title: $:/plugins/danielo515/tiddlypouch/macros/revision-tabs
+tags: $:/tags/Macro
+
+\define revision-tabs(tabsList,default,state:"$:/state/tab",class,template)
+<$set name="tv-revisions-tab-state" value=<<qualify "$state$">>>
+<div class="tc-tab-set $class$">
+<div class="tc-tab-buttons $class$">
+<$button set=<<tv-revisions-tab-state>> setTo=<<currentTiddler>> default="$default$" selectedClass="tc-tab-selected" tooltip={{!!tooltip}}>
+<$action-setfield $tiddler=<<folded-state>> text="show"/>
+<$set name="tv-wikilinks" value="no">
+<!-- TODO: localization -->
+Current
+</$set></$button><!--
+This is the side by side DIFF tab
+--><$button set=<<tv-revisions-tab-state>> setTo="Diff" default="$default$" selectedClass="tc-tab-selected" tooltip="Side by side diff">
+<$action-setfield $tiddler=<<folded-state>> text="hide"/>
+<$set name="tv-wikilinks" value="no">
+Diff
+</$set></$button><!--
+  All other loaded revisions tabs
+--><$list filter="$tabsList$ -[<currentTiddler>]" variable="currentTab"><$set
+  name="save-currentTiddler"
+  value=<<currentTiddler>>><$tiddler
+    tiddler=<<currentTab>>><$button set=<<tv-revisions-tab-state>> setTo=<<currentTab>> default="$default$" selectedClass="tc-tab-selected" tooltip={{!!tooltip}}>
+<$tiddler tiddler=<<save-currentTiddler>>>
+<$action-setfield $tiddler=<<folded-state>> text="hide"/>
+<$set name="tv-wikilinks" value="no">
+<$list filter="[<currentTab>removeprefix[$:/temp/revision:]removesuffix<currentTiddler>]" variable="currentTab">
+<$macrocall $name="currentTab" $type="text/plain" $output="text/plain"/>
+</$list>
+</$set></$tiddler></$button></$tiddler></$set></$list>
+</div>
+<div class="tc-tab-divider $class$"/>
+<div class="tc-tab-content $class$">
+<$list filter="$tabsList$" variable="currentTab">
+
+<$reveal type="match" state=<<tv-revisions-tab-state>> text=<<currentTab>> default="$default$">
+
+<$transclude tiddler="$template$" mode="block">
+
+<$transclude tiddler=<<currentTab>> mode="block"/>
+
+</$transclude>
+
+</$reveal>
+
+</$list><!--
+  This is the body of the DIFF tab. Should be here because otherwhise it moves the other tabs buttons
+--><$reveal type="match" state=<<tv-revisions-tab-state>> text="Diff" default="$default$">
+
+<$transclude tiddler="$:/plugins/danielo515/tiddlypouch/ui/revisions/Diff" mode="block"/>
+
+</$reveal>
+</div>
+</div>
+</$set>
+\end

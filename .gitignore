@@ -1,0 +1,10 @@
+*config.multids
+output/
+node_modules
+.history
+.vscode
+docs
+jsconfig.json
+.github_changelog_generator
+debug.log
+dist

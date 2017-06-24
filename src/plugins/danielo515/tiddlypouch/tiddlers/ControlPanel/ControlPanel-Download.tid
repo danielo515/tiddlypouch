@@ -1,0 +1,22 @@
+title: $:/plugins/danielo515/tiddlypouch/ControlPanel/Download
+caption: Download
+tags: $:/tags/TiddlyPouch/ControlPanel
+
+Here you have different methods of download this wiki.
+
+!!Save empty
+This downloads this wiki without any tiddler created by the user. ''Useful if'':
+
+* You have changed any tiddlywiki setting and you want to hardcode it on the html file.
+* You want to move this wiki to another computer/browser.
+* You have installed a plugin and you want it to be loaded from the file rather than from the database
+* You want to start again without any tiddler but keeping your current plugins/configurations
+
+{{$:/plugins/danielo515/tiddlypouch/Buttons/download-empty}}
+
+<!--
+!!Pack database
+This option packs the database currently in use into a system tiddler and then it
+downloads the wiki with it. ''Useful'' if you want to use this wiki in a different computer
+or browser.
+-->

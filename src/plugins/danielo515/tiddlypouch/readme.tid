@@ -1,0 +1,7 @@
+title: $:/plugins/danielo515/tiddlypouch/readme
+
+This is tiddlypouch plugin for [[TiddlyWiki|tiddlywiki.com]].
+This plugin uses PouchDB library to provide a store for your tiddlers. 
+Tiddlers are saved to the built-in database of your browser. It is also possible to setup a remote
+database and make tiddlypouch sync your local database with the remote one! This allows you very
+interesting workflows like ''working offline'' and syn back to the server when you come back online.

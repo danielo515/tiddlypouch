@@ -1,0 +1,22 @@
+created: 20170611144453800
+modified: 20170611160403640
+tags:
+title: $:/plugins/danielo515/tiddlypouch/ui/revisions/Diff
+type: text/vnd.tiddlywiki
+
+<div class="tc-tiddler-preview">
+  <div class="tc-tiddler-preview-preview">
+  <$tiddler tiddler={{$:/state/diff/left}}>
+  <$transclude
+        tiddler="$:/plugins/danielo515/tiddlypouch/ui/revisions/side-view"
+        mode="inline"/>
+  </$tiddler>
+  </div>
+  <div class="tc-tiddler-preview-preview">
+  <$tiddler tiddler={{$:/state/diff/right}}>
+  <$transclude
+      tiddler="$:/plugins/danielo515/tiddlypouch/ui/revisions/side-view"
+      mode="inline"/>
+  </$tiddler>
+  </div>
+</div>

@@ -1,0 +1,50 @@
+title: $:/plugins/danielo515/tiddlypouch/ControlPanel/Database
+caption: Database
+tags: $:/tags/TiddlyPouch/ControlPanel
+
+!!! Database Name {{$:/state/TiddlyPouch/info/databaseName||$:/plugins/danielo515/tiddlypouch/Buttons/info}}
+
+<$reveal type="match" state="$:/state/TiddlyPouch/info/databaseName" text="show">
+This is the name of your local database. Tiddlers are stored there.
+You can have as many databases as you want. Changing this value will make your wiki to save/load
+tiddlers to/from that database. This requires a ''save and reload'' to take effect.
+</$reveal>
+
+Name: {{$:/plugins/danielo515/tiddlypouch/ui/database-name}}
+@@color:#cc0000;
+,,//Without this parameter the plugin remains inactive //,,
+@@
+
+!!! Connection Info
+Fill the fields below if you want to synchronize your local database with a remote
+couch-like server.
+This information will be saved as metadata of the selected local database.
+
+~CouchDB URL: {{$:/plugins/danielo515/tiddlypouch/ui/remote-url}}
+@@color:#c0c0c0;
+,,//EJ: ~https://someone.cloudant.com //,,
+@@
+
+Remote database name: {{$:/plugins/danielo515/tiddlypouch/ui/remote-name}}
+@@color:#c0c0c0;
+,,//Local database will be synced to this database. ''Must exist on server'' if you are not an admin user. //,,
+@@
+
+{{$:/plugins/danielo515/tiddlypouch/ui/save-database-config}}
+
+!!!Important information
+Local databases are grouped by domain.
+''If you work'' with your wiki from a file then that particular file @@color:red; will not be able to
+access@@ any of the databases created by any wiki accessed online.
+If you want to sync databases between a wiki served by http and a local wiki you have to use
+some couch backend or export and import the database.
+
+!!! Database delete
+This will delete your current database.
+Note that if you are syncing to other devices this will only affects the local database, not the remote ones.
+@@color:#cc0000;
+This action can not be undone!!
+@@
+Please, reload your browser immediately after applying this.
+
+<$button message="tm-pouch-delete-db">Delete database</$button>

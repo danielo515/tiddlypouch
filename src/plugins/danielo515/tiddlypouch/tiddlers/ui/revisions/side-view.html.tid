@@ -1,0 +1,19 @@
+created: 20170611142115719
+creator: danielo515
+modified: 20170611153258197
+modifier: danielo515
+tags: 
+title: $:/plugins/danielo515/tiddlypouch/ui/revisions/side-view
+type: text/vnd.tiddlywiki
+
+<!-- This is just a template. It should be used to display different revisions of the same tiddler left and right -->
+<$transclude tiddler="$:/core/ui/TiddlerFields"/>
+
+<$list filter="[<currentTiddler>has[text]]">
+<$codeblock code={{!!text}} language={{!!type}}/>
+</$list>
+<$list filter="[<currentTiddler>!has[text]]">
+@@color:red;
+There is nothing to compare with
+@@
+</$list>
