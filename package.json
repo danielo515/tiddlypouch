@@ -1,11 +1,12 @@
 {
     "name": "tiddlypouch",
-    "version": "0.23.0",
+    "version": "0.23.1-1",
     "author": "Danielo Rodríguez Rivero",
     "description": "Tiddlypouch brings all the power of Pouchdb into tiddlywiki. It is a key part of the NoteSelf project",
     "license": "BSD-2-Clause",
     "private": true,
     "scripts": {
+        "precommit": "validate-commit-msg",
         "deploy": "gulp --production && git push --tags",
         "build": "gulp",
         "watch": "gulp watch",
@@ -55,10 +56,12 @@
         "gulp-uglify": "^1.5.1",
         "gulp-util": "^3.0.1",
         "gulp-watch": "^4.3.11",
+        "husky": "^0.14.0",
         "is-there": "^4.4.2",
         "nodemon": "^1.11.0",
         "run-sequence": "^1.2.2",
         "semver": "^5.1.0",
+        "validate-commit-msg": "^2.12.2",
         "yargs": "^3.0.0"
     },
     "dependencies": {
