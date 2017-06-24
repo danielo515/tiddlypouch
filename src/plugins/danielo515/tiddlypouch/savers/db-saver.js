@@ -14,41 +14,27 @@ Saves all the tiddlers on the current database as JSON
 'use strict';
 
 var Utils = require('$:/plugins/danielo515/tiddlypouch/utils');
+const saveStartNotification = '$:/language/TiddlyPouch/Notifications/Save/Starting';
 
 /**
  * @constructor {type} DownloadCurrentDB
 *  Select the appropriate saver module and set it up
 */
 function DownloadCurrentDB(wiki) {
-  this.downloader = require('$:/core/modules/savers/download.js').create(wiki);
+  this.wiki = wiki;
 }
 
-DownloadCurrentDB.prototype.save = function (text, method, callback) {
-  var options = {
-    variables:
-    {
-      filename: $TPouch.config.currentDB.getName() + '.json'
-    }
-  };
-  var allTiddlers = [];
-  var self = this;
-  // There is no other way to get all the documents except the desig ones http://stackoverflow.com/a/25744823/1734815
-  Promise.all([ /** get all documents except the design ones */
-    $TPouch.database._db.allDocs({ include_docs: true, endkey: '_design' }),
-    $TPouch.database._db.allDocs({ include_docs: true, startkey: '_design\uffff' })
-  ])
-    .then(function (allDocuments) {
-      return allDocuments[0].rows.concat(allDocuments[1].rows);
-    })
-    .then(function (allDocuments) {
-      allDocuments.forEach(function (row) {
-        allTiddlers.push($TPouch.database._convertFromCouch(row.doc));
-      });
-      var toDownload = JSON.stringify(allTiddlers, null, $tw.config.preferences.jsonSpaces);
-      self.downloader.save(toDownload, method, callback, options);
-    });
-  /**Stop other savers from trying to download the wiki */
-  return true;
+DownloadCurrentDB.prototype.save = function (text, method, callback, options ) {
+
+  if ($tw.syncer.isDirty()){
+    // If the syncer has not finished her job, we display a message and defer the save for one second...
+    $tw.notifier.display(saveStartNotification);
+    window.setTimeout($tw.rootWidget.dispatchEvent.bind($tw.rootWidget),1000, {type: 'tm-save-wiki'});
+    /**Stop other savers from trying to download the wiki */
+    return true;
+  }
+  // if the syncer has finished then the wiki is ready to be downloaded, we return false so other module can handle the actual save.
+  return false;
 };
 
 
