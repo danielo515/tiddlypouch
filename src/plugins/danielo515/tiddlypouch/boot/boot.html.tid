@@ -144,9 +144,12 @@ tags: $:/tags/RawMarkup
             function updater(version, db) {
 
                 var documentsToRemove = [
-                    '_design/by_type', '_design/skinny_tiddlers',
-                    '_design/by_plugin_type' , '_design/filtered_replication',
-                    '_design/TiddlyPouch','_design/startup_tiddlers'
+                    '_design/by_type',
+                    '_design/skinny_tiddlers',
+                    '_design/by_plugin_type' ,
+                    '_design/filtered_replication',
+                    '_design/TiddlyPouch',
+                    '_design/startup_tiddlers'
                     ];
 
                 if (version && !(parseInt(version.split('.').join('')) < parseInt($TPouch.VERSION.split('.').join('')))) {

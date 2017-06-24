@@ -189,7 +189,7 @@ PouchAdaptor.prototype.getSkinnyTiddlers = function (callback) {
  * Saves a tiddler to the current db store
  * @param  {Tiddler} tiddler - instance of $tw.Tiddler to be converted
  * @param  {function} callback - the callback that should be called when the operation completes
- * @param  {object} options - the options that the syncer provides, fo rexample tiddlerInfo metadata
+ * @param  {object} options - the options that the syncer provides, for example tiddlerInfo metadata
  * @return {undefined} this does not returns anything
  */
 PouchAdaptor.prototype.saveTiddler = function (tiddler, callback, options) {
