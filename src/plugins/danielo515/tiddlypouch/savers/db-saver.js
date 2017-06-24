@@ -58,11 +58,12 @@ DownloadCurrentDB.prototype.save = function (text, method, callback) {
 DownloadCurrentDB.prototype.info = {
   name: 'Download current db',
   priority: 100,
-  capabilities: [ 'save', 'download' ]
+  capabilities: [ 'save' ]
 };
 
 /**
 * Static method that returns true if this saver is capable of working
+* @param {$tw.wiki} wiki wiki instance of the currently active tiddlywiki
 */
 exports.canSave = function (wiki) {
   return $TPouch.database !== undefined;
