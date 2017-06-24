@@ -6,6 +6,7 @@
     "license": "BSD-2-Clause",
     "private": true,
     "scripts": {
+        "changelog":"standard-changelog",
         "precommit": "validate-commit-msg",
         "deploy": "gulp --production && git push --tags",
         "build": "gulp",
@@ -41,6 +42,7 @@
         "babel-cli": "^6.24.1",
         "babel-plugin-transform-object-rest-spread": "^6.23.0",
         "babel-preset-latest": "^6.24.1",
+        "conventional-changelog": "^1.1.3",
         "cross-env": "^5.0.1",
         "del": "^2.0.0",
         "gulp": "^3.9.1",
@@ -61,6 +63,7 @@
         "nodemon": "^1.11.0",
         "run-sequence": "^1.2.2",
         "semver": "^5.1.0",
+        "standard-changelog": "^1.0.1",
         "validate-commit-msg": "^2.12.2",
         "yargs": "^3.0.0"
     },
