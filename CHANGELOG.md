@@ -1,8 +1,7 @@
 # Change Log
 
-## [Unreleased](https://github.com/danielo515/tiddlypouch/tree/HEAD)
-
-[Full Changelog](https://github.com/danielo515/tiddlypouch/compare/v0.23.1-0...HEAD)
+## [v0.23.1-1](https://github.com/danielo515/tiddlypouch/tree/v0.23.1-1) (2017-06-24)
+[Full Changelog](https://github.com/danielo515/tiddlypouch/compare/v0.21.3-1...v0.23.1-1)
 
 **Implemented enhancements:**
 
@@ -12,12 +11,6 @@
 
 - Trying to export a single tiddler makes an export of the entire database [\#61](https://github.com/danielo515/tiddlypouch/issues/61)
 - Bugfix/disable databse export [\#80](https://github.com/danielo515/tiddlypouch/pull/80) ([danielo515](https://github.com/danielo515))
-
-## [v0.23.1-0](https://github.com/danielo515/tiddlypouch/tree/v0.23.1-0) (2017-06-24)
-[Full Changelog](https://github.com/danielo515/tiddlypouch/compare/v0.23.1-1...v0.23.1-0)
-
-## [v0.23.1-1](https://github.com/danielo515/tiddlypouch/tree/v0.23.1-1) (2017-06-24)
-[Full Changelog](https://github.com/danielo515/tiddlypouch/compare/v0.21.3-1...v0.23.1-1)
 
 **Implemented enhancements:**
 
@@ -286,7 +279,7 @@
 - Sync adaptor method get-skinny-tiddlers now supports both promise flow and callbacks
 - Dowload saver that downloads all the tiddlers contained on the current db as JSON
 # 0.14.1
-- Revisions are validated before saving 
+- Revisions are validated before saving
 # 0.14
 - First version of module loader
 # 0.13
