@@ -71,7 +71,7 @@ tags: $:/tags/RawMarkup
         $TPouch._configDb = $TPouch._configDb || new PouchDB('__TP_config');
         $TPouch.splashScreen = $TPouch.splashScreen || Object.create(null);
         /*** The version section is automatically updated by build scripts,  Dont delete the below comment */
-        $TPouch.VERSION = /***TPOUCH_VER*/'0.24.1-0'/*TPOUCH_VER***/;
+        $TPouch.VERSION = /***TPOUCH_VER*/'0.24.1-1'/*TPOUCH_VER***/;
 
         var $tw = window.$tw || Object.create(null);
         $tw.boot = $tw.boot || Object.create(null);
