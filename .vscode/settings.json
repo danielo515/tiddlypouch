@@ -24,5 +24,6 @@
         "bundle":true
     }
 ,
-"vsicons.presets.angular": false
+"vsicons.presets.angular": false,
+"editor.formatOnSave": false
 }
