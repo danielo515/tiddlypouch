@@ -209,11 +209,11 @@ tags: $:/tags/RawMarkup
 
             console.log('Something went wrong during plugin injection ', reason);
         }).then(function(){
-            try{
-                $tw.boot.boot(); // boot when chain completes, even if we got some errors
-            }catch(err){
-                console.error('Something went wrong booting tiddlywiki ',err);
-                $TPouch.splashScreen.showMessage('Error during boot. Please reload the screen (good luck)');
+            if($tw.boot.boot){
+              $tw.boot.boot(); // boot when chain completes, even if we got some errors
+            } else {
+                console.log('Allowing TW boot itself....');
+                $tw.boot.suppressBoot = false;
             }
 
         })
