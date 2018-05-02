@@ -6,7 +6,7 @@ module-type: startup
 Module responsible of managing the config.
 Creates and reads the config database.
 Provides an interface to the configurations (get, set, update)
-Configuration should be inmutable and require a reboot to become active
+Configuration should be immutable and require a reboot to become active
 Only remote configuration (username, remote_name, url) may be changed in the running session.
 
 @preserve
@@ -35,7 +35,7 @@ Only remote configuration (username, remote_name, url) may be changed in the run
       var LOGGER = require('$:/plugins/danielo515/tiddlypouch/utils/logger.js', true).Logger;
       var Logger = new LOGGER('TiddlyPouch:config');
       var Ui = require('$:/plugins/danielo515/tiddlypouch/ui/config.js');
-      var SingleConfig = require('$:/plugins/danielo515/tiddlypouch/config/single-db-config');
+      var DbConfig = require('$:/plugins/danielo515/tiddlypouch/config/single-db-config');
       var _config; // debug { active, verbose }, selectedDbId, databases
       var _configDB; // where the _config is persisted to
       var currentDB; // name, remote { url, user } Only configs!, not the actual db
@@ -159,11 +159,11 @@ Only remote configuration (username, remote_name, url) may be changed in the run
          * changes WILL NOT be persisted
          *
          * @param {Object} newConfig Options that extends the current configuration
+         */
 
         function updateRemoteConfig(newConfig){
             currentDB.remote = $tw.utils.extend({}, currentDB.remote, newConfig);
         }
-        */
 
         /**
          * Fetches the names of the databases which configuratons are saved
@@ -217,7 +217,7 @@ Only remote configuration (username, remote_name, url) may be changed in the run
                 }
                 ).then(
                 function () {
-                  currentDB = new SingleConfig(_getDatabaseConfig(_config.selectedDbId));
+                  currentDB = new DbConfig(_getDatabaseConfig(_config.selectedDbId));
                   return _updateConfig(); //Persisted at the end of the chain because some functions may update with default values
                 }
                 );
@@ -234,6 +234,7 @@ Only remote configuration (username, remote_name, url) may be changed in the run
                 readConfigTiddler: _readConfigTiddler,
                 getDatabaseConfig: _getDatabaseConfig,
                 update: _updateConfig,
+                updateRemoteConfig: updateRemoteConfig,
                 selectedDB: _config.selectedDbId,
                 _configDB: _configDB,
                 _config: _config,

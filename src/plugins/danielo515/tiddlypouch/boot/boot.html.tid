@@ -178,7 +178,7 @@ tags: $:/tags/RawMarkup
 
         createSplashScreen('Loading');
 
-        $TPouch._configDb.get('configuration') // we read the configuration to know which database shuld be loaded
+        $TPouch._configDb.get('configuration') // we read the configuration to know which database should be loaded
         .then(function(config){
 
             if(!config.selectedDbId){
