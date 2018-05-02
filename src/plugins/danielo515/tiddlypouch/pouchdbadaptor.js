@@ -24,7 +24,7 @@ function PouchAdaptor(options) {
   this.wiki = options.wiki;
   var Debug = $TPouch.config.debug;
   this.logger = new $TPouch.Logger('PouchAdaptor', Debug.isActive(), Debug.isVerbose() );
-  this.sessionUrl = $TPouch.config.currentDB.getUrl('_session'); // save the URL on startup
+  this.sessionUrl = () => $TPouch.config.currentDB.getUrl('_session'); // Check it! not store it, lazy evaluation man!
     //this.readConfig()
 }
 
@@ -94,12 +94,12 @@ PouchAdaptor.prototype.getStatus = function (callback) {
 
   var self = this;
 
-  if (!self.sessionUrl) {
+  if (!self.sessionUrl()) {
     return callback(null, false, 'NON-AUTHENTICATED');
   }
 
   return httpRequest({
-    url: self.sessionUrl,
+    url: self.sessionUrl(),
     withCredentials: true
   })
   .then((data) => {
@@ -142,7 +142,7 @@ PouchAdaptor.prototype.login = function (username, password, callback) {
 
   return httpRequest({
     type: 'POST',
-    url: self.sessionUrl,
+    url: self.sessionUrl(),
     withCredentials: true,
     data: {name: username, password }
   })
@@ -160,7 +160,7 @@ PouchAdaptor.prototype.login = function (username, password, callback) {
 PouchAdaptor.prototype.logout = function (callback) {
   var self = this;
   var options = {
-    url: self.sessionUrl,
+    url: self.sessionUrl(),
     type: 'DELETE',
     withCredentials: true,
   };

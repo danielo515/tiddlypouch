@@ -163,6 +163,7 @@ Only remote configuration (username, remote_name, url) may be changed in the run
 
         function updateRemoteConfig(newConfig){
             currentDB.remote = $tw.utils.extend({}, currentDB.remote, newConfig);
+            return currentDB;
         }
 
         /**
