@@ -30,6 +30,11 @@ Remote database name: {{$:/plugins/danielo515/tiddlypouch/ui/remote-name}}
 ,,//Local database will be synced to this database. ''Must exist on server'' if you are not an admin user. //,,
 @@
 
+Remote user-name: {{$:/plugins/danielo515/tiddlypouch/ui/remote-user}}
+@@color:#c0c0c0;
+,,//User or api key with admin permisions on the remote db. ''This field is optional''. //,,
+@@
+
 {{$:/plugins/danielo515/tiddlypouch/ui/save-database-config}}
 
 !!!Important information

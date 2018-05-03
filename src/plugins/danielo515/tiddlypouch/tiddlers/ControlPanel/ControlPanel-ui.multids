@@ -1,6 +1,6 @@
 title: $:/plugins/danielo515/tiddlypouch/ui/
 
-remote-user: <$edit-text tag="input" index="remote.user" tiddler="$:/plugins/danielo515/tiddlypouch/config/selected_database"  default=""/>
+remote-user: <$edit-text tag="input" index="remote.username" tiddler="$:/plugins/danielo515/tiddlypouch/config/selected_database"  default=""/>
 remote-name: <$edit-text tag="input" index="remote.name" tiddler="$:/plugins/danielo515/tiddlypouch/config/selected_database" default=""/>
 remote-url: <$edit-text tag="input" index="remote.url" tiddler="$:/plugins/danielo515/tiddlypouch/config/selected_database"  default=""/>
 save-database-config: <$button message="tm-TP-config-updateSelectedDB">Save Config</$button>
