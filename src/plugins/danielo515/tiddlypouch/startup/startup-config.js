@@ -91,10 +91,14 @@ Only remote configuration (username, remote_name, url) may be changed in the run
         var config = $tw.utils.extend({}, newConfig);
         config._id = config._id || 'configuration';
         return _configDB.put(config)
-                .then(
-                function (status) {
+                .then((status) => {
                   Logger.log('Persist config to DB - OK', status);
                   return _readConfigFromDB();
+                })
+                .catch((err) => {
+                  Logger.log('Persist config to DB - ERROR',err);
+                  return config;
+                });
                 }
                 )
                 .catch(Logger.log.bind(Logger, 'Persist config to DB - ERROR'));
