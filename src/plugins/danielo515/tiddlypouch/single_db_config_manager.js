@@ -37,6 +37,7 @@ function dbConfig(name, remote) {
       this.remote.name = remote.name;
       this.remote.url = remote.url;
       this.remote.username = remote.username;
+      this.remote.password = remote.password;
     }
 }
 
