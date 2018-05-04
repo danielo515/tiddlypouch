@@ -27,7 +27,7 @@ exports.startup = function () {
   var self = this;
   var db = $TPouch.database;
 
-  $TPouch.utils = {};
+  $TPouch.utils = $TPouch.utils || {};
   /** Removes the document with the provided title from the database*/
   $TPouch.utils.remove = function (title) {
     db.get(title).then(
