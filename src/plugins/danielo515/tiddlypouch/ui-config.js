@@ -99,8 +99,8 @@ function updateDebugUI(config){
 /**
  * Updates the databases section of the stored configuration
  * with new values for one database from the user interface.
- * Note that the configuration being updated may not be the configuratin of the currentDB,
- * the user can select a DB different from the curent one and save that config.
+ * Note that the configuration being updated may not be the configuration of the currentDB,
+ * the user can select a DB different than the current one and save that config.
  */
 exports.handlers.updateDbConfig = function(event){
   var savedConfig = $TPouch.config.readConfigTiddler();

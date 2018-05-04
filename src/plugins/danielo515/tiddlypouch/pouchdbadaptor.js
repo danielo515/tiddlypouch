@@ -166,7 +166,7 @@ PouchAdaptor.prototype.logout = function (callback) {
   };
 
   return httpRequest(options)
-  .then( () => callback() )
+  .then( () => callback() ) // callback with no arguments, important!
   .catch(callback);
 };
 
@@ -213,12 +213,12 @@ PouchAdaptor.prototype.deleteTiddler = function (title, callback, options) {
     callback(null);
   }
   $TPouch.database.deleteTiddler(title)
-    .then(callback.bind(callback,null))
+    .then(() => callback())
     .catch(callback);
 };
 
 PouchAdaptor.prototype.isReady = function () {
-    // Since pouchdb handles the sync to the server we declare ourselves allways ready.
+    // Since pouchdb handles the sync to the server we declare ourselves always ready.
   return true;
 };
 
