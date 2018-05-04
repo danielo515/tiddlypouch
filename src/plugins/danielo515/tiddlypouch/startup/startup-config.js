@@ -37,7 +37,7 @@ Only remote configuration (username, remote_name, url) may be changed in the run
       var Ui = require('$:/plugins/danielo515/tiddlypouch/ui/config.js');
       var DbConfig = require('$:/plugins/danielo515/tiddlypouch/config/single-db-config');
       var _config; // debug { active, verbose }, selectedDbId, databases
-      var _configDB; // where the _config is persisted to
+      var _configDB; // PouchDb where the _config is persisted to
       var currentDB; // name, remote { url, user } Only configs!, not the actual db
 
         /*==== TIDDLER METHODS === */
@@ -230,6 +230,7 @@ Only remote configuration (username, remote_name, url) may be changed in the run
                 /* --- TiddlyPouch namespace creation and basic initialization---*/
               $TPouch.Logger = LOGGER;
               $TPouch.DbStore = require('$:/plugins/danielo515/tiddlypouch/dbstore/factory');
+              // Config section of the global namespace
               $TPouch.config = {
                 getAllDBNames: getAllDBNames,
                 readConfigTiddler: _readConfigTiddler,
