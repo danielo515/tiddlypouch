@@ -5,9 +5,7 @@ module-type: library
 
 Collection of functions to help with some repetitive tasks.
 It is different from the utils created at startup, which are tiddlypoucyh focused
-This one should be required in order to be used.
-
-
+Utils here can be required for more granular use.
 
 @preserve
 
@@ -22,15 +20,30 @@ This one should be required in order to be used.
  * @namespace utils
  */
 
-var utils =
-    {
-        boolToHuman: boolToHuman,
-        plainToNestedObject: plainToNestedObject,
-        flattenObject: flattenObject,
-        saveAsJsonTiddler: saveAsJsonTiddler,
-    };
+const isObject = (o) => Object.prototype.toString.call(o) === '[object Object]';
+// I am not writing a more general fn for performance reasons and because I don't need it!
+const bothAreObjects = (x,y) => isObject(x) && isObject(y)
+const extendOne = (target, src) => {
+    for(const k in src){
+        if(!src.hasOwnProperty(k)) continue; //avoid traversing prototype chain
+        if(bothAreObjects(target[k], src[k])){
+            extendOne(target[k],src[k]);
+            continue
+        }
+        if(isObject(src[k])){ // if source is an object we need to clone it to avoid modifying it
+            target[k] = extendOne({}, src[k]);
+            continue
+        }
+        target[k] = src[k]
+    }
+    return target;
+}
 
-module.exports = utils;
+const extendDeep = (target, ...sources ) => {
+    return sources.reduce(extendOne, target)
+}
+
+
 
 function saveAsJsonTiddler(title, data, beautify) {
     var formatParameters = beautify ? $tw.config.preferences.jsonSpaces : null;
@@ -94,3 +107,21 @@ function plainToNestedObject(plain) {
 function boolToHuman(value) {
     return value ? "yes" : "no"
 }
+
+// ===== EXPORTS =====
+
+
+var utils =
+    {
+        boolToHuman: boolToHuman,
+        plainToNestedObject: plainToNestedObject,
+        flattenObject: flattenObject,
+        saveAsJsonTiddler: saveAsJsonTiddler,
+        extendOne,
+        extendDeep,
+        isObject
+    };
+
+module.exports = utils; // for regular imports. Below is the Browser namespaced export.
+
+$TPouch.utils = extendOne($TPouch.utils || {}, utils); // we are using one of our functions to export our functions, wohooo

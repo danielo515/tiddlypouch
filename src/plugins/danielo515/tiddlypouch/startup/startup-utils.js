@@ -3,7 +3,7 @@ title: $:/plugins/danielo515/tiddlypouch/startup/utils.js
 type: application/javascript
 module-type: startup
 
-Basic Utils object is created int the pouch startup module
+Basic Utils object.
 
 @preserve
 
