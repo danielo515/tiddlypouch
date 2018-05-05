@@ -13,6 +13,13 @@ Only remote configuration (username, remote_name, url) may be changed in the run
 
 \*/
 
+/**
+ * @typedef {Object} remoteConfig
+ * @property {String} name The name of the remote database on the db server
+ * @property {String} url The url of the database server (ej https://xxxx.cloudant.com)
+ * @property {String} username An user with access rights to the remote database specified on name
+ * @property {String} password The password of the provided username
+ */
 
 /*jslint node: true, browser: true */
 /*global $tw: false */
@@ -32,6 +39,8 @@ var CONFIG_TIDDLER = CONFIG_PREFIX + 'config_database';
  * @module config-startup
  */
 exports.startup = function (callback) {
+
+  const { extendDeep, extendOne } = require('$:/plugins/danielo515/tiddlypouch/utils')
   var LOGGER = require('$:/plugins/danielo515/tiddlypouch/utils/logger.js', true).Logger;
   var Logger = new LOGGER('TiddlyPouch:config');
   var Ui = require('$:/plugins/danielo515/tiddlypouch/ui/config.js');
@@ -67,7 +76,7 @@ exports.startup = function (callback) {
 
   function _updateConfig(newConfig) {
     // Extends existing config with the new one. Use empty object as base to avoid mutability
-    var config = $tw.utils.extend({}, _config, newConfig);
+    var config = extendDeep({}, _config, newConfig);
     if (!config || !_isValidConfig(config)) {
       Logger.log('Updating config to DB - ERROR', 'Tried to persist an invalid config');
       return;
@@ -77,7 +86,7 @@ exports.startup = function (callback) {
       .then(updatedConfig => { // persist config returns the config just saved to the DB (important for revision)
         _config = updatedConfig;
         _writeConfigTiddler(updatedConfig);
-        $tw.rootWidget && $tw.rootWidget.dispatchEvent({ type: 'tm-tp-config-saved', param: true });
+        return updatedConfig
       });
   }
 
@@ -89,8 +98,7 @@ exports.startup = function (callback) {
    * - Fullfills to the document written
    */
   function _persistConfig(newConfig) {
-    var config = $tw.utils.extend({}, newConfig);
-    config._id = config._id || 'configuration';
+    var config = extendOne({ _id: 'configuration' }, newConfig);
     return _configDB.put(config)
       .then((status) => {
         Logger.log('Persist config to DB - OK', status);
@@ -156,16 +164,25 @@ exports.startup = function (callback) {
 
   /*==== PUBLIC METHODS === */
   /**
-   * Updates the remote config of the current database.
-   * This is the only method that is allowed to modify the running config
-   * changes WILL NOT be persisted
-   *
-   * @param {Object} newConfig Options that extends the current configuration
+   * Updates the remote config of the CURRENT database instance, and also it's associated configuration
+   * inside the global databases configuration.
+   * We update the current db instead of the selected one because this method is usually called after or before login,
+   * so what makes sense is to login to the current database, not a potenitally saved one.
+   * This is the only method that is allowed (for now) to modify the running config.
+   * This method takes care of updating just the required sections, so make sure to pass to it JUST the remote section
+   * @param {remoteConfig} remoteConf Just the remote section of a db config.
+   * @returns {Promise} @fulfills when the config has been stored to the conf db.
    */
 
-  function updateRemoteConfig(newConfig) {
-    currentDB.remote = $tw.utils.extend({}, currentDB.remote, newConfig);
-    return currentDB;
+  function updateRemoteConfig(remoteConf) {
+    currentDB.remote = $tw.utils.extend({}, currentDB.remote, remoteConf);
+    return _updateConfig({
+      databases: {
+        [currentDB.getName()]: {
+          remote: remoteConf
+        }
+      }
+    });
   }
 
   /**
