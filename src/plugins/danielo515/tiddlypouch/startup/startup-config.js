@@ -72,10 +72,11 @@ Only remote configuration (username, remote_name, url) may be changed in the run
           Logger.log('Updating config to DB - ERROR', 'Tried to persist an invalid config');
           return;
         }
-            // After any update to the config persist the changes
+        // After any update to the config persist the changes
         return _persistConfig(config)
-                .then(_writeConfigTiddler)
-                .then(function () {
+                .then( updatedConfig => { // persist config returns the config just saved to the DB (important for revision)
+                  _config = updatedConfig;
+                  _writeConfigTiddler(updatedConfig);
                   $tw.rootWidget && $tw.rootWidget.dispatchEvent({ type: 'tm-tp-config-saved', param: true });
                 });
       }
@@ -99,9 +100,6 @@ Only remote configuration (username, remote_name, url) may be changed in the run
                   Logger.log('Persist config to DB - ERROR',err);
                   return config;
                 });
-                }
-                )
-                .catch(Logger.log.bind(Logger, 'Persist config to DB - ERROR'));
       }
 
         /**
@@ -212,7 +210,7 @@ Only remote configuration (username, remote_name, url) may be changed in the run
                 .then(function (config) { // All ok reading from DB.
                   Logger.debug('Config read from DB - OK');
                   _config = config;
-                  _writeConfigTiddler(); // Save current config to tiddler version
+                  _writeConfigTiddler(config); // Save current config to tiddler version
                 })
                 .catch( // Error reading from db, fallback to tiddler configuration
                 function (error) {
@@ -243,7 +241,7 @@ Only remote configuration (username, remote_name, url) may be changed in the run
                 updateRemoteConfig: updateRemoteConfig,
                 selectedDB: _config.selectedDbId,
                 _configDB: _configDB,
-                _config: _config,
+                _getConfig: () => _config, // this is just to allow external code read this config, not tu use it at all
                 debug: {
                   isActive: isDebugActive,
                   isVerbose: isDebugVerbose
