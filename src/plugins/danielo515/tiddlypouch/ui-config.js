@@ -26,14 +26,18 @@ var SYNC_ICON = '$:/plugins/danielo515/tiddlypouch/ui/sync-flag';
 
 var Utils = require('$:/plugins/danielo515/tiddlypouch/utils');
 
-exports.refreshUI = function refreshUI(config) {
-  updateDebugUI(config);
-  refreshSelectedDBUI(config.databases[config.selectedDbId]);
-  setSyncFlag();
-  refreshDatabaseNamesUI();
-  setLoginMessage();
-  setSiteSubtitleToDatabaseName();
-};
+$TPouch.ui = $TPouch.ui || {};
+
+$TPouch.ui.refresh =
+  exports.refreshUI =
+  function refreshUI(config) {
+    updateDebugUI(config);
+    refreshSelectedDbUi(config.databases[config.selectedDbId]);
+    setSyncFlag();
+    refreshDatabaseNamesUI();
+    setLoginMessage();
+    setSiteSubtitleToDatabaseName();
+  };
 
 exports.handlers = {};
 
@@ -103,13 +107,18 @@ function updateDebugUI(config) {
  * the user can select a DB different than the current one and save that config.
  */
 exports.handlers.updateDbConfig = function (event) {
-  var savedConfig = $TPouch.config.readConfigTiddler();
-  var uiConfig = $tw.wiki.getTiddlerData(SELECTED_DATABASE);
+  const uiConfig = $tw.wiki.getTiddlerData(SELECTED_DATABASE);
+  const updateDescription = {
+    // Instead of updating fields separately, we build an object describing just the new sections to add
+    // and the update method will take care of updating the corresponding parts
+    selectedDbId: uiConfig.name,
+    databases: {
+      [uiConfig.name]: Utils.plainToNestedObject(uiConfig)
+    }
+  };
 
-  savedConfig.selectedDbId = uiConfig.name;
-  savedConfig.databases[uiConfig.name] = Utils.plainToNestedObject(uiConfig);
   $TPouch.config
-    .update(savedConfig)
+    .update(updateDescription)
     .then(() => $tw.rootWidget.dispatchEvent({ type: 'tm-tp-config-saved', param: true })); // when saved from UI, ask for a reboot
 };
 
@@ -120,15 +129,15 @@ exports.handlers.updateDbConfig = function (event) {
 exports.handlers.databaseHasBeenSelected = function (event) {
   var dbName = event.param;
   var dbConfig = $TPouch.config.getDatabaseConfig(dbName);
-  refreshSelectedDBUI(dbConfig);
+  refreshSelectedDbUi(dbConfig);
 };
 
 /**
  * Refreshes the UI with the provided database configuration
  *
- * @param {Object} dbConfig
+ * @param {remoteConfig} dbConfig
  */
-function refreshSelectedDBUI(dbConfig) {
+function refreshSelectedDbUi(dbConfig) {
   //var dbInfo = config.databases[config.selectedDbId];
   var uiConfig = Utils.flattenObject(dbConfig);
   $tw.wiki.addTiddler(new $tw.Tiddler({
