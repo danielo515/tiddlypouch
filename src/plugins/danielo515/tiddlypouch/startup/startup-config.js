@@ -74,6 +74,16 @@ exports.startup = function (callback) {
     return true;
   }
 
+  /**
+   * @function _updateConfig
+   * The official method of saving configurations.
+   * It accepts an object describing the new state of the configuration, 
+   * which can be a complete configuration object or just a subsection.
+   * Configuration update is made by deep merging, so you can update sections of the configuration by providing
+   * an object that only contains such sections, for example the specific configuration of one database.
+   * @param  {Object} newConfig The new configuration to be persisted
+   * @return {Promise} @fulfills to the config that has been saved to the database
+   */
   function _updateConfig(newConfig) {
     // Extends existing config with the new one. Use empty object as base to avoid mutability
     var config = extendDeep({}, _config, newConfig);
@@ -119,16 +129,15 @@ exports.startup = function (callback) {
    * - Rejects if no config exists or it is invalid
    */
   function _readConfigFromDB() {
-    return _configDB.get('configuration')
-      .then(function (config) {
-
+    return _configDB
+      .get('configuration')
+      .then((config) => {
         if (_isValidConfig(config)) {
           return config;
         }
         throw new Error('Config was read, but it was invalid');
       })
-      .catch(function (err) {
-
+      .catch((err) => {
         Logger.log('Config read from DB - ERROR', err);
         throw err;
       });
@@ -224,22 +233,20 @@ exports.startup = function (callback) {
     _configDB = $TPouch._configDb;
     Logger.log('Initializing config module');
     return _readConfigFromDB() // be aware of not breaking the promise chain!
-      .then(function (config) { // All ok reading from DB.
+      .then((config) => { // All ok reading from DB.
         Logger.debug('Config read from DB - OK');
         _config = config;
         _writeConfigTiddler(config); // Save current config to tiddler version
       })
-      .catch( // Error reading from db, fallback to tiddler configuration
-        function (error) {
-          Logger.debug('FallingBack to tiddler configuration');
-          _config = _readConfigTiddler();
-          return _config; // return something to continue the chain!
-        }
-      ).then(
-        function () {
-          currentDB = new DbConfig(_getDatabaseConfig(_config.selectedDbId));
-          return _updateConfig(); //Persisted at the end of the chain because some functions may update with default values
-        }
+      .catch((error) => { // Error reading from db, fallback to tiddler configuration
+        Logger.debug('FallingBack to tiddler configuration');
+        _config = _readConfigTiddler();
+        return _config; // return something to continue the chain!
+      })
+      .then(() => {
+        currentDB = new DbConfig(_getDatabaseConfig(_config.selectedDbId));
+        return _updateConfig(); //Persisted at the end of the chain because some functions may update with default values
+      }
       );
   }
 

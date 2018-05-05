@@ -160,20 +160,6 @@ gulp.task('perform cleanup', function() {
 });
 
 /**
- * Bump version on every sourcecode change
- * */
-gulp.task('watch', function () {
-
-    // return watch('src/plugins/**/!(boot.html.tid|plugin.info)', bumpVersion);
-  gulp.watch('src/plugins/**/!(boot.html.tid|plugin.info)',[
-    'copy vanilla files',
-    'compile and move styles',
-    'compile and move scripts'
-  ]);
-});
-
-
-/**
  * Override the version of the plugin specified in the plugin.info
  * file. If `isIncrBuild` is true, then the build number is
  * incremented as well.
@@ -409,4 +395,14 @@ gulp.task('travis', function(cb) {
     cb
   );
 
+});
+
+gulp.task('watch', () => {
+
+  // return watch('src/plugins/**/!(boot.html.tid|plugin.info)', bumpVersion);
+gulp.watch('src/plugins/**/!(boot.html.tid|plugin.info)',[
+  'copy vanilla files',
+  'compile and move styles',
+  'compile and move scripts'
+]);
 });
