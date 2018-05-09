@@ -1,3 +1,29 @@
+<a name="0.26.0"></a>
+# [0.26.0](https://github.com/danielo515/tiddlypouch/compare/v0.24.1-2...v0.26.0) (2018-05-09)
+
+
+### Bug Fixes
+
+* **config:** update the internal conf of config module when saved to DB ([5af22c4](https://github.com/danielo515/tiddlypouch/commit/5af22c4))
+* **startup:** add empty tiddler for username to avoid startup errors ([8b82a39](https://github.com/danielo515/tiddlypouch/commit/8b82a39))
+* **sync:** proper temp exclude and user sync ([0f58cb7](https://github.com/danielo515/tiddlypouch/commit/0f58cb7)), closes [NoteSelf.github.io#57](https://github.com/NoteSelf.github.io/issues/57)
+
+
+### Features
+
+* **config:** better ui evetns to config methods connection ([3ad219a](https://github.com/danielo515/tiddlypouch/commit/3ad219a))
+* **config:** use better extend methods + better flow on saving ([2c816c5](https://github.com/danielo515/tiddlypouch/commit/2c816c5))
+* **db:** accept the password on the dbConfig constructor ([d439fc5](https://github.com/danielo515/tiddlypouch/commit/d439fc5))
+* **login:** update remote config & lazy sessionUrl evaluation ([abadf22](https://github.com/danielo515/tiddlypouch/commit/abadf22))
+* **release:** just a release ([ab6d8a2](https://github.com/danielo515/tiddlypouch/commit/ab6d8a2))
+* **startup:** add sync-filter and username to startup tiddlers ([54b1436](https://github.com/danielo515/tiddlypouch/commit/54b1436))
+* **ui:** added username to db control-panel ([64aee55](https://github.com/danielo515/tiddlypouch/commit/64aee55))
+* **ui:** transclude login button to allow external plugins to override ([1067785](https://github.com/danielo515/tiddlypouch/commit/1067785))
+* **util:** non destructive util object creation ([520887a](https://github.com/danielo515/tiddlypouch/commit/520887a))
+* **utils:** more useful utils and add them to nampespaced utils ([945ef1a](https://github.com/danielo515/tiddlypouch/commit/945ef1a))
+
+
+
 <a name="0.25.0"></a>
 # [0.25.0](https://github.com/danielo515/tiddlypouch/compare/v0.24.1-2...v0.25.0) (2018-05-05)
 
