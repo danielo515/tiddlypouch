@@ -1,4 +1,4 @@
 title: $:/config/SyncFilter
 comment: Temprorary workaround until I implement this function in the syncer
 
-[is[tiddler]] -[[$:/HistoryList]] -[[$:/Import]] -[[$:/isEncrypted]] -[prefix[$:/status]] -[prefix[$:/state]] -[prefix[$:/temp]] -[prefix[$:/plugins/danielo515/tiddlypouch/]]
+[is[tiddler]] -[[$:/HistoryList]] -[[$:/Import]] -[[$:/isEncrypted]] -[prefix[$:/status/]] -[prefix[$:/state/]] -[prefix[$:/temp/]] -[prefix[$:/plugins/danielo515/tiddlypouch/]] [[$:/status/UserName]]
