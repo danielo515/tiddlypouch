@@ -68,7 +68,7 @@ exports.startup = function (callback) {
     /*  ==== STARTUP TIDDLERS INDEX ===*/
     , $TPouch.database.createIndex('startup_tiddlers', function (doc) {
 
-      const titles = [ '$:/palette' ]; // list of startup titles
+      const titles = [ '$:/palette', '$:/status/UserName', '$:/config/SyncFilter' ]; // list of startup titles
       doc.fields &&
         (
           (doc.fields.tags && doc.fields.tags.indexOf('$:/tags/Macro') !== -1)
