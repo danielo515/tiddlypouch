@@ -14,6 +14,8 @@ Manages insertions, extractions, deletions of tiddlers to a database.
 /*jslint node: true, browser: true */
 /*global $tw, module */
 
+const identity = (x) => x;
+
 /***====================== EXPORTS  ========================== */
 
 module.exports = DbStore;
@@ -64,9 +66,27 @@ DbStore.prototype._Conflict = function conflict(message) {
  * Deletes the current database
  * @returns {Promise} A promise that fulfills when the database is destroyed
  */
-DbStore.prototype.destroy = function destroy(){
+DbStore.prototype.destroy = function destroy() {
     return this._db.destroy();
 };
+
+/**
+ * @function makeDesignDocument
+ * @param  {String}   name        {description}
+ * @param  {Function} mapFunction {description}
+ * @param  {Function} processView An optional function to pre-process the code of the map function. For example injecting more code. Should return an string
+ * @return {type} {description}
+ */
+DbStore.prototype._makeDesignDocument = function makeDesignDocument(name, mapFunction, processView = identity) {
+    return {
+        _id: '_design/' + name,
+        views: {
+            [name]: {
+                map: processView(mapFunction.toString())
+            }
+        }
+    };
+}
 
 // Source: https://pouchdb.com/2014/05/01/secondary-indexes-have-landed-in-pouchdb.html
 /**
@@ -74,22 +94,47 @@ DbStore.prototype.destroy = function destroy(){
  * with a map function that emits the key to be indexed
  * @example createIndex('by_type' , function(doc){ emit(doc.fields.type) })
  * @public
- * @param {String} name The name of the index, ej: by_type
- * @param {function} mapFunction A couch map function that will be used to build the index
+ * @param  {String} name The name of the index, ej: by_type
+ * @param  {Function} mapFunction A couch map function that will be used to build the index
+ * @param  {Function} processView An optional function to pre-process the code of the map function. For example injecting more code
  * @return {promise} A promise that fulfills when the design document is inserted
  */
-DbStore.prototype.createIndex = function createDesignDoc(name, mapFunction) {
-    var ddoc = {
-        _id: '_design/' + name,
-        views: {
-        }
-    };
-    ddoc.views[name] = { map: mapFunction.toString() };
+DbStore.prototype.createIndex = function createIndex(name, mapFunction, processView) {
+
     this.logger.debug('Creating index' + name + '...')
-    return this._db.put(ddoc)
-        .then(this.logger.debug.bind(this.logger, 'Index ' + name + ' created'))
+    return this._db
+        .put(this._makeDesignDocument(name, mapFunction, processView))
+        .then(() => this.logger.debug('Index ' + name + ' created'))
         .catch(this._Conflict('Index ' + name + ' exists already'));
 }
+
+/**
+ * @function replaceIndex
+ * Replaces an existing index with the provided mapFunction.
+ * If the index does not exists it will be created.
+ * We accept a meta-programming function that will have the opportunity to inject code into the map function.
+ * Note that it is easier to fetch the document, handle the 404 and then insert the document than try to insert, handle the 409 and then try to insert again.
+ * @param  {String}   name        The name of the index, ej: by_type
+ * @param  {Function} mapFunction A couch map function that will be used to build the index
+ * @param  {Function} processView An optional function to pre-process the code of the map function. For example injecting more code. Should return an string
+ * @return {Promise} {description}
+ */
+DbStore.prototype.replaceIndex = function replaceIndex(name, mapFunction, processView) {
+    const index = this._makeDesignDocument(name, mapFunction, processView);
+    return this._db
+        .get(index._id)
+        .catch((err) => {
+            // like upsert, if it does not exist create it. Any other error will not be handled
+            if (err.status !== 404) { 
+                throw err;
+            }
+            return {}; // default object for the next promise
+        })
+        .then(({ _rev }) => {
+            _rev && (index._rev = _rev);
+            return this._db.put(index)
+        });
+};
 
 /**
  * Updates a document on the database if it exists.
@@ -209,32 +254,32 @@ DbStore.prototype.getTiddler = function (title, revision) {
  *                                  querying for skinny tiddlers for example
  * @return {promise} fulfills to an array of already converted tiddlers
  */
-DbStore.prototype.getTiddlers = function( index, search_term, includeDocs ){
-     var self = this;
-     var queryOptions = { include_docs: (undefined === includeDocs ) ? true : includeDocs };
+DbStore.prototype.getTiddlers = function (index, search_term, includeDocs) {
+    var self = this;
+    var queryOptions = { include_docs: (undefined === includeDocs) ? true : includeDocs };
 
-     if( search_term ){
-         queryOptions.key = search_term;
-     }
+    if (search_term) {
+        queryOptions.key = search_term;
+    }
 
-        return self._db.query(index, queryOptions)
-            .then(function (result) {
-                self.logger.trace("Query to ",index," searching for ", search_term," : ", result.rows);
-                return result.rows
+    return self._db.query(index, queryOptions)
+        .then(function (result) {
+            self.logger.trace("Query to ", index, " searching for ", search_term, " : ", result.rows);
+            return result.rows
+        })
+        .then(function (rows) {
+            /** query Api returns documents in a different format, we have to convert them to the format convertFromCouch expects */
+            return rows.map(function (doc) {
+                return doc.doc ? doc.doc : { // if doc is included just return it or try to make a conversion otherwhise
+                    // the key is missed! maybe provide a conversion function as parameter?
+                    _id: doc.id,
+                    fields: doc.value
+                }
             })
-            .then(function (rows) {
-                /** query Api returns documents in a different format, we have to convert them to the format convertFromCouch expects */
-                return rows.map(function (doc) {
-                    return doc.doc ? doc.doc : { // if doc is included just return it or try to make a conversion otherwhise
-                        // the key is missed! maybe provide a conversion function as parameter?
-                        _id: doc.id,
-                        fields: doc.value
-                    }
-                })
-            }).then(function (documents) {
-                return documents.map(self._convertFromCouch.bind(self));
-            })
-            .catch(self.logger.log.bind(self.logger));
+        }).then(function (documents) {
+            return documents.map(self._convertFromCouch.bind(self));
+        })
+        .catch(self.logger.log.bind(self.logger));
 };
 
 /**
