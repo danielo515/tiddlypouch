@@ -1,0 +1,23 @@
+{
+    "tiddlers": [
+        {
+            "file": "./tpouch-boot.js",
+            "prefix":"<script>\n",
+            "suffix":"\n</script>",
+            "fields": {
+                "type": "application/javascript",
+                "title": "$:/plugins/danielo515/tiddlypouch/boot.js",
+                "tags":["$:/tags/RawMarkup"]
+            }
+        },
+        {
+            "file": "./boot.css",
+            "prefix":"<style>\n",
+            "suffix":"\n</style>",
+            "fields": {
+                "title": "$:/plugins/danielo515/tiddlypouch/boot.css",
+                "tags":["$:/tags/RawMarkup"]
+            }
+        }
+    ]
+}

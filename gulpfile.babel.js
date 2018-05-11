@@ -98,7 +98,7 @@ var pluginTiddler = '$:/plugins/' + pluginNamespace;
 var pluginInfoPath = path.resolve(pluginSrc, pluginNamespace, 'plugin.info');
 var pluginInfo = JSON.parse(fs.readFileSync(pluginInfoPath, 'utf8'));
 var pckgJSON = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
-var updaterSrc = './src/plugins/danielo515/tiddlypouch/boot/boot.html.tid';
+var updaterSrc = './src/plugins/danielo515/tiddlypouch/boot/tpouch-boot.js';
 var updater = fs.readFileSync(updaterSrc, 'utf8');
 
 // build paths where we output our results
@@ -400,7 +400,7 @@ gulp.task('travis', function(cb) {
 gulp.task('watch', () => {
 
   // return watch('src/plugins/**/!(boot.html.tid|plugin.info)', bumpVersion);
-gulp.watch('src/plugins/**/!(boot.html.tid|plugin.info)',[
+gulp.watch('src/plugins/**/!(plugin.info)',[
   'copy vanilla files',
   'compile and move styles',
   'compile and move scripts'

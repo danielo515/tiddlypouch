@@ -23,6 +23,7 @@ var DEBUG_VERBOSE = DEBUG_CONFIG + '/Verbose';
 var DATABASE_NAMES = '$:/plugins/danielo515/tiddlypouch/config/database_names';
 var SELECTED_DATABASE = '$:/plugins/danielo515/tiddlypouch/config/selected_database';
 var SYNC_ICON = '$:/plugins/danielo515/tiddlypouch/ui/sync-flag';
+const { CONFIG_SAVED } = require('$:/plugins/danielo515/tiddlypouch/constants.js');
 
 var Utils = require('$:/plugins/danielo515/tiddlypouch/utils');
 
@@ -119,7 +120,7 @@ exports.handlers.updateDbConfig = function (event) {
 
   $TPouch.config
     .update(updateDescription)
-    .then(() => $tw.rootWidget.dispatchEvent({ type: 'tm-tp-config-saved', param: true })); // when saved from UI, ask for a reboot
+    .then(() => $tw.rootWidget.dispatchEvent({ type: CONFIG_SAVED, param: true })); // when saved from UI, ask for a reboot
 };
 
 /**
