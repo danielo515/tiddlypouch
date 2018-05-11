@@ -20,6 +20,10 @@ exports.name = 'TiddlyPouch-eventListeners';
 exports.after = [ 'startup' ];
 exports.platforms = [ 'browser' ];
 exports.synchronous = true;
+const { DELETE_DB, LIST_REVISIONS, LOAD_REVISION, 
+        CONFIG_SAVED, UPDATE_DEBUG, UPDATE_SELECTED_DB, 
+        DB_HAS_BEEN_SELECTED 
+      } = require('$:/plugins/danielo515/tiddlypouch/constants.js');
 
 exports.startup = function () {
   var logger = new $TPouch.Logger('TiddlyPouch');
@@ -28,7 +32,7 @@ exports.startup = function () {
 
   /*****************************************************************************
   ########################### EVENT LISTENERS ##################################*/
-  $tw.rootWidget.addEventListener('tm-pouch-delete-db', function (event) {
+  $tw.rootWidget.addEventListener(DELETE_DB, function (event) {
     $tw.passwordPrompt.createPrompt({
       serviceName: $tw.language.getString('TiddlyPouch/Delete-DB', { variables: { database: $TPouch.config.currentDB.name } }),
       noUserName: true,
@@ -51,7 +55,7 @@ exports.startup = function () {
   /**
    * Just asks for the revisions array and saves it as a JSON tiddler.
    */
-  $tw.rootWidget.addEventListener('tm-tp-load-revisions',
+  $tw.rootWidget.addEventListener(LIST_REVISIONS,
     function (event) {
       $TPouch.database.getTiddlerRevisions(event.param)
         .then(function (revisionsList) {
@@ -62,7 +66,7 @@ exports.startup = function () {
   /**
    * Loads certain revision of a tiddler under the revision namespace
    */
-  $tw.rootWidget.addEventListener('tm-tp-load-certain-revision',
+  $tw.rootWidget.addEventListener(LOAD_REVISION,
     function (event) {
       $TPouch.database.getTiddler(event.param, event.paramObject.revision)
         .then(function (tiddler) {
@@ -72,14 +76,14 @@ exports.startup = function () {
     });
 
   /** ================ CONFIG RELATED ================ */
-  $tw.rootWidget.addEventListener('tm-tp-config-saved', function () {
+  $tw.rootWidget.addEventListener(CONFIG_SAVED, function () {
     var reload = confirm('Configuration has been changed and saved. It is necessary to reload the window. Are you Ok with it?');
     reload && location.reload();
   });
 
   $tw.rootWidget.addEventListener('tp-sync-state', uiConnector.setSyncFlag);
-  $tw.rootWidget.addEventListener('tm-TP-config-selectedDb', uiConnector.handlers.databaseHasBeenSelected);
-  $tw.rootWidget.addEventListener('tm-TP-config-updateDebug', uiConnector.handlers.updateDebug);
-  $tw.rootWidget.addEventListener('tm-TP-config-updateSelectedDB', uiConnector.handlers.updateDbConfig);
+  $tw.rootWidget.addEventListener(DB_HAS_BEEN_SELECTED, uiConnector.handlers.databaseHasBeenSelected);
+  $tw.rootWidget.addEventListener(UPDATE_DEBUG, uiConnector.handlers.updateDebug);
+  $tw.rootWidget.addEventListener(UPDATE_SELECTED_DB, uiConnector.handlers.updateDbConfig);
 
 };
