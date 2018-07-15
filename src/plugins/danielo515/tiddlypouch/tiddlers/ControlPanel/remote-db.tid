@@ -1,0 +1,34 @@
+title: $:/plugins/danielo515/tiddlypouch/ControlPanel/Database/remote-db
+caption: remote-db
+
+<div class="tc-tp-remote-db">
+
+    <p>
+        Fill the fields below if you want to synchronize your local database with a remote
+        couch-like server.
+        This information will be saved as metadata of the selected local database.
+    </p>
+    
+    <p>
+        ~CouchDB URL: {{$:/plugins/danielo515/tiddlypouch/ui/remote-url}}
+        @@color:#c0c0c0;
+        ,,//EJ: ~https://someone.cloudant.com //,,
+        @@
+    </p>
+    
+    <p>
+        Remote database name: {{$:/plugins/danielo515/tiddlypouch/ui/remote-name}}
+        @@color:#c0c0c0;
+        ,,//Local database will be synced to this database. ''Must exist on server'' if you are not an admin user. //,,
+        @@
+    </p>
+    
+    <p>
+        Remote user-name: {{$:/plugins/danielo515/tiddlypouch/ui/remote-user}}
+        @@color:#c0c0c0;
+        ,,//User or api key with admin permisions on the remote db. ''This field is optional''. //,,
+        @@
+    </p>
+    
+    {{$:/plugins/danielo515/tiddlypouch/ui/save-database-config}}
+</div>
