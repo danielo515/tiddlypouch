@@ -20,10 +20,10 @@ Links the user interface with the configuration methods
 var DEBUG_CONFIG = '$:/plugins/danielo515/tiddlypouch/config/Debug';
 var DEBUG_ACTIVE = DEBUG_CONFIG + '/Active';
 var DEBUG_VERBOSE = DEBUG_CONFIG + '/Verbose';
-var DATABASE_NAMES = '$:/plugins/danielo515/tiddlypouch/config/database_names';
 var SELECTED_DATABASE = '$:/plugins/danielo515/tiddlypouch/config/selected_database';
-var SYNC_ICON = '$:/plugins/danielo515/tiddlypouch/ui/sync-flag';
-const { CONFIG_SAVED } = require('$:/plugins/danielo515/tiddlypouch/constants.js');
+const { 
+  CONFIG_SAVED, SYNC_ICON, DATABASE_NAMES 
+  } = require('$:/plugins/danielo515/tiddlypouch/constants.js');
 
 var Utils = require('$:/plugins/danielo515/tiddlypouch/utils');
 
