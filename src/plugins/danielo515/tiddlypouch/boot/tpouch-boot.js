@@ -96,14 +96,14 @@
         $TPouch.splashScreen.showMessage('Updating database');
         return Promise.all(
             documentsToRemove
-                .map((doc) => {
+                .map((id) => {
 
-                    return db.get(doc)
-                        .then((docu) => {
-                            console.log('Removing index ', doc);
-                            return db.remove(docu);
+                    return db.get(id)
+                        .then((doc) => {
+                            console.log('Removing index ', id);
+                            return db.remove(doc);
                         })
-                        .catch(console.log.bind(console, 'Error removing ', doc, ' which may be totally fine if it did not exist.'));
+                        .catch(console.log.bind(console, 'Error removing ', id, ' which may be totally fine if it did not exist.'));
                 })
         )
             .then(() => {
@@ -114,7 +114,7 @@
     createSplashScreen('Loading');
 
     $TPouch._configDb.get('configuration') // we read the configuration to know which database should be loaded
-        .then(function (config) {
+        .then((config) => {
 
             if (!config.selectedDbId) {
                 throw new Error('There is no DB selected, nothing to inject');
@@ -123,7 +123,7 @@
             $TPouch._db = new PouchDB(config.selectedDbId);
             var oldVer = config.databases[config.selectedDbId].version;
             return updater(oldVer, $TPouch._db)
-                .then(function () { /** After the update process, flag the db with latest version */
+                .then(() => { /** After the update process, flag the db with latest version */
                     config.databases[config.selectedDbId].version = $TPouch.VERSION;
                     return $TPouch._configDb.put(config);
                 });
@@ -140,7 +140,7 @@
         }).catch((reason) => { // catch any possible error and continue the chain
 
             console.log('Something went wrong during plugin injection ', reason);
-        }).then(function () {
+        }).then(() => {
             if ($tw.boot.boot) {
                 $tw.boot.boot(); // boot when chain completes, even if we got some errors
             } else {
