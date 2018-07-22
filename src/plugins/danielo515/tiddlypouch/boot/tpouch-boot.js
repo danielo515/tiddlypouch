@@ -3,7 +3,7 @@
     /***** Base TiddlyPouch module creation ****/
     const $TPouch = window.$TPouch || Object.create(null);
     if ($TPouch.supressBoot) { /** Allow external JS to avoid boot */
-        return
+        return;
     }
     $TPouch._configDb = $TPouch._configDb || new PouchDB('__TP_config');
     $TPouch.splashScreen = $TPouch.splashScreen || Object.create(null);
@@ -12,7 +12,7 @@
 
     var $tw = window.$tw || Object.create(null);
     $tw.boot = $tw.boot || Object.create(null);
-    $tw.boot.suppressBoot = true
+    $tw.boot.suppressBoot = true;
 
     window.$TPouch = $TPouch;
     window.$tw = $tw;
@@ -20,8 +20,8 @@
     /** Creates a new message node to be used on the splashScreen*/
     function createSplashMessageNode(message) {
 
-        var h1 = document.createElement("h1");
-        h1.setAttribute("data-text", message);
+        var h1 = document.createElement('h1');
+        h1.setAttribute('data-text', message);
         var text = document.createTextNode(message);
         h1.appendChild(text);
         return h1;
@@ -39,8 +39,8 @@
 
         var splash = document.getElementById('TP_splash_screen');
         if (splash === null) {
-            splash = document.createElement("div");
-            splash.setAttribute("id", "TP_splash_screen");
+            splash = document.createElement('div');
+            splash.setAttribute('id', 'TP_splash_screen');
             splash.appendChild(createSplashMessageNode(message));
             tryToAppend(splash);
         } else {
@@ -59,15 +59,15 @@
         $TPouch.splashScreen.node.style.opacity = 0;
         setTimeout(() => {
 
-            $TPouch.splashScreen.node.style.display = "none";
+            $TPouch.splashScreen.node.style.display = 'none';
         }, 2000);
 
     };
     $TPouch.splashScreen.showMessage = function splashMessage(message) {
 
         var node = $TPouch.splashScreen.node;
-        node.replaceChild(createSplashMessageNode(message), node.firstChild)
-        node.style.display = "block";
+        node.replaceChild(createSplashMessageNode(message), node.firstChild);
+        node.style.display = 'block';
         node.style.opacity = 1;
     };
 
@@ -101,9 +101,9 @@
                     return db.get(doc)
                         .then((docu) => {
                             console.log('Removing index ', doc);
-                            return db.remove(docu)
+                            return db.remove(docu);
                         })
-                        .catch(console.log.bind(console, 'Error removing ', doc, ' which may be totally fine if it did not exist.'))
+                        .catch(console.log.bind(console, 'Error removing ', doc, ' which may be totally fine if it did not exist.'));
                 })
         )
             .then(() => {
@@ -117,7 +117,7 @@
         .then(function (config) {
 
             if (!config.selectedDbId) {
-                throw new Error('There is no DB selected, nothing to inject')
+                throw new Error('There is no DB selected, nothing to inject');
             }
             /** Create the default db, it should be wrapped later on the boot proces in a {@link DbStore} */
             $TPouch._db = new PouchDB(config.selectedDbId);
@@ -126,7 +126,7 @@
                 .then(function () { /** After the update process, flag the db with latest version */
                     config.databases[config.selectedDbId].version = $TPouch.VERSION;
                     return $TPouch._configDb.put(config);
-                })
+                });
         })
         .then(() =>
 
@@ -148,6 +148,6 @@
                 $tw.boot.suppressBoot = false;
             }
 
-        })
+        });
 
 })(window);
