@@ -80,7 +80,6 @@ import babel from 'gulp-babel';
 import sourcemaps from 'gulp-sourcemaps';
 var gulp = require('gulp');
 var gulpif = require('gulp-if');
-var gutil = require('gulp-util');
 var sass = require('gulp-sass');
 var replace = require('gulp-replace');
 var uglify = require('gulp-uglify');
@@ -88,7 +87,7 @@ var jsdoc = require('gulp-jsdoc3');
 var esprima = require('gulp-esprima');
 var debug = require('gulp-debug');
 var tag_version = require('gulp-tag-version');
-var watch = require('gulp-watch');
+// var watch = require('gulp-watch');
 
 /**** Preprocessing ************************************************/
 
