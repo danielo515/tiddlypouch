@@ -138,7 +138,7 @@ exports.startup = function () {
       '_id': '_design/filtered_replication',
       'filters': {
         'only_tiddlers': function (doc) {
-          return (doc.hasOwnProperty('fields') && doc.fields.title !== '$:/StoryList');
+          return (doc.hasOwnProperty('fields') && (doc.fields.title !== '$:/StoryList' && doc.fields.title !== '$:/status/UserName'));
         }.toString()
       }
     };
