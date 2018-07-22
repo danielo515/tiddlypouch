@@ -9,7 +9,7 @@ a conversor that makes tiddlers compatible with pouchdb. This injects the requir
 
 \*/
 
-'use strict'
+'use strict';
 
 /*jslint node: true, browser: true */
 /*global $tw: false */
@@ -47,12 +47,12 @@ function tiddlerConverter(db) {
     db._convertToCouch = function convertToCouch(tiddler, tiddlerInfo) {
         var result = { fields: {} };
         if (tiddler) {
-            $tw.utils.each(tiddler.fields, function (element, title, object) {
-                if (title === "revision") {
+            $tw.utils.each(tiddler.fields, function (element, title/* , object */) {
+                if (title === 'revision') {
                     /* do not store revision as a field */
                     return;
                 }
-                if (title === "_attachments" && !tiddler.isDraft()) {
+                if (title === '_attachments' && !tiddler.isDraft()) {
                     //Since the draft and the original tiddler are not the same document
                     //the draft does not has the attachments
                     result._attachments = element; //attachments should be stored out of fields object
@@ -65,7 +65,7 @@ function tiddlerConverter(db) {
             result.fields.tags = tiddler.fields.tags;
         }
         // Default the content type
-        result.fields.type = result.fields.type || "text/vnd.tiddlywiki";
+        result.fields.type = result.fields.type || 'text/vnd.tiddlywiki';
         result._id = this._mangleTitle(tiddler.fields.title);
         result._rev = tiddler.fields.revision; //Temporary workaround. Remove
         if (tiddlerInfo.adaptorInfo && tiddlerInfo.adaptorInfo._rev) {
@@ -83,28 +83,28 @@ function tiddlerConverter(db) {
          * @param {object} doc - A couchdb object containing a tiddler representation inside the fields sub-object
          * @returns {object} fields ready for being added to a wiki store
          */
-        db._convertFromCouch = function convertFromCouch(doc) {
-            var result = {};
-            this.logger && this.logger.debug("Converting from ", doc);
+    db._convertFromCouch = function convertFromCouch(doc) {
+        var result = {};
+        this.logger && this.logger.debug('Converting from ', doc);
             // Transfer the fields, pulling down the `fields` hashmap
-            $tw.utils.each(doc, function (element, field, obj) {
-                if (field === "fields") {
-                    $tw.utils.each(element, function (element, subTitle, obj) {
+        $tw.utils.each(doc, function (element, field/* , obj */) {
+                if (field === 'fields') {
+                    $tw.utils.each(element, function (element, subTitle/* , obj */) {
                         result[subTitle] = element;
                     });
-                } else if (field === "_id" || field === "_rev") {
+                } else if (field === '_id' || field === '_rev') {
                     /* skip these */
                 } else {
                     result[field] = doc[field];
                 }
             });
-            /* If the doc has a revision field use it. 
+            /* If the doc has a revision field use it.
               Sometimes the revision field does not exists, for example, some indexes do not emit it, like the skinny_tiddlers index
               This fixes #66*/
-            doc._rev && (result.revision = doc._rev); 
+        doc._rev && (result.revision = doc._rev);
             //console.log("Conversion result ", result);
-            return result;
-        };
+        return result;
+    };
 
 /**
  * Returns an array of skinny tiddlers (tiddlers withouth text field)
@@ -114,7 +114,7 @@ function tiddlerConverter(db) {
  * @return {promise} Skinnytiddlers a promise that fulfills to an array of skinny tiddlers
  */
     db.getSkinnyTiddlers = function () {
-       return this.getTiddlers('skinny_tiddlers',null,false)
+        return this.getTiddlers('skinny_tiddlers',null,false);
     };
 
     return db;
