@@ -11,11 +11,11 @@
             }
         },
         {
-            "file": "./boot.css",
+            "file": "./boot.scss",
             "prefix":"<style>\n",
             "suffix":"\n</style>",
             "fields": {
-                "title": "$:/plugins/danielo515/tiddlypouch/boot.css",
+                "title": "$:/plugins/danielo515/tiddlypouch/boot.scss",
                 "tags":["$:/tags/RawMarkup"]
             }
         }
