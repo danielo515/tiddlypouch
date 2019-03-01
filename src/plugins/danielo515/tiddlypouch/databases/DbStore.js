@@ -157,9 +157,11 @@ module.exports = class DbStore {
                     if (err.name === 'conflict') { // check if it is a real conflict
                         self.logger.debug('O my gosh, update conflict!')
                         return self._db.get(document._id)
-                            .then(function (document) { //oops, we got a document, this was an actual conflict
-                                self.logger.log("A real update conflict!", document);
-                                throw err; // propagate the error for the moment
+                            .then(function (remoteDocument) { //oops, we got a document, this was an actual conflict
+				self.logger.log("A real update conflict!", document);
+				document._rev = remoteDocument._rev;
+				return self._db.put(document);
+                                //throw err; // propagate the error for the moment
                             })
                             .catch(function (err) {
                                 if (err.name === 'not_found') { // not found means no actual conflict
