@@ -77,7 +77,7 @@ exports.startup = function (callback) {
   /**
    * @function _updateConfig
    * The official method of saving configurations.
-   * It accepts an object describing the new state of the configuration, 
+   * It accepts an object describing the new state of the configuration,
    * which can be a complete configuration object or just a subsection.
    * Configuration update is made by deep merging, so you can update sections of the configuration by providing
    * an object that only contains such sections, for example the specific configuration of one database.
@@ -98,6 +98,26 @@ exports.startup = function (callback) {
         _writeConfigTiddler(updatedConfig);
         return updatedConfig
       });
+  }
+
+  /**
+   * Removes the configuration of the provided database name
+   * from the config store and persists it.
+   * Make sure to call this method after deleting the database.
+   * @param {String} dbName the database name to remove
+   * @returns {Promise} a promise that resolves when the new configuration
+   * has been saved to the config database.
+   */
+  function removeDatabase(dbName) {
+    const {[dbName]:_, ...databases} = _config.databases;
+    const config = {..._config, databases};
+    // After any update to the config persist the changes
+    return _persistConfig(config)
+    .then(updatedConfig => { // persist config returns the config just saved to the DB (important for revision)
+        _config = updatedConfig;
+        _writeConfigTiddler(updatedConfig);
+        return updatedConfig
+    });
   }
 
   /*==== DATABASE METHODS === */
@@ -195,7 +215,7 @@ exports.startup = function (callback) {
   }
 
   /**
-   * Fetches the names of the databases which configuratons are saved
+   * Fetches the names of the databases which configurations are saved
    *
    * @returns {Array} dbNames The names of all the databases configurations stored on the config
    */
@@ -236,7 +256,7 @@ exports.startup = function (callback) {
       .then((config) => { // All ok reading from DB.
         Logger.debug('Config read from DB - OK');
         _config = config;
-        _writeConfigTiddler(config); // Save current config to tiddler version
+        _writeConfigTiddler(config); // Save current config to tiddler
       })
       .catch((error) => { // Error reading from db, fallback to tiddler configuration
         Logger.debug('FallingBack to tiddler configuration');
@@ -258,6 +278,7 @@ exports.startup = function (callback) {
       $TPouch.DbStore = require('$:/plugins/danielo515/tiddlypouch/dbstore/factory');
       // Config section of the global namespace
       $TPouch.config = {
+        removeDatabase,
         getAllDBNames: getAllDBNames,
         readConfigTiddler: _readConfigTiddler,
         getDatabaseConfig: _getDatabaseConfig,

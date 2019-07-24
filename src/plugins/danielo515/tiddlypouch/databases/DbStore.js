@@ -64,9 +64,13 @@ module.exports = class DbStore {
     /**
      * Deletes the current database
      * @returns {Promise} A promise that fulfills when the database is destroyed
+     * and deleted from the list of databases on config
      */
     destroy() {
-        return this._db.destroy();
+        return Promise.all([
+            this._db.destroy(),
+            $TPouch.config.removeDatabase(this.name)
+        ]);
     };
 
     /**
