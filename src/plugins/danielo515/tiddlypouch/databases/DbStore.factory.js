@@ -31,7 +31,7 @@ var converters = {
  *
  * It is responsible of injecting the tiddler conversion logic into the instantiated database.
  * Conversion logic is extracted from a list of converter modules.
- * Each converther should decorate the database with the {@link DbDecorator} interface
+ * Each converter should decorate the database with the {@link DbDecorator} interface
  * @see DbStore
  *
  * @param {String} dbName the name of the database to instantiate. It will be created if it does not exist

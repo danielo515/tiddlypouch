@@ -4,7 +4,7 @@ type: application/javascript
 module-type: library
 
 Routes tiddlers between databases. What it actually does is return the destination database for a given tiddler.
-It is the responsability of the entity that is requesting the routing to act on that destination.
+It is the responsibility of the entity that is requesting the routing to act on that destination.
 
 @preserve
 

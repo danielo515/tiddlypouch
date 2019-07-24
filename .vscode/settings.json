@@ -25,5 +25,7 @@
     }
 ,
 "vsicons.presets.angular": false,
-"editor.formatOnSave": false
+"editor.formatOnSave": false,
+"files.eol": "\n",
+"prettier.endOfLine": "lf"
 }
