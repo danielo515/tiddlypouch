@@ -14,7 +14,7 @@
         "bump": "gulp bump_version --minor",
         "start": "cross-env TIDDLYWIKI_PLUGIN_PATH=./dist:node_modules/tw-pouchdb npm run build && npm run TW",
         "TW": "nodemon ./node_modules/tiddlywiki/tiddlywiki.js ./tiddlypouchwiki --verbose --server 8087 $:/core/save/all text/plain text/html",
-        "tw-raw": "tiddlywiki ./documentationwiki --verbose --server 8088 $:/core/save/all text/plain text/html"
+        "dev-docs": "tiddlywiki ./documentationwiki --verbose --server 8088 $:/core/save/all text/plain text/html"
     },
     "contributors": [
         {
