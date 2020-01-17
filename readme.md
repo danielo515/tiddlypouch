@@ -6,8 +6,8 @@ This plugin is a key and core part of the NoteSelf project.
 ## Development
 This repository uses gulp to bundle the code and make it ready for tiddlywiki usage.
 Due to the special requirements of tiddlywiki the development process is a little bit special.
-Normal code lives under the `src` folder, but we compile it to dist and tell tiddlywiki to look for it there using `TIDDLYWIKI_PLUGIN_PATH`. When live-reload is active every change on `src` file will trigger a rebundle to `dist` folder.
-We also use tw-pouchdb npm package as a direct dependency.
+Normal code lives under the `src` folder, but we compile it to `dist` and tell tiddlywiki to look for it there using `TIDDLYWIKI_PLUGIN_PATH`. When live-reload is active every change on `src` file will trigger a rebundle to `dist` folder.
+We also use `tw-pouchdb` **npm package** as a direct dependency.
 
 To start the dev process just run `yarn start` or `npm start`
 
