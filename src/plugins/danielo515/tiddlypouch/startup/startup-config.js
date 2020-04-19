@@ -152,7 +152,12 @@ exports.startup = function (callback) {
    */
   function _persistConfig(newConfig) {
     var config = extendOne({ _id: 'configuration' }, newConfig);
-    return _configDB.put(config)
+    return _configDB.get('configuration')
+      .catch(err => {
+          if(err.status !== 404) throw err
+          return getDefaultConfig()
+      })
+      .then( old => _configDB.put({...old, ...config}))
       .then((status) => {
         Logger.log('Persist config to DB - OK', status);
         return _readConfigFromDB();
@@ -178,7 +183,7 @@ exports.startup = function (callback) {
         if (_isValidConfig(config)) {
           return config;
         }
-        throw new Error('Config was read, but it was invalid');
+        throw new Error('Config was read, but it was invalid', JSON.stringify(config,null,2));
       })
       .catch((err) => {
         Logger.log('Config read from DB - ERROR', err);
@@ -206,7 +211,7 @@ exports.startup = function (callback) {
   function _getDatabaseConfig(dbName) {
     var configDefault = {
       name: dbName,
-      remote: { name: null, username: null, ur: null }
+      remote: { name: null, username: null, url: null }
     };
 
     _config.databases[dbName] = _config.databases[dbName] || configDefault;
