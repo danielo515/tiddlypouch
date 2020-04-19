@@ -67,11 +67,9 @@ function tiddlerConverter(db) {
         // Default the content type
         result.fields.type = result.fields.type || 'text/vnd.tiddlywiki';
         result._id = this._mangleTitle(tiddler.fields.title);
-        result._rev = tiddler.fields.revision; //Temporary workaround. Remove
         if (tiddlerInfo.adaptorInfo && tiddlerInfo.adaptorInfo._rev) {
-            result._rev = tiddlerInfo.adaptorInfo._rev;
+            result._rev = this._validateRevision(result._rev);
         }
-        result._rev = this._validateRevision(result._rev);
         return result;
     };
 

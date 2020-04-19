@@ -14,13 +14,13 @@ parserOptions:
         experimentalObjectRestSpread: true
 
 globals:
-  module: false
-  exports: true
-  node: true
-  browser: true
-  $tw: true
-  $TPouch: true
-  PouchDB: true
+    module: false
+    exports: true
+    node: true
+    browser: true
+    $tw: true
+    $TPouch: true
+    PouchDB: true
 
 rules:
     semi: 1 # require semicolons
@@ -30,3 +30,4 @@ rules:
     indent: [ 1, 4 ] # 2-space indentation
     keyword-spacing: 1 # space before and after
     array-bracket-spacing: [1, 'always']  # enforce spaces inside of brackets
+    prefer-const: ['error']

@@ -29,7 +29,7 @@ A basic logging implementation
       verbose = debug.verbose;
       debug = debug.debug;
     }
-    this.isDebug = debug;
+    this.isDebug = debug || this.isDebugActive; // prototype overridable
     this.isVerbose = verbose;
   }
 
