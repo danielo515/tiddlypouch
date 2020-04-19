@@ -21,6 +21,19 @@ Only remote configuration (username, remote_name, url) may be changed in the run
  * @property {String} password The password of the provided username
  */
 
+/**
+ * @typedef {Object} databaseConfig
+ * @property {String} name The name of the database
+ * @property {remoteConfig} remote remote configurations
+ */
+
+/**
+ * @typedef {Object} tpouchConfig
+ * @property {String} selectedDbId The name of the currently selected database
+ * @property {Object.<string,databaseConfig>} databases A map of the existing databases and its config
+ * @property {Object} debug Current debug configuration
+ */
+
 /*jslint node: true, browser: true */
 /*global $tw: false */
 'use strict';
@@ -45,26 +58,32 @@ exports.startup = function (callback) {
   var Logger = new LOGGER('TiddlyPouch:config');
   var Ui = require('$:/plugins/danielo515/tiddlypouch/ui/config.js');
   var DbConfig = require('$:/plugins/danielo515/tiddlypouch/config/single-db-config');
-  var _config; // debug { active, verbose }, selectedDbId, databases
+  /** @type {tpouchConfig} */
+  var _config;
   var _configDB; // PouchDb where the _config is persisted to
   var currentDB; // name, remote { url, user } Only configs!, not the actual db
+  const DEFAULT_NOTEBOOK_NAME = "MyNotebook"
+
+  /**
+   * @returns {tpouchConfig}
+   */
+  function getDefaultConfig() {
+      return {
+          debug: { active: true, verbose: false },
+          selectedDbId: DEFAULT_NOTEBOOK_NAME,
+          databases: {},
+      };
+  }
 
   /*==== TIDDLER METHODS === */
 
   function _readConfigTiddler() {
-    var configDefault = {
-      debug: { active: true, verbose: false },
-      selectedDbId: 'MyNotebook',
-      databases: {},
-    };
-    var config;
     try {
-      config = JSON.parse($tw.wiki.getTiddler(CONFIG_TIDDLER).fields.text);
+      return JSON.parse($tw.wiki.getTiddler(CONFIG_TIDDLER).fields.text);
     } catch (error) {
       console.log('No tiddler config, using default');
-      config = configDefault;
+      return getDefaultConfig();
     }
-    return config;
   }
 
   function _writeConfigTiddler(newConfig) {
@@ -105,19 +124,23 @@ exports.startup = function (callback) {
    * from the config store and persists it.
    * Make sure to call this method after deleting the database.
    * @param {String} dbName the database name to remove
-   * @returns {Promise} a promise that resolves when the new configuration
+   * @returns {Promise<tpouchConfig>} a promise that resolves when the new configuration
    * has been saved to the config database.
    */
   function removeDatabase(dbName) {
-    const {[dbName]:_, ...databases} = _config.databases;
-    const config = {..._config, databases};
-    // After any update to the config persist the changes
-    return _persistConfig(config)
-    .then(updatedConfig => { // persist config returns the config just saved to the DB (important for revision)
-        _config = updatedConfig;
-        _writeConfigTiddler(updatedConfig);
-        return updatedConfig
-    });
+      const { [dbName]: _, ...databases } = _config.databases;
+      const config = {
+          ..._config,
+          databases,
+          selectedDbId: Object.keys(databases)[0] || DEFAULT_NOTEBOOK_NAME,
+      };
+      // After any update to the config persist the changes
+      return _persistConfig(config).then((updatedConfig) => {
+          // persist config returns the config just saved to the DB (important for revision)
+          _config = updatedConfig;
+          _writeConfigTiddler(updatedConfig);
+          return updatedConfig;
+      });
   }
 
   /*==== DATABASE METHODS === */
@@ -178,7 +201,7 @@ exports.startup = function (callback) {
    * If no configuration is found, returns a default config.
    *
    * @param {String} dbName name of the DB you want the config of
-   * @returns {Object} databaseConfig
+   * @returns {databaseConfig} databaseConfig
    */
   function _getDatabaseConfig(dbName) {
     var configDefault = {
