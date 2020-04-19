@@ -16,6 +16,7 @@ Manages insertions, extractions, deletions of tiddlers to a database.
 
 const identity = (x) => x;
 
+const ignoreRevisionFor= ["$:/StoryList"];
 /***====================== EXPORTS  ========================== */
 
 /**
@@ -198,7 +199,11 @@ module.exports = class DbStore {
      */
     addTiddler(tiddler, options) {
         var self = this;
-        var convertedTiddler = this._convertToCouch(tiddler, options.tiddlerInfo);
+        const ignoreRev = ignoreRevisionFor.includes(tiddler.fields.title)
+        var convertedTiddler = this._convertToCouch(tiddler,
+             ignoreRev
+             ? {}
+             : options.tiddlerInfo); // revision is part of provided TW fields, so we just omit that
         this.logger.debug("Saving ", convertedTiddler);
         return self._upsert(convertedTiddler);
     };
