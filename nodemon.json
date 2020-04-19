@@ -6,8 +6,8 @@
     ],
     "verbose": true,
     "watch": [
-      "src/",
-      "tiddlypouchwiki/"
+      "tiddlypouchwiki/",
+      "dist/"
     ],
     "env": {
       "NODE_ENV": "development",

@@ -10,7 +10,8 @@ Normal code lives under the `src` folder, but we compile it to `dist` and tell t
 We also use `tw-pouchdb` **npm package** as a direct dependency.
 
 To start the dev process just run `yarn start` or `npm start`.
-This will start the development wiki (take a look at "A talo of two wikis" section for more details)
+This will start the development wiki (take a look at "A tale of two wikis" section for more details). However, this does not start the code bundling watch.
+So the recommended way of working is, to run two consoles, one with `yarn start` (or `yarn TW` which does the same but without bundling first), and a different one running `yarn watch`.
 
 ### Structure of the code
 All the code is under the `src/plugins/danielo515/tiddlypouch` folder.
