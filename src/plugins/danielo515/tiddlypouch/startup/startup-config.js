@@ -298,6 +298,7 @@ exports.startup = function (callback) {
       /*==== PUBLIC API === */
       /* --- TiddlyPouch namespace creation and basic initialization---*/
       $TPouch.Logger = LOGGER;
+      $TPouch.Logger.prototype.isDebugActive = _config.debug.active; // set logger defaults from what we read from DB
       $TPouch.DbStore = require('$:/plugins/danielo515/tiddlypouch/dbstore/factory');
       // Config section of the global namespace
       $TPouch.config = {
