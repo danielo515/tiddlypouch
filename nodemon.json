@@ -1,0 +1,17 @@
+{
+    "restartable": "rs",
+    "ignore": [
+      ".git",
+      "node_modules/**/node_modules"
+    ],
+    "verbose": true,
+    "watch": [
+      "src/",
+      "tiddlypouchwiki/"
+    ],
+    "env": {
+      "NODE_ENV": "development",
+      "TIDDLYWIKI_PLUGIN_PATH":"./dist:node_modules/tw-pouchdb"
+    },
+    "ext": "js json"
+  }
