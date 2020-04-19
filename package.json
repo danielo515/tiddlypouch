@@ -67,7 +67,7 @@
         "yargs": "^3.0.0"
     },
     "dependencies": {
-        "tiddlywiki": "5.1.14",
+        "tiddlywiki": "^5.1.21",
         "tw-pouchdb": "*"
     }
 }

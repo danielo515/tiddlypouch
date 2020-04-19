@@ -142,9 +142,9 @@ module.exports = class DbStore {
     /**
      * Updates a document on the database if it exists.
      * Creates a new document if it does not exist.
-     * If the document has a revision but it is new it will throw a conflict
+     * It is a good practice of pouchdb to look for a doc before inserting it.
+     * If the document has a revision but it is new it will throw a 409 conflict,
      * so we look for it and if we get a 404 (not found) we remove the revision
-     * and try to create it again.
      *
      * @param {any} document  - It should be a document ready to be inserted,
      *                          no conversion from TW format will be performed.
@@ -152,33 +152,20 @@ module.exports = class DbStore {
      */
     _upsert(document) {
         var self = this;
-        return self._db.put(document)
-            .then(function (saveInfo) {
-                return saveInfo
-            })
-            .catch(function (err) {
-                if (err) {
-                    if (err.name === 'conflict') { // check if it is a real conflict
-                        self.logger.debug('O my gosh, update conflict!')
-                        return self._db.get(document._id)
-                            .then(function (document) { //oops, we got a document, this was an actual conflict
-                                self.logger.log("A real update conflict!", document);
-                                throw err; // propagate the error for the moment
-                            })
-                            .catch(function (err) {
-                                if (err.name === 'not_found') { // not found means no actual conflict
-                                    self.logger.debug("Fake conflict, trying again", document);
-                                    document._rev = null;
-                                    return self._db.put(document);
-                                }
-                            });
-
-                    }
-                    throw err //propagate the error if it is not a conflict
+        return self._db
+            .get(document._id)
+            .catch((err) => {
+                if (err.name === "not_found") {
+                    delete document._rev;
+                    return {};
                 }
-
-            });
-
+                throw err;
+            })
+            .then((oldDoc) => self._db.put({ ...oldDoc, ...document }))
+            .then((saveInfo) => {
+                self.logger.debug("Upserted document: ", saveInfo);
+                return saveInfo;
+            })
     };
 
 
@@ -190,13 +177,13 @@ module.exports = class DbStore {
      * @param {string} rev - the revision to validate
      * @static
      * @private
-     * @returns {String|null} The revision if it has the correct format, null otherwhise
+     * @returns {String|undefined} The revision if it has the correct format, undefined otherwhise
      */
     _validateRevision(rev) {
         if (/\d+-[A-z0-9]*/.test(rev)) {
             return rev
         }
-        return null
+        return undefined
     };
 
     /***============================ TIDDLER STORE METHODS ======== */
