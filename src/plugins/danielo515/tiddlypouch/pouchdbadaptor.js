@@ -171,7 +171,7 @@ PouchAdaptor.prototype.logout = function (callback) {
 };
 
 PouchAdaptor.prototype.getTiddlerInfo = function (tiddler) {
-  return { _rev: tiddler.fields.revision };
+  return { _rev: tiddler ? tiddler.fields.revision : 0 };
 };
 
 /**
@@ -192,9 +192,9 @@ PouchAdaptor.prototype.getSkinnyTiddlers = function (callback) {
  * @param  {object} options - the options that the syncer provides, for example tiddlerInfo metadata
  * @return {undefined} this does not returns anything
  */
-PouchAdaptor.prototype.saveTiddler = function (tiddler, callback, options) {
+PouchAdaptor.prototype.saveTiddler = function (tiddler, callback, options={tiddlerInfo:{}}) {
   this.logger.trace('Tiddler info ',options.tiddlerInfo);
-  $TPouch.router.route(tiddler,options).addTiddler(tiddler,options)
+  $TPouch.router.route(tiddler).addTiddler(tiddler,options)
         .then(function (saveInfo) {
           callback(null, { _rev: saveInfo.rev }, saveInfo.rev);
         })
