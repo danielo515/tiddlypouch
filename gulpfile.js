@@ -246,7 +246,9 @@ gulp.task('compile and move scripts', () => {
 
     const uglifyOpts = {
         compress: false, // no further optimization
-        preserveComments: 'some',
+        output: {
+            comments: 'some',
+        }
     };
 
     const sourceMapOpts = {
