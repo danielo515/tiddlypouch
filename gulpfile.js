@@ -63,7 +63,6 @@ const isIncrBuild = true;
 // node modules
 
 const path = require('path');
-const util = require('util');
 const fs = require('fs');
 
 // additional modules
@@ -75,9 +74,9 @@ const del = require('del');
 const exists = require('is-there');
 const SemVer = require('semver');
 // once gulp 4.0 is out: remove runSequence and update
-const runSequence = require('run-sequence');
-import babel from 'gulp-babel';
-import sourcemaps from 'gulp-sourcemaps';
+const runSequence = require('gulp4-run-sequence');
+const babel = require('gulp-babel');
+const sourcemaps = require(  'gulp-sourcemaps')
 const gulp = require('gulp');
 const gulpif = require('gulp-if');
 const sass = require('gulp-sass');
