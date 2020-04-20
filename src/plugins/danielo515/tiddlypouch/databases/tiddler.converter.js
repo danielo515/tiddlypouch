@@ -44,7 +44,7 @@ function tiddlerConverter(db) {
      * @private
      * @returns {object} doc - An document object that represents the tiddler. Ready to be inserted into CouchDB
      */
-    db._convertToCouch = function convertToCouch(tiddler, tiddlerInfo) {
+    db._convertToCouch = function convertToCouch(tiddler, {adaptorInfo} = {}) {
         var result = { fields: {} };
         if (tiddler) {
             $tw.utils.each(tiddler.fields, function (element, title/* , object */) {
@@ -67,8 +67,8 @@ function tiddlerConverter(db) {
         // Default the content type
         result.fields.type = result.fields.type || 'text/vnd.tiddlywiki';
         result._id = this._mangleTitle(tiddler.fields.title);
-        if (tiddlerInfo.adaptorInfo && tiddlerInfo.adaptorInfo._rev) {
-            result._rev = this._validateRevision(result._rev);
+        if (adaptorInfo && adaptorInfo._rev) {
+            result._rev = this._validateRevision(adaptorInfo._rev);
         }
         return result;
     };
