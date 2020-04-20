@@ -203,7 +203,7 @@ module.exports = class DbStore {
         var convertedTiddler = this._convertToCouch(tiddler,
              ignoreRev
              ? {}
-             : options.tiddlerInfo); // revision is part of provided TW fields, so we just omit that
+             : options.tiddlerInfo); // revision is part of provided TW info, so we just omit that
         this.logger.debug("Saving ", convertedTiddler);
         return self._upsert(convertedTiddler);
     };
