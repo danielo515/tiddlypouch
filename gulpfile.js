@@ -242,27 +242,6 @@ gulp.task('compile and move styles', function() {
  * Note: We do not tell uglify to do any code optimization, as
  * this caused troubles in the past.
  */
-// gulp.task('compile and move scripts', function() {
-
-//     const opts = {
-//         compress: false, // no further optimization
-//         preserveComments: 'some'
-//     };
-
-//     return gulp.src([ pluginSrc + '/**/*.js','!' + pluginSrc + '/**/*.min.js' ])
-//         .pipe(gulpif(argv.production, uglify(opts)))
-//         .pipe(gulp.dest(outPath.dist));
-
-// });
-
-
-/**
- * Will uglify the js code if in production mode and move the
- * files to the dist directory.
- *
- * Note: We do not tell uglify to do any code optimization, as
- * this caused troubles in the past.
- */
 gulp.task('compile and move scripts', () => {
 
     const uglifyOpts = {
