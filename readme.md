@@ -13,6 +13,11 @@ To start the dev process just run `yarn start` or `npm start`.
 This will start the development wiki (take a look at "A tale of two wikis" section for more details). However, this does not start the code bundling watch.
 So the recommended way of working is, to run two consoles, one with `yarn start` (or `yarn TW` which does the same but without bundling first), and a different one running `yarn watch`.
 
+### About babel
+The build system, as mentioned, is a bit legacy.
+I have updated it to babel 7 recently, so it is not that bad. However, there is one thing to remember, so you don't spend again a couple of hours figuring it out.
+All babel related configurations are not passed to the gulp-babel plugin, **they are defined on** `.babelrc` file.
+
 ### Structure of the code
 All the code is under the `src/plugins/danielo515/tiddlypouch` folder.
 This is how the build system was created a long time ago and works, so it will not be changed soon.

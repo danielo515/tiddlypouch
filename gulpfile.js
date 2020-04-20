@@ -75,9 +75,9 @@ const exists = require('is-there');
 const SemVer = require('semver');
 // once gulp 4.0 is out: remove runSequence and update
 const runSequence = require('gulp4-run-sequence');
-const babel = require('gulp-babel');
-const sourcemaps = require(  'gulp-sourcemaps')
 const gulp = require('gulp');
+const babel = require('gulp-babel');
+const sourcemaps = require("gulp-sourcemaps");
 const gulpif = require('gulp-if');
 const sass = require('gulp-sass');
 const replace = require('gulp-replace');
@@ -242,18 +242,18 @@ gulp.task('compile and move styles', function() {
  * Note: We do not tell uglify to do any code optimization, as
  * this caused troubles in the past.
  */
-gulp.task('compile and move scripts', function() {
+// gulp.task('compile and move scripts', function() {
 
-    const opts = {
-        compress: false, // no further optimization
-        preserveComments: 'some'
-    };
+//     const opts = {
+//         compress: false, // no further optimization
+//         preserveComments: 'some'
+//     };
 
-    return gulp.src([ pluginSrc + '/**/*.js','!' + pluginSrc + '/**/*.min.js' ])
-        .pipe(gulpif(argv.production, uglify(opts)))
-        .pipe(gulp.dest(outPath.dist));
+//     return gulp.src([ pluginSrc + '/**/*.js','!' + pluginSrc + '/**/*.min.js' ])
+//         .pipe(gulpif(argv.production, uglify(opts)))
+//         .pipe(gulp.dest(outPath.dist));
 
-});
+// });
 
 
 /**
@@ -398,9 +398,9 @@ gulp.task('travis', function(cb) {
 gulp.task('watch', () => {
 
     // return watch('src/plugins/**/!(boot.html.tid|plugin.info)', bumpVersion);
-    gulp.watch('src/plugins/**/!(plugin.info)',[
+    gulp.watch('src/plugins/**/!(plugin.info)',runSequence([
         'copy vanilla files',
         'compile and move styles',
         'compile and move scripts'
-    ]);
+    ]));
 });
