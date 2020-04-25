@@ -13,12 +13,17 @@ Only remote configuration (username, remote_name, url) may be changed in the run
 
 \*/
 
+/*jslint node: true, browser: true */
+/*global $tw: false */
+
+//@ts-check
+
 /**
  * @typedef {Object} remoteConfig
  * @property {String} name The name of the remote database on the db server
  * @property {String} url The url of the database server (ej https://xxxx.cloudant.com)
  * @property {String} username An user with access rights to the remote database specified on name
- * @property {String} password The password of the provided username
+ * @property {String} [ password ] The password of the provided username
  */
 
 /**
@@ -32,10 +37,9 @@ Only remote configuration (username, remote_name, url) may be changed in the run
  * @property {String} selectedDbId The name of the currently selected database
  * @property {Object.<string,databaseConfig>} databases A map of the existing databases and its config
  * @property {Object} debug Current debug configuration
+ * @property {Boolean} useFatTiddlers if the skinny tiddlers should be loaded with text field included
  */
 
-/*jslint node: true, browser: true */
-/*global $tw: false */
 'use strict';
 
 // Export name and synchronous status
@@ -71,6 +75,7 @@ exports.startup = function (callback) {
       return {
           debug: { active: true, verbose: false },
           selectedDbId: DEFAULT_NOTEBOOK_NAME,
+          useFatTiddlers: false,
           databases: {},
       };
   }
@@ -90,7 +95,7 @@ exports.startup = function (callback) {
     var config = newConfig || _config;
     var Jconfig = JSON.stringify(config);
     $tw.wiki.addTiddler(new $tw.Tiddler({ title: CONFIG_TIDDLER, type: 'application/json', text: Jconfig }));
-    return true;
+    return newConfig;
   }
 
   /**
@@ -183,7 +188,8 @@ exports.startup = function (callback) {
         if (_isValidConfig(config)) {
           return config;
         }
-        throw new Error('Config was read, but it was invalid', JSON.stringify(config,null,2));
+        throw new Error( "Config was read, but it was invalid" + JSON.stringify(config, null, 2)
+        );
       })
       .catch((err) => {
         Logger.log('Config read from DB - ERROR', err);
@@ -264,6 +270,12 @@ exports.startup = function (callback) {
     return _config.debug.verbose;
   }
 
+  /**
+   * @returns {Boolean} if the use fat tiddlers option is active or not
+   */
+  function useFatTiddlers() {
+      return _config.useFatTiddlers
+  }
 
 
   /**
@@ -284,16 +296,17 @@ exports.startup = function (callback) {
       .then((config) => { // All ok reading from DB.
         Logger.debug('Config read from DB - OK');
         _config = config;
-        _writeConfigTiddler(config); // Save current config to tiddler
+        return _writeConfigTiddler(config); // Save current config to tiddler
       })
       .catch((error) => { // Error reading from db, fallback to tiddler configuration
+        Logger.debug('Error reading config from db: ', error);
         Logger.debug('FallingBack to tiddler configuration');
         _config = _readConfigTiddler();
         return _config; // return something to continue the chain!
       })
-      .then(() => {
+      .then((config) => {
         currentDB = new DbConfig(_getDatabaseConfig(_config.selectedDbId));
-        return _updateConfig(); //Persisted at the end of the chain because some functions may update with default values
+        return _updateConfig(config); //Persisted at the end of the chain because some functions may update with default values
       }
       );
   }
@@ -320,6 +333,7 @@ exports.startup = function (callback) {
           isActive: isDebugActive,
           isVerbose: isDebugVerbose
         },
+        useFatTiddlers,
         currentDB: currentDB
       };
       Ui.refreshUI(_config);

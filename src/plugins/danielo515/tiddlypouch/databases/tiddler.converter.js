@@ -111,8 +111,8 @@ function tiddlerConverter(db) {
  * Such index is created on the startup module startup-pouch, wich is probably a bad practice
  * @return {promise} Skinnytiddlers a promise that fulfills to an array of skinny tiddlers
  */
-    db.getSkinnyTiddlers = function () {
-        return this.getTiddlers('skinny_tiddlers',null,false);
+    db.getSkinnyTiddlers = function ({ fatTiddlers }) {
+        return this.getTiddlers("skinny_tiddlers", null, fatTiddlers);
     };
 
     return db;

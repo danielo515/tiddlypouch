@@ -15,6 +15,13 @@ Name: {{$:/plugins/danielo515/tiddlypouch/ui/database-name}}
 ,,//Without this parameter the plugin remains inactive //,,
 @@
 
+!!! Use fat tiddlers
+Usually tiddlers are loaded on a lazy fashion, meaning that initially the text field is ommited
+and when the tiddler is open then the text field is loaded.
+Checking this will change that and all the tiddlers will be fully loaded upfront.
+
+<$checkbox tiddler="$:/plugins/danielo515/tiddlypouch/ui/Config" field="useFatTiddlers" checked="true" unchecked="false" default="false"> Use fat tiddlers</$checkbox>
+
 !!! Connection Info
 {{$:/plugins/danielo515/tiddlypouch/ControlPanel/Database/remote-db}}
 
