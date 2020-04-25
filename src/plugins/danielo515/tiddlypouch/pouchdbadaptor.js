@@ -12,22 +12,22 @@ A sync adaptor module for synchronising with local PouchDB
 
 /*jslint node: false, browser: true */
 /*global $tw: false, XMLHttpRequest: false */
-"use strict";
+'use strict';
 
 /**
  * Creates the pouch sync adaptor
  * @constructor
- * @param {any} options
+ * @param {Object} options TODO:document properly
  */
 function PouchAdaptor(options) {
     this.wiki = options.wiki;
     var Debug = $TPouch.config.debug;
     this.logger = new $TPouch.Logger(
-        "PouchAdaptor",
+        'PouchAdaptor',
         Debug.isActive(),
         Debug.isVerbose()
     );
-    this.sessionUrl = () => $TPouch.config.currentDB.getUrl("_session"); // Check it! not store it, lazy evaluation man!
+    this.sessionUrl = () => $TPouch.config.currentDB.getUrl('_session'); // Check it! not store it, lazy evaluation man!
     //this.readConfig()
 }
 
@@ -40,14 +40,14 @@ function PouchAdaptor(options) {
  * @returns {Promise} resolves if the returned status is 200,201 or 204, reject otherwise
  */
 function httpRequest(options) {
-    var type = options.type || "GET",
-        headers = options.headers || { accept: "application/json" },
+    var type = options.type || 'GET',
+        headers = options.headers || { accept: 'application/json' },
         request = new XMLHttpRequest(),
-        data = "",
+        data = '',
         results;
     // Massage the data hashmap into a string
     if (options.data) {
-        if (typeof options.data === "string") {
+        if (typeof options.data === 'string') {
             // Already a string
             data = options.data;
         } else {
@@ -55,10 +55,10 @@ function httpRequest(options) {
             results = [];
             $tw.utils.each(options.data, function (dataItem, dataItemTitle) {
                 results.push(
-                    dataItemTitle + "=" + encodeURIComponent(dataItem)
+                    `${dataItemTitle  }=${  encodeURIComponent(dataItem)}`
                 );
             });
-            data = results.join("&");
+            data = results.join('&');
         }
     }
     // for CORS if required
@@ -79,7 +79,7 @@ function httpRequest(options) {
                     return resolve(this.responseText);
                 }
                 // Something went wrong
-                return reject("XMLHttpRequest error code: " + this.status);
+                return reject(`XMLHttpRequest error code: ${  this.status}`);
             }
         };
         // Make the request
@@ -89,10 +89,10 @@ function httpRequest(options) {
                 request.setRequestHeader(headerTitle, header);
             });
         }
-        if (data && !$tw.utils.hop(headers, "Content-type")) {
+        if (data && !$tw.utils.hop(headers, 'Content-type')) {
             request.setRequestHeader(
-                "Content-type",
-                "application/x-www-form-urlencoded; charset=UTF-8"
+                'Content-type',
+                'application/x-www-form-urlencoded; charset=UTF-8'
             );
         }
         request.send(data);
@@ -107,7 +107,7 @@ PouchAdaptor.prototype.getStatus = function (callback) {
     var self = this;
 
     if (!self.sessionUrl()) {
-        return callback(null, false, "NON-AUTHENTICATED");
+        return callback(null, false, 'NON-AUTHENTICATED');
     }
 
     return httpRequest({
@@ -127,11 +127,11 @@ PouchAdaptor.prototype.getStatus = function (callback) {
                 if (
                     !isLoggedIn &&
                     json.userCtx.roles.length == 1 &&
-                    json.userCtx.roles[0] === "_admin"
+                    json.userCtx.roles[0] === '_admin'
                 ) {
                     // admin party mode
                     self.logger.debug(
-                        "Warning! Server is on admin party mode!"
+                        'Warning! Server is on admin party mode!'
                     );
                     isLoggedIn = true;
                 }
@@ -146,30 +146,30 @@ PouchAdaptor.prototype.getStatus = function (callback) {
             callback(null, isLoggedIn, username);
         })
         .catch((err) => {
-            self.logger.debug("Error during login phase", err);
+            self.logger.debug('Error during login phase', err);
             // In case of error, just flag us as non auth
-            return callback(null, false, "NON-AUTHENTICATED");
+            return callback(null, false, 'NON-AUTHENTICATED');
         });
 };
 
 PouchAdaptor.prototype.login = function (username, password, callback) {
     var self = this;
     const logger = this.logger;
-    logger.log("About to log in...");
+    logger.log('About to log in...');
 
     return httpRequest({
-        type: "POST",
+        type: 'POST',
         url: self.sessionUrl(),
         withCredentials: true,
         data: { name: username, password },
     })
         .then(() => {
-            logger.log("Login succeed");
+            logger.log('Login succeed');
             callback();
         })
         .catch((err) => {
-            logger.log("Login failed", err);
-            logger.alert("Login failed");
+            logger.log('Login failed', err);
+            logger.alert('Login failed');
             callback(err);
         });
 };
@@ -178,7 +178,7 @@ PouchAdaptor.prototype.logout = function (callback) {
     var self = this;
     var options = {
         url: self.sessionUrl(),
-        type: "DELETE",
+        type: 'DELETE',
         withCredentials: true,
     };
 
@@ -216,7 +216,7 @@ PouchAdaptor.prototype.saveTiddler = function (
     callback,
     options = { tiddlerInfo: {} }
 ) {
-    this.logger.trace("Tiddler info ", options.tiddlerInfo);
+    this.logger.trace('Tiddler info ', options.tiddlerInfo);
     $TPouch.router
         .route(tiddler)
         .addTiddler(tiddler, options)
@@ -237,7 +237,7 @@ PouchAdaptor.prototype.deleteTiddler = function (title, callback, options) {
     if (
         !options.tiddlerInfo ||
         !options.tiddlerInfo.adaptorInfo ||
-        typeof options.tiddlerInfo.adaptorInfo._rev == "undefined"
+        typeof options.tiddlerInfo.adaptorInfo._rev == 'undefined'
     ) {
         /* not on server, just return OK */
         callback(null);

@@ -86,7 +86,7 @@ const tag_version = require('gulp-tag-version');
 const conventionalRecommendedBump = require('conventional-recommended-bump');
 const { promisify } = require('util');
 const { log } = require('console');
-const recommendedBump= promisify(conventionalRecommendedBump);
+const recommendedBump = promisify(conventionalRecommendedBump);
 
 /**** Preprocessing ************************************************/
 
@@ -125,8 +125,8 @@ const replaceAfterSass = {
 async function bumpVersion() {
     console.log('Bumping from version ', pluginInfo.version);
     const v = new SemVer(pluginInfo.version);
-    const recommended = await recommendedBump({preset: 'angular'});
-    log({bump: recommended });
+    const recommended = await recommendedBump({ preset: 'angular' });
+    log({ bump: recommended });
     const bump_type = argv.major
         ? 'major'
         : argv.minor
@@ -169,24 +169,7 @@ gulp.task('perform cleanup', function () {
  * file. If `isIncrBuild` is true, then the build number is
  * incremented as well.
  */
-gulp.task('bump_version', function (cb) {
-    bumpVersion();
-    cb();
-});
-
-/**
- * Override the version of the plugin specified in the plugin.info
- *.
- */
-gulp.task('patch', function (cb) {
-    const v = new SemVer(pluginInfo.version);
-    v.patch++;
-    pluginInfo.version = `${v.major}.${v.minor}.${v.patch}`;
-    pluginInfo.released = new Date().toUTCString();
-    fs.writeFileSync(pluginInfoPath, JSON.stringify(pluginInfo, null, 4));
-
-    cb();
-});
+gulp.task('bump_version', bumpVersion);
 
 /**
  * Labels with the current tag of the plugin
@@ -204,10 +187,6 @@ gulp.task('copy vanilla files', function () {
     return gulp
         .src(`${pluginSrc}/**/!(*.scss|*.js)`)
         .pipe(gulp.dest(outPath.dist));
-});
-
-gulp.task('copy libraries', function () {
-    return gulp.src(`${pluginSrc}/**/*.min.js`).pipe(gulp.dest(outPath.dist));
 });
 
 /**
@@ -332,6 +311,12 @@ function buildWiki(cb) {
     cb();
 }
 
+const basicBuild = gulp.parallel(
+    'copy vanilla files',
+    'compile and move styles',
+    'compile and move scripts'
+);
+
 /**
  * Execute the default task.
  */
@@ -343,7 +328,6 @@ gulp.task('default', function (cb) {
         [
             // 'create docs', // There is a problem because TS imports on JSDOC
             'copy vanilla files',
-            'copy libraries',
             'compile and move styles',
             'compile and move scripts',
         ],
@@ -358,29 +342,16 @@ gulp.task('travis', function (cb) {
     runSequence(
         'Javascript validation',
         'perform cleanup',
-        [
-            'copy vanilla files',
-            'copy libraries',
-            'compile and move styles',
-            'compile and move scripts',
-        ],
+        basicBuild,
         'bundle the plugin',
         cb
     );
 });
 
-gulp.task('build-wiki', function(cb){
-    runSequence('travis',buildWiki,cb);
-});
+gulp.task('build-wiki', gulp.series('travis', buildWiki));
 
 gulp.task('watch', () => {
-    // return watch('src/plugins/**/!(boot.html.tid|plugin.info)', bumpVersion);
-    gulp.watch(
-        'src/plugins/**/!(plugin.info)',
-        runSequence([
-            'copy vanilla files',
-            'compile and move styles',
-            'compile and move scripts',
-        ])
-    );
+    const path = `${pluginSrc}**`;
+    log({ path });
+    return gulp.watch(path, { ignoreInitial: false }, basicBuild);
 });
