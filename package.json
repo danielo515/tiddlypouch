@@ -1,6 +1,6 @@
 {
     "name": "tiddlypouch",
-    "version": "0.27.1-35",
+    "version": "0.27.1",
     "author": "Danielo Rodríguez Rivero",
     "description": "Tiddlypouch brings all the power of Pouchdb into tiddlywiki. It is a key part of the NoteSelf project",
     "license": "BSD-2-Clause",
@@ -12,7 +12,7 @@
         "build": "gulp",
         "build-wiki": "gulp build-wiki",
         "watch": "gulp watch",
-        "bump": "gulp bump_version --minor",
+        "bump": "gulp bump_version",
         "start": "npm run build && npm run TW",
         "TW": "nodemon ./node_modules/tiddlywiki/tiddlywiki.js ./wiki --verbose --server 8087 $:/core/save/all text/plain text/html",
         "dev-docs": "tiddlywiki ./documentationwiki --verbose --server 8088 $:/core/save/all text/plain text/html"
@@ -45,6 +45,7 @@
         "@babel/preset-env": "^7.9.5",
         "@babel/register": "^7.9.0",
         "conventional-changelog": "^3.1.18",
+        "conventional-recommended-bump": "^6.0.5",
         "del": "^5.1.0",
         "eslint": "^6.8.0",
         "gulp": "^4.0.2",

@@ -83,7 +83,10 @@ const jsdoc = require('gulp-jsdoc3');
 const esprima = require('gulp-esprima');
 const debug = require('gulp-debug');
 const tag_version = require('gulp-tag-version');
-// const watch = require('gulp-watch');
+const conventionalRecommendedBump = require('conventional-recommended-bump');
+const { promisify } = require('util');
+const { log } = require('console');
+const recommendedBump= promisify(conventionalRecommendedBump);
 
 /**** Preprocessing ************************************************/
 
@@ -119,16 +122,18 @@ const replaceAfterSass = {
 
 /**** Helper functions *********************/
 
-function bumpVersion() {
+async function bumpVersion() {
     console.log('Bumping from version ', pluginInfo.version);
     const v = new SemVer(pluginInfo.version);
+    const recommended = await recommendedBump({preset: 'angular'});
+    log({bump: recommended });
     const bump_type = argv.major
         ? 'major'
         : argv.minor
             ? 'minor'
             : argv.patch
                 ? 'patch'
-                : 'prerelease';
+                : recommended.releaseType;
     v.inc(bump_type);
     pluginInfo.version = v.version;
     pluginInfo.released = new Date().toUTCString();
