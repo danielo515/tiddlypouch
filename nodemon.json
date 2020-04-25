@@ -6,7 +6,7 @@
     ],
     "verbose": true,
     "watch": [
-      "tiddlypouchwiki/",
+      "wiki/",
       "dist/"
     ],
     "env": {

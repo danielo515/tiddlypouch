@@ -38,4 +38,4 @@ our changes are not saved to the file-system system. To solve this we use two wi
 The folder `documentationwiki` is used for write documentation tiddlers.
 
 ### Development wiki
-The folder `tiddlypouchwiki` contains the configuration for the wiki where we test the plugin functionality.
+The folder `wiki` contains the configuration for the wiki where we test the plugin functionality.

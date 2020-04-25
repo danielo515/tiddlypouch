@@ -326,7 +326,7 @@ gulp.task('bundle the plugin', function (cb) {
 function buildWiki(cb) {
     process.env.TIDDLYWIKI_PLUGIN_PATH = `${outPath.dist}:./node_modules/tw-pouchdb/`;
     const $tw = tw.TiddlyWiki();
-    $tw.boot.argv = [ './tiddlypouchwiki', '--verbose', '--build', 'index' ];
+    $tw.boot.argv = [ './wiki', '--verbose', '--build', 'index' ];
     $tw.boot.boot();
     cb();
 }
