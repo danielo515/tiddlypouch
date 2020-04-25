@@ -331,7 +331,6 @@ function buildWiki(cb) {
     cb();
 }
 
-gulp.task('build-wiki',buildWiki);
 /**
  * Execute the default task.
  */
@@ -369,8 +368,8 @@ gulp.task('travis', function (cb) {
     );
 });
 
-gulp.task('preview-site', function(cb){
-    runSequence('travis','build-wiki',cb);
+gulp.task('build-wiki', function(cb){
+    runSequence('travis',buildWiki,cb);
 });
 
 gulp.task('watch', () => {
