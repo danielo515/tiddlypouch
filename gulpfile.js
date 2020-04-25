@@ -91,8 +91,8 @@ const tag_version = require('gulp-tag-version');
 /**** Preprocessing ************************************************/
 
 const pluginSrc = './src/plugins/';
-const pluginNamespace = `${authorName  }/${  pluginName}`; // no trailing slash!
-const pluginTiddler = `$:/plugins/${  pluginNamespace}`;
+const pluginNamespace = `${authorName}/${pluginName}`; // no trailing slash!
+const pluginTiddler = `$:/plugins/${pluginNamespace}`;
 const pluginInfoPath = path.resolve(pluginSrc, pluginNamespace, 'plugin.info');
 const pluginInfo = JSON.parse(fs.readFileSync(pluginInfoPath, 'utf8'));
 const pckgJSON = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
@@ -125,7 +125,7 @@ const replaceAfterSass = {
 function bumpVersion() {
     console.log('Bumping from version ', pluginInfo.version);
     const v = new SemVer(pluginInfo.version);
-    const build = isIncrBuild ? `+${  parseInt(v.build[0] || 0) + 1}` : '';
+    const build = isIncrBuild ? `+${parseInt(v.build[0] || 0) + 1}` : '';
     const bump_type = argv.major
         ? 'major'
         : argv.minor
@@ -140,7 +140,7 @@ function bumpVersion() {
 
     updater = updater.replace(
         /\/\**TPOUCH_VER.*\*\//,
-        `/***TPOUCH_VER*/'${  pluginInfo.version  }'/*TPOUCH_VER***/`
+        `/***TPOUCH_VER*/'${pluginInfo.version}'/*TPOUCH_VER***/`
     );
 
     fs.writeFileSync(pluginInfoPath, JSON.stringify(pluginInfo, null, 4));
@@ -180,7 +180,7 @@ gulp.task('bump_version', function (cb) {
 gulp.task('patch', function (cb) {
     const v = new SemVer(pluginInfo.version);
     v.patch++;
-    pluginInfo.version = `${v.major  }.${  v.minor  }.${  v.patch}`;
+    pluginInfo.version = `${v.major}.${v.minor}.${v.patch}`;
     pluginInfo.released = new Date().toUTCString();
     fs.writeFileSync(pluginInfoPath, JSON.stringify(pluginInfo, null, 4));
 
@@ -201,12 +201,12 @@ gulp.task('tag', function (cb) {
  */
 gulp.task('copy vanilla files', function () {
     return gulp
-        .src(`${pluginSrc  }/**/!(*.scss|*.js)`)
+        .src(`${pluginSrc}/**/!(*.scss|*.js)`)
         .pipe(gulp.dest(outPath.dist));
 });
 
 gulp.task('copy libraries', function () {
-    return gulp.src(`${pluginSrc  }/**/*.min.js`).pipe(gulp.dest(outPath.dist));
+    return gulp.src(`${pluginSrc}/**/*.min.js`).pipe(gulp.dest(outPath.dist));
 });
 
 /**
@@ -221,7 +221,7 @@ gulp.task('compile and move styles', function () {
         sourceComments: false,
     };
 
-    let stream = gulp.src(`${pluginSrc  }/**/*.scss`).pipe(sass(opts));
+    let stream = gulp.src(`${pluginSrc}/**/*.scss`).pipe(sass(opts));
 
     for (const str in replaceAfterSass) {
         stream = stream.pipe(replace(str, replaceAfterSass[str]));
@@ -251,7 +251,7 @@ gulp.task('compile and move scripts', () => {
     };
 
     return gulp
-        .src(`${pluginSrc  }/**/*.js`)
+        .src(`${pluginSrc}/**/*.js`)
         .pipe(sourcemaps.init())
         .pipe(babel())
         .pipe(gulpif(argv.production, uglify(uglifyOpts)))
@@ -263,10 +263,7 @@ gulp.task('compile and move scripts', () => {
  * Syntax validation.
  */
 gulp.task('Javascript validation', function () {
-    return gulp
-        .src(`${pluginSrc  }/**/*.js`)
-        .pipe(debug())
-        .pipe(esprima());
+    return gulp.src(`${pluginSrc}/**/*.js`).pipe(debug()).pipe(esprima());
 });
 
 /**
@@ -280,7 +277,7 @@ gulp.task('create docs', function (cb) {
     const config = require('./src/jsdoc/config');
     config.opts.destination = outPath.docs;
 
-    gulp.src([ `${pluginSrc  }/**/*.js`, './src/jsdoc/README.md' ]).pipe(
+    gulp.src([ `${pluginSrc}/**/*.js`, './src/jsdoc/README.md' ]).pipe(
         jsdoc(config, cb)
     );
 });
@@ -317,7 +314,7 @@ gulp.task('bundle the plugin', function (cb) {
     // write the json to the dist dir;
     // note: tw requires the json to be wrapped in an array, since
     // a collection of tiddlers are possible.
-    const outName = `${pluginName  }_${  pluginInfo.version  }.json`;
+    const outName = `${pluginName}_${pluginInfo.version}.json`;
     fs.writeFileSync(
         path.resolve(outPath.bundle, outName),
         JSON.stringify([ plugin ], null, 2)
@@ -326,6 +323,15 @@ gulp.task('bundle the plugin', function (cb) {
     cb();
 });
 
+function buildWiki(cb) {
+    process.env.TIDDLYWIKI_PLUGIN_PATH = `${outPath.dist}:./node_modules/tw-pouchdb/`;
+    const $tw = tw.TiddlyWiki();
+    $tw.boot.argv = [ './tiddlypouchwiki', '--verbose', '--build', 'index' ];
+    $tw.boot.boot();
+    cb();
+}
+
+gulp.task('build-wiki',buildWiki);
 /**
  * Execute the default task.
  */
@@ -335,7 +341,7 @@ gulp.task('default', function (cb) {
         'perform cleanup',
         'bump_version',
         [
-            'create docs',
+            // 'create docs', // There is a problem because TS imports on JSDOC
             'copy vanilla files',
             'copy libraries',
             'compile and move styles',
@@ -361,6 +367,10 @@ gulp.task('travis', function (cb) {
         'bundle the plugin',
         cb
     );
+});
+
+gulp.task('preview-site', function(cb){
+    runSequence('travis','build-wiki',cb);
 });
 
 gulp.task('watch', () => {

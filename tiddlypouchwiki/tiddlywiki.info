@@ -1,22 +1,21 @@
 {
-  "plugins": [
-    "tiddlywiki/highlight",
-    "danielo515/pouchdb",
-    "danielo515/tiddlypouch"
-  ],
-  "themes": [
-    "tiddlywiki/vanilla",
-    "tiddlywiki/snowwhite"
-  ],
-  "languages": [
-    "en-US"
-  ],
-  "build": {
-    "index": [
-      "--rendertiddler", "$:/tiddlypouch/save/deploy", "index.html", "text/plain"
+    "plugins": [
+        "tiddlywiki/highlight",
+        "danielo515/pouchdb",
+        "danielo515/tiddlypouch"
     ],
-    "favicon": [
-      "--savetiddler", "$:/favicon.ico", "favicon.ico"
-    ]
-  }
+    "themes": [
+        "tiddlywiki/vanilla",
+        "tiddlywiki/snowwhite"
+    ],
+    "languages": [
+        "en-US"
+    ],
+    "build": {
+        "index": [
+            "--output", "./output",
+            "--rendertiddler", "$:/core/save/all", "index.html", "text/plain"
+        ],
+        "favicon": [ "--savetiddler", "$:/favicon.ico", "favicon.ico" ]
+    }
 }
