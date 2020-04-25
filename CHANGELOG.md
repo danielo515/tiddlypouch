@@ -1,3 +1,14 @@
+<a name="0.27.1-34"></a>
+## [0.27.1-34](https://github.com/danielo515/tiddlypouch/compare/v0.27.1-32...v0.27.1-34) (2020-04-25)
+
+
+### Features
+
+* for god's shake, eslint! ([cb96d40](https://github.com/danielo515/tiddlypouch/commit/cb96d40))
+* tiddlers can now be loaded as fat if desired ([1d0aaee](https://github.com/danielo515/tiddlypouch/commit/1d0aaee))
+
+
+
 <a name="0.26.0"></a>
 # [0.26.0](https://github.com/danielo515/tiddlypouch/compare/v0.24.1-2...v0.26.0) (2018-05-09)
 
