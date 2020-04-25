@@ -55,9 +55,6 @@
 const authorName = 'danielo515';
 const pluginName = 'tiddlypouch';
 
-// whether or not to create/increment the build number automatically
-const isIncrBuild = true;
-
 /**** Imports ******************************************************/
 
 // node modules
@@ -72,7 +69,7 @@ const argv = require('yargs').argv;
 const del = require('del');
 // why on earth is fs.exists depreciated anyway by node?
 const exists = require('is-there');
-const SemVer = require('semver');
+const SemVer = require('semver/classes/semver');
 // once gulp 4.0 is out: remove runSequence and update
 const runSequence = require('gulp4-run-sequence');
 const gulp = require('gulp');
@@ -125,7 +122,6 @@ const replaceAfterSass = {
 function bumpVersion() {
     console.log('Bumping from version ', pluginInfo.version);
     const v = new SemVer(pluginInfo.version);
-    const build = isIncrBuild ? `+${parseInt(v.build[0] || 0) + 1}` : '';
     const bump_type = argv.major
         ? 'major'
         : argv.minor
