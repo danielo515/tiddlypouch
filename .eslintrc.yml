@@ -23,6 +23,7 @@ globals:
     PouchDB: true
 
 rules:
+    prefer-template: ['error']
     semi: 1 # require semicolons
     no-unused-vars: ['error']
     valid-jsdoc: ['error']

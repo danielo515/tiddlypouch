@@ -77,7 +77,7 @@ const SemVer = require('semver');
 const runSequence = require('gulp4-run-sequence');
 const gulp = require('gulp');
 const babel = require('gulp-babel');
-const sourcemaps = require("gulp-sourcemaps");
+const sourcemaps = require('gulp-sourcemaps');
 const gulpif = require('gulp-if');
 const sass = require('gulp-sass');
 const replace = require('gulp-replace');
@@ -91,8 +91,8 @@ const tag_version = require('gulp-tag-version');
 /**** Preprocessing ************************************************/
 
 const pluginSrc = './src/plugins/';
-const pluginNamespace = authorName + '/' + pluginName; // no trailing slash!
-const pluginTiddler = '$:/plugins/' + pluginNamespace;
+const pluginNamespace = `${authorName  }/${  pluginName}`; // no trailing slash!
+const pluginTiddler = `$:/plugins/${  pluginNamespace}`;
 const pluginInfoPath = path.resolve(pluginSrc, pluginNamespace, 'plugin.info');
 const pluginInfo = JSON.parse(fs.readFileSync(pluginInfoPath, 'utf8'));
 const pckgJSON = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
@@ -104,7 +104,7 @@ const outPath = {
     bundle: './bundle/',
     dist: './dist/',
     docs: './docs/',
-    maps: './maps/'
+    maps: './maps/',
 };
 
 // a quick sanity check
@@ -116,45 +116,51 @@ if (pluginTiddler !== pluginInfo.title) {
 /**** Replacements *************************************************/
 
 const replaceAfterSass = {
-    '__breakpoint__': '{{$:/themes/tiddlywiki/vanilla/metrics/sidebarbreakpoint}}'
+    __breakpoint__:
+        '{{$:/themes/tiddlywiki/vanilla/metrics/sidebarbreakpoint}}',
 };
 
 /**** Helper functions *********************/
 
-function bumpVersion(){
-
+function bumpVersion() {
     console.log('Bumping from version ', pluginInfo.version);
     const v = new SemVer(pluginInfo.version);
-    const build = (isIncrBuild ? '+' + (parseInt(v.build[0] || 0) + 1) : '');
-    const bump_type = argv.major ? 'major' : argv.minor ? 'minor' : argv.patch ? 'patch' : 'prerelease';
+    const build = isIncrBuild ? `+${  parseInt(v.build[0] || 0) + 1}` : '';
+    const bump_type = argv.major
+        ? 'major'
+        : argv.minor
+            ? 'minor'
+            : argv.patch
+                ? 'patch'
+                : 'prerelease';
     v.inc(bump_type);
     pluginInfo.version = v.version;
     pluginInfo.released = new Date().toUTCString();
     pckgJSON.version = pluginInfo.version;
 
-    updater = updater.replace(/\/\**TPOUCH_VER.*\*\// , '/***TPOUCH_VER*/\'' + pluginInfo.version + '\'/*TPOUCH_VER***/');
+    updater = updater.replace(
+        /\/\**TPOUCH_VER.*\*\//,
+        `/***TPOUCH_VER*/'${  pluginInfo.version  }'/*TPOUCH_VER***/`
+    );
 
     fs.writeFileSync(pluginInfoPath, JSON.stringify(pluginInfo, null, 4));
-    fs.writeFileSync('./package.json', JSON.stringify(pckgJSON,null,4));
-    fs.writeFileSync(updaterSrc,updater);
+    fs.writeFileSync('./package.json', JSON.stringify(pckgJSON, null, 4));
+    fs.writeFileSync(updaterSrc, updater);
     console.log('New version is', pluginInfo.version);
 }
-
 
 /**** Tasks ********************************************************/
 
 /**
  * Remove all output paths.
  */
-gulp.task('perform cleanup', function() {
-
+gulp.task('perform cleanup', function () {
     const cleanupPaths = [];
     for (const path in outPath) {
         cleanupPaths.push(outPath[path]);
     }
 
     return del(cleanupPaths, { force: true });
-
 });
 
 /**
@@ -162,8 +168,7 @@ gulp.task('perform cleanup', function() {
  * file. If `isIncrBuild` is true, then the build number is
  * incremented as well.
  */
-gulp.task('bump_version', function(cb) {
-
+gulp.task('bump_version', function (cb) {
     bumpVersion();
     cb();
 });
@@ -172,11 +177,10 @@ gulp.task('bump_version', function(cb) {
  * Override the version of the plugin specified in the plugin.info
  *.
  */
-gulp.task('patch', function(cb) {
-
+gulp.task('patch', function (cb) {
     const v = new SemVer(pluginInfo.version);
     v.patch++;
-    pluginInfo.version = v.major + '.' + v.minor + '.' + v.patch;
+    pluginInfo.version = `${v.major  }.${  v.minor  }.${  v.patch}`;
     pluginInfo.released = new Date().toUTCString();
     fs.writeFileSync(pluginInfoPath, JSON.stringify(pluginInfo, null, 4));
 
@@ -186,10 +190,8 @@ gulp.task('patch', function(cb) {
 /**
  * Labels with the current tag of the plugin
  */
-gulp.task('tag', function(cb){
-    gulp.src(pluginInfoPath).pipe(
-        tag_version(pluginInfo)
-    );
+gulp.task('tag', function (cb) {
+    gulp.src(pluginInfoPath).pipe(tag_version(pluginInfo));
     cb();
 });
 
@@ -197,18 +199,14 @@ gulp.task('tag', function(cb){
  * Copy everything that doesn't need further processing to the
  * dist directory
  */
-gulp.task('copy vanilla files', function() {
-
-    return gulp.src(pluginSrc + '/**/!(*.scss|*.js)')
+gulp.task('copy vanilla files', function () {
+    return gulp
+        .src(`${pluginSrc  }/**/!(*.scss|*.js)`)
         .pipe(gulp.dest(outPath.dist));
-
 });
 
-gulp.task('copy libraries', function() {
-
-    return gulp.src(pluginSrc + '/**/*.min.js')
-        .pipe(gulp.dest(outPath.dist));
-
+gulp.task('copy libraries', function () {
+    return gulp.src(`${pluginSrc  }/**/*.min.js`).pipe(gulp.dest(outPath.dist));
 });
 
 /**
@@ -217,22 +215,19 @@ gulp.task('copy libraries', function() {
  * placeholders are replaced. Eventually, the files are moved
  * to the dist directory.
  */
-gulp.task('compile and move styles', function() {
-
+gulp.task('compile and move styles', function () {
     const opts = {
-        outputStyle: (argv.production ? 'compressed' : 'nested'),
-        sourceComments: false
+        outputStyle: argv.production ? 'compressed' : 'nested',
+        sourceComments: false,
     };
 
-    let stream = gulp.src(pluginSrc + '/**/*.scss')
-        .pipe(sass(opts));
+    let stream = gulp.src(`${pluginSrc  }/**/*.scss`).pipe(sass(opts));
 
     for (const str in replaceAfterSass) {
         stream = stream.pipe(replace(str, replaceAfterSass[str]));
     }
 
     return stream.pipe(gulp.dest(outPath.dist));
-
 });
 
 /**
@@ -243,45 +238,41 @@ gulp.task('compile and move styles', function() {
  * this caused troubles in the past.
  */
 gulp.task('compile and move scripts', () => {
-
     const uglifyOpts = {
         compress: false, // no further optimization
         output: {
             comments: 'some',
-        }
+        },
     };
 
     const sourceMapOpts = {
         destPath: outPath.maps,
-        sourceMappingURLPrefix: '.'
+        sourceMappingURLPrefix: '.',
     };
 
-    return gulp.src(pluginSrc + '/**/*.js')
+    return gulp
+        .src(`${pluginSrc  }/**/*.js`)
         .pipe(sourcemaps.init())
         .pipe(babel())
-        .pipe(gulpif (argv.production, uglify(uglifyOpts)))
+        .pipe(gulpif(argv.production, uglify(uglifyOpts)))
         .pipe(sourcemaps.write('./maps', sourceMapOpts))
         .pipe(gulp.dest(outPath.dist));
-
 });
-
 
 /**
  * Syntax validation.
  */
-gulp.task('Javascript validation', function() {
-
-    return gulp.src(pluginSrc + '/**/*.js')
+gulp.task('Javascript validation', function () {
+    return gulp
+        .src(`${pluginSrc  }/**/*.js`)
         .pipe(debug())
         .pipe(esprima());
-
 });
 
 /**
  * Create the docs if in production mode.
  */
-gulp.task('create docs', function(cb) {
-
+gulp.task('create docs', function (cb) {
     // if(!argv.production) { cb(); return; }
 
     // use require to load the jsdoc config;
@@ -289,9 +280,9 @@ gulp.task('create docs', function(cb) {
     const config = require('./src/jsdoc/config');
     config.opts.destination = outPath.docs;
 
-    gulp.src([ pluginSrc + '/**/*.js', './src/jsdoc/README.md' ])
-        .pipe(jsdoc(config, cb));
-
+    gulp.src([ `${pluginSrc  }/**/*.js`, './src/jsdoc/README.md' ]).pipe(
+        jsdoc(config, cb)
+    );
 });
 
 /**
@@ -301,8 +292,7 @@ gulp.task('create docs', function(cb) {
  * json tiddler and then save it to the filesystem into the bundle
  * dir.
  */
-gulp.task('bundle the plugin', function(cb) {
-
+gulp.task('bundle the plugin', function (cb) {
     // init the tw environment
     const $tw = tw.TiddlyWiki();
 
@@ -310,16 +300,16 @@ gulp.task('bundle the plugin', function(cb) {
     // Attention: argv always needs to contain at least one element,
     // otherwise the wiki instance will issue a help output.
     // @see https://github.com/Jermolene/TiddlyWiki5/issues/2238
-    $tw.boot.argv = [
-        '--verbose'
-    ];
+    $tw.boot.argv = [ '--verbose' ];
 
     // trigger the startup; since we are not in a browser environment,
     // we need to call boot() explicitly.
     $tw.boot.boot();
 
     // bundle from the plugin files as json
-    const plugin = $tw.loadPluginFolder(path.resolve(outPath.dist, pluginNamespace));
+    const plugin = $tw.loadPluginFolder(
+        path.resolve(outPath.dist, pluginNamespace)
+    );
 
     //make sure the bundle path exists
     if (!exists(outPath.bundle)) fs.mkdirSync(outPath.bundle);
@@ -327,19 +317,19 @@ gulp.task('bundle the plugin', function(cb) {
     // write the json to the dist dir;
     // note: tw requires the json to be wrapped in an array, since
     // a collection of tiddlers are possible.
-    const outName = pluginName + '_' + pluginInfo.version + '.json';
-    fs.writeFileSync(path.resolve(outPath.bundle, outName),
-        JSON.stringify([ plugin ], null, 2));
+    const outName = `${pluginName  }_${  pluginInfo.version  }.json`;
+    fs.writeFileSync(
+        path.resolve(outPath.bundle, outName),
+        JSON.stringify([ plugin ], null, 2)
+    );
 
     cb();
-
 });
 
 /**
  * Execute the default task.
  */
-gulp.task('default', function(cb) {
-
+gulp.task('default', function (cb) {
     runSequence(
         'Javascript validation',
         'perform cleanup',
@@ -349,18 +339,16 @@ gulp.task('default', function(cb) {
             'copy vanilla files',
             'copy libraries',
             'compile and move styles',
-            'compile and move scripts'
+            'compile and move scripts',
         ],
         'bundle the plugin',
         'tag',
         cb
     );
-
 });
 
 /* Just builds the dist folder, no tagging, no bump version... Just for other projects that depends on this one */
-gulp.task('travis', function(cb) {
-
+gulp.task('travis', function (cb) {
     runSequence(
         'Javascript validation',
         'perform cleanup',
@@ -368,20 +356,21 @@ gulp.task('travis', function(cb) {
             'copy vanilla files',
             'copy libraries',
             'compile and move styles',
-            'compile and move scripts'
+            'compile and move scripts',
         ],
         'bundle the plugin',
         cb
     );
-
 });
 
 gulp.task('watch', () => {
-
     // return watch('src/plugins/**/!(boot.html.tid|plugin.info)', bumpVersion);
-    gulp.watch('src/plugins/**/!(plugin.info)',runSequence([
-        'copy vanilla files',
-        'compile and move styles',
-        'compile and move scripts'
-    ]));
+    gulp.watch(
+        'src/plugins/**/!(plugin.info)',
+        runSequence([
+            'copy vanilla files',
+            'compile and move styles',
+            'compile and move scripts',
+        ])
+    );
 });
