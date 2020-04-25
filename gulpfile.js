@@ -120,6 +120,8 @@ const replaceAfterSass = {
         '{{$:/themes/tiddlywiki/vanilla/metrics/sidebarbreakpoint}}',
 };
 
+const replaceInJs = { '@plugin': `$:/plugins/${pluginNamespace}` };
+
 /**** Helper functions *********************/
 
 async function bumpVersion() {
@@ -230,13 +232,18 @@ gulp.task('compile and move scripts', () => {
         sourceMappingURLPrefix: '.',
     };
 
-    return gulp
+    let stream = gulp
         .src(`${pluginSrc}/**/*.js`)
         .pipe(sourcemaps.init())
         .pipe(babel())
         .pipe(gulpif(argv.production, uglify(uglifyOpts)))
-        .pipe(sourcemaps.write('./maps', sourceMapOpts))
-        .pipe(gulp.dest(outPath.dist));
+        .pipe(sourcemaps.write('./maps', sourceMapOpts));
+
+    for (const str in replaceInJs) {
+        stream = stream.pipe(replace(str, replaceInJs[str]));
+    }
+
+    return stream.pipe(gulp.dest(outPath.dist));
 });
 
 /**

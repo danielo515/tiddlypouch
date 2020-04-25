@@ -9,7 +9,7 @@ Links the user interface with the configuration methods
 
 \*/
 
-"use strict";
+'use strict';
 /** @module */
 
 //@ts-check
@@ -22,15 +22,15 @@ Links the user interface with the configuration methods
  */
 
 var SELECTED_DATABASE =
-    "$:/plugins/danielo515/tiddlypouch/config/selected_database";
+    '$:/plugins/danielo515/tiddlypouch/config/selected_database';
 const {
     CONFIG_SAVED,
     SYNC_ICON,
     DATABASE_NAMES,
     DEBUG_CONFIG,
-} = require("$:/plugins/danielo515/tiddlypouch/constants.js");
+} = require('@plugin/constants.js');
 
-var Utils = require("$:/plugins/danielo515/tiddlypouch/utils");
+var Utils = require('@plugin/utils');
 
 $TPouch.ui = $TPouch.ui || {};
 
@@ -51,7 +51,7 @@ function setSyncFlag(mode) {
       i can take both, a message param or just a plain function execution.
       take a look at startup-syncer for the emit of the events
   */
-    if (mode === "offline" || !$TPouch.config.currentDB.getUrl()) {
+    if (mode === 'offline' || !$TPouch.config.currentDB.getUrl()) {
         /* We don't want sync status icon on sidebar*/
         return $tw.wiki.addTiddler(
             new $tw.Tiddler(sincStatusFlag, { tags: [] })
@@ -59,7 +59,7 @@ function setSyncFlag(mode) {
     }
     /*Otherwise, add to sidebar with the tag (it could be removed) */
     $tw.wiki.addTiddler(
-        new $tw.Tiddler(sincStatusFlag, { tags: ["$:/tags/PageControls"] })
+        new $tw.Tiddler(sincStatusFlag, { tags: [ '$:/tags/PageControls' ] })
     );
 }
 
@@ -67,8 +67,8 @@ exports.setSyncFlag = setSyncFlag;
 
 function setSiteSubtitleToDatabaseName() {
     var text =
-        "<<tiddlypouch-tab " + $TPouch.config.currentDB.name + " Database >>";
-    $tw.wiki.addTiddler({ title: "$:/SiteSubtitle", text: text });
+        `<<tiddlypouch-tab ${  $TPouch.config.currentDB.name  } Database >>`;
+    $tw.wiki.addTiddler({ title: '$:/SiteSubtitle', text: text });
 }
 
 /**
@@ -79,12 +79,12 @@ function setLoginMessage() {
     var loginDestination = $TPouch.config.currentDB.getUrl();
     var databaseName = $TPouch.config.currentDB.getRemoteName();
     var message =
-        "Login to remote database <b>" +
-        databaseName +
-        "</b> at: " +
-        loginDestination;
+        `Login to remote database <b>${
+            databaseName
+        }</b> at: ${
+            loginDestination}`;
     $tw.wiki.addTiddler({
-        title: "$:/language/LoginToTiddlySpace",
+        title: '$:/language/LoginToTiddlySpace',
         text: message,
     });
 }
@@ -94,7 +94,7 @@ function refreshDatabaseNamesUI() {
     $tw.wiki.addTiddler({
         title: DATABASE_NAMES,
         list: namesList,
-        text: "{{!!list}}",
+        text: '{{!!list}}',
     });
 }
 
@@ -195,7 +195,7 @@ function refreshSelectedDbUi(dbConfig) {
     $tw.wiki.addTiddler(
         new $tw.Tiddler({
             title: SELECTED_DATABASE,
-            type: "application/json",
+            type: 'application/json',
             text: JSON.stringify(uiConfig),
         })
     );
