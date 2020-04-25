@@ -1,0 +1,9 @@
+{
+    "exclude": ["node_modules","dist"],
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "@plugin/*": [ "./src/plugins/danielo515/tiddlypouch/*" ]
+        }
+    }
+}
