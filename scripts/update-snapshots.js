@@ -231,9 +231,10 @@ async function createSnapshotPullRequest(snapshot_branch_name) {
         });
         log(`Created a new snapshot PR: ${pullRequest.data.html_url}`);
         return pullRequest.data;
-    } catch (er) {
+    } catch (error) {
         log('There was an error creating a new snapshot PR.');
-        log(er);
+        log(error);
+        throw error;
     }
 }
 
