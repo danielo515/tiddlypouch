@@ -1,5 +1,5 @@
 /*\
-title: $:/plugins/danielo515/tiddlypouch/converters/tiddler
+title: $:/plugins/danielo515/tiddlypouch/databases/converters/tiddler
 type: application/javascript
 module-type: library
 
@@ -19,7 +19,7 @@ a conversor that makes tiddlers compatible with pouchdb. This injects the requir
 module.exports.decorate = tiddlerConverter;
 
 /***====================== Tiddler conversor dependency  ========================== */
-var BaseConverter = require('$:/plugins/danielo515/tiddlypouch/converters/converter.js');
+var BaseConverter = require('@plugin/databases/converter.js');
 
 /**
  * Injects methods to handle conversions between regular TW tiddlers and CouchDB
@@ -73,7 +73,7 @@ function tiddlerConverter(db) {
         return result;
     };
 
-        /**
+    /**
          * Transforms a pouchd document extracting just the fields that should be
          * part of the tiddler discarding all the metadata related to PouchDB.
          * For this version just copy all fields across except _rev and _id
@@ -84,27 +84,27 @@ function tiddlerConverter(db) {
     db._convertFromCouch = function convertFromCouch(doc) {
         var result = {};
         this.logger && this.logger.debug('Converting from ', doc);
-            // Transfer the fields, pulling down the `fields` hashmap
+        // Transfer the fields, pulling down the `fields` hashmap
         $tw.utils.each(doc, function (element, field/* , obj */) {
-                if (field === 'fields') {
-                    $tw.utils.each(element, function (element, subTitle/* , obj */) {
-                        result[subTitle] = element;
-                    });
-                } else if (field === '_id' || field === '_rev') {
-                    /* skip these */
-                } else {
-                    result[field] = doc[field];
-                }
-            });
-            /* If the doc has a revision field use it.
+            if (field === 'fields') {
+                $tw.utils.each(element, function (element, subTitle/* , obj */) {
+                    result[subTitle] = element;
+                });
+            } else if (field === '_id' || field === '_rev') {
+                /* skip these */
+            } else {
+                result[field] = doc[field];
+            }
+        });
+        /* If the doc has a revision field use it.
               Sometimes the revision field does not exists, for example, some indexes do not emit it, like the skinny_tiddlers index
               This fixes #66*/
         doc._rev && (result.revision = doc._rev);
-            //console.log("Conversion result ", result);
+        //console.log("Conversion result ", result);
         return result;
     };
 
-/**
+    /**
  * Returns an array of skinny tiddlers (tiddlers withouth text field)
  * They are converted from CouchDB documents to TW tiddlers.
  * It requires that a skinny_tiddlers view exists on the database.
@@ -112,7 +112,7 @@ function tiddlerConverter(db) {
  * @return {promise} Skinnytiddlers a promise that fulfills to an array of skinny tiddlers
  */
     db.getSkinnyTiddlers = function ({ fatTiddlers }) {
-        return this.getTiddlers("skinny_tiddlers", null, fatTiddlers);
+        return this.getTiddlers('skinny_tiddlers', null, fatTiddlers);
     };
 
     return db;

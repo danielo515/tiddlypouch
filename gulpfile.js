@@ -237,8 +237,9 @@ gulp.task('compile and move scripts', () => {
             [
                 require.resolve('babel-plugin-module-resolver'),
                 {
-                    root: [ './src/' ],
+                    root: [ './src/**' ],
                     alias: replaceInJs,
+                    loglevel: 'silent',
                 },
             ],
         ],
@@ -268,7 +269,7 @@ gulp.task('create docs', function (cb) {
 
     // use require to load the jsdoc config;
     // note the extension is discarted when loading json with require!
-    const config = require('./src/jsdoc/config');
+    const config = require('./src/jsdoc/config.json');
     config.opts.destination = outPath.docs;
 
     gulp.src([ `${pluginSrc}/**/*.js`, './src/jsdoc/README.md' ]).pipe(

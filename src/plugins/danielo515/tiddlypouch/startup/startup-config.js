@@ -58,7 +58,7 @@ var CONFIG_TIDDLER = CONFIG_PREFIX + 'config_database';
 exports.startup = function (callback) {
 
   const { extendDeep, extendOne } = require('@plugin/utils')
-  var LOGGER = require('$:/plugins/danielo515/tiddlypouch/utils/logger.js', true).Logger;
+  var LOGGER = require('@plugin/utils/logger.js', true).Logger;
   var Logger = new LOGGER('TiddlyPouch:config');
   var Ui = require('@plugin/ui/config.js');
   var DbConfig = require('@plugin/config/single-db-config');
@@ -317,7 +317,7 @@ exports.startup = function (callback) {
       /* --- TiddlyPouch namespace creation and basic initialization---*/
       $TPouch.Logger = LOGGER;
       $TPouch.Logger.prototype.isDebugActive = _config.debug.active; // set logger defaults from what we read from DB
-      $TPouch.DbStore = require('$:/plugins/danielo515/tiddlypouch/dbstore/factory');
+      $TPouch.DbStore = require('@plugin/dbstore/factory');
       // Config section of the global namespace
       $TPouch.config = {
         removeDatabase,

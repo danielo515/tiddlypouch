@@ -1,5 +1,5 @@
 /*\
-title: $:/plugins/danielo515/tiddlypouch/converters/converter.js
+title: $:/plugins/danielo515/tiddlypouch/databases/converter.js
 type: application/javascript
 module-type: library
 
@@ -9,10 +9,9 @@ Basic converter. Used by other decorators (AKA converters)
 
 \*/
 
-'use strict'
+'use strict';
 
 /*jslint node: true, browser: true */
-/*global $tw: false */
 /* global module */
 /** @namespace {converters} converter */
 
@@ -41,10 +40,10 @@ function Converter(db) {
         var firstChar = title.charAt(0);
         var restOfIt = title.substring(1);
         if (firstChar === '_') {
-            return '%5f' + restOfIt;
+            return `%5f${  restOfIt}`;
         }
         else if (firstChar === '%') {
-            return '%25' + restOfIt;
+            return `%25${  restOfIt}`;
         }
         else {
             return title;
