@@ -54,7 +54,7 @@
         "gulp": "^4.0.2",
         "gulp-babel": "^8.0.0",
         "gulp-debug": "^4.0.0",
-        "gulp-esprima": "^0.1.0",
+        "gulp-eslint": "^6.0.0",
         "gulp-if": "^3.0.0",
         "gulp-jsdoc3": "^3.0.0",
         "gulp-replace": "^1.0.0",

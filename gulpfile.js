@@ -80,7 +80,7 @@ const sass = require('gulp-sass');
 const replace = require('gulp-replace');
 const uglify = require('gulp-uglify');
 const jsdoc = require('gulp-jsdoc3');
-const esprima = require('gulp-esprima');
+const eslint = require('gulp-eslint');
 const debug = require('gulp-debug');
 const tag_version = require('gulp-tag-version');
 const conventionalRecommendedBump = require('conventional-recommended-bump');
@@ -257,8 +257,10 @@ gulp.task('compile and move scripts', () => {
 /**
  * Syntax validation.
  */
-gulp.task('Javascript validation', function () {
-    return gulp.src(`${pluginSrc}/**/*.js`).pipe(debug()).pipe(esprima());
+gulp.task('Javascript validation', function javascript_validation() {
+    return gulp.src(`${pluginSrc}/**/*.js`).pipe(debug())
+        .pipe(eslint()) // runs eslint
+        .pipe(eslint.formatEach()); // output eslint result per each file
 });
 
 /**
