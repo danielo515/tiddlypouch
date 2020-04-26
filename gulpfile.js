@@ -246,7 +246,7 @@ gulp.task('compile and move scripts', () => {
     };
 
     return gulp
-        .src(`${pluginSrc}/**/*.js`)
+        .src([ `${pluginSrc}/**/*.js`, `!${pluginSrc}/**/*.test.js` ])
         .pipe(sourcemaps.init())
         .pipe(babel(babelCfg))
         .pipe(gulpif(argv.production, uglify(uglifyOpts)))
