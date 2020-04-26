@@ -1,5 +1,5 @@
 /*\
-title: $:/plugins/danielo515/tiddlypouch/dbstore/factory
+title: $:/plugins/danielo515/tiddlypouch/databases/DbStore.factory
 type: application/javascript
 module-type: library
 
