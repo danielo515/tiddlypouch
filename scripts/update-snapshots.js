@@ -30,7 +30,7 @@ process.on('unhandledRejection', function (err) {
 
 function getRepositoryOwnerAndName() {
     const [ owner, name ] = TRAVIS_REPO_SLUG.split('/');
-    log(`Original repository identified as '${owner}/${name}'.`);
+    log(`Original repository identified as '${ owner }/${ name }'.`);
     return [ owner, name ];
 }
 
@@ -39,7 +39,7 @@ async function getSnapshotPullRequest(snapshot_branch_name) {
         const pullRequests = await octokit.pulls.list({
             owner: ORIGINAL_REPOSITORY_OWNER,
             repo: ORIGINAL_REPOSITORY_NAME,
-            head: `${TRAVIS_REPO_SLUG}:${snapshot_branch_name}`,
+            head: `${ TRAVIS_REPO_SLUG }:${ snapshot_branch_name }`,
         });
         const pullRequest = pullRequests.data[0]; // should only ever be one PR
         if (pullRequest) {
@@ -60,26 +60,26 @@ async function getSnapshotPullRequest(snapshot_branch_name) {
 
 
 function getSnapshotBranchName() {
-    return `${SNAPSHOTS_BRANCH_PREFIX}/${TRAVIS_PULL_REQUEST_SLUG}/${TRAVIS_PULL_REQUEST_BRANCH}`;
+    return `${ SNAPSHOTS_BRANCH_PREFIX }/${ TRAVIS_PULL_REQUEST_SLUG }/${ TRAVIS_PULL_REQUEST_BRANCH }`;
 }
 
 function log(message) {
-    console.log(`VRT: ${message}`);
+    console.log(`VRT: ${ message }`);
 }
 
 function pushChangesToGitHub(snapshot_branch_name) {
     log(
-        `Creating a new snapshot branch: ${snapshot_branch_name}. ` +
+        `Creating a new snapshot branch: ${ snapshot_branch_name }. ` +
             'This will overwrite any existing snapshot branch.'
     );
-    execSync(`git checkout -b ${snapshot_branch_name}`);
-    execSync(`git add ${SNAPSHOTS_FOLDER}`);
-    log(`Commiting updated snapshots to ${snapshot_branch_name}.`);
+    execSync(`git checkout -b ${ snapshot_branch_name }`);
+    execSync(`git add ${ SNAPSHOTS_FOLDER }`);
+    log(`Commiting updated snapshots to ${ snapshot_branch_name }.`);
     execSync(
-        `git commit -m "test(vrt): update visual snapshots for ${TRAVIS_PULL_REQUEST_SHA} [skip ci]"`
+        `git commit -m "test(vrt): update visual snapshots for ${ TRAVIS_PULL_REQUEST_SHA } [skip ci]"`
     );
     log('Force pushing updated snapshot branch to GitHub.');
-    execSync(`git push --force origin ${snapshot_branch_name}`);
+    execSync(`git push --force origin ${ snapshot_branch_name }`);
 }
 
 /**
@@ -124,10 +124,10 @@ async function main() {
 function configureGit({ GITHUB_TOKEN, user, email }) {
     log('Configuring git to allow for pushing new commits & branches.');
     execSync(
-        `git config --global url."https://${GITHUB_TOKEN}:@github.com/".insteadOf "https://github.com/"`
+        `git config --global url."https://${ GITHUB_TOKEN }:@github.com/".insteadOf "https://github.com/"`
     );
-    execSync(`git config --global user.email ${email}`);
-    execSync(`git config --global user.name ${user}`);
+    execSync(`git config --global user.email ${ email }`);
+    execSync(`git config --global user.name ${ user }`);
 }
 
 async function updateGitHub() {
@@ -151,12 +151,12 @@ async function updatePullRequests(snapshotPullRequest, snapshot_branch_name) {
         );
         await addCommentToOriginalPullRequest(snapshotPullRequest.html_url);
     } else {
-        const newSnapshotPullRequest = await createSnapshotPullRequest();
+        const newSnapshotPullRequest = await createSnapshotPullRequest(snapshot_branch_name);
         await addLabelsToSnapshotPullRequest(newSnapshotPullRequest.number);
         await addCommentToOriginalPullRequest(newSnapshotPullRequest.html_url);
         await addOriginalAuthorAsReviewer(newSnapshotPullRequest.number);
         log(
-            `Snapshots on \`${snapshot_branch_name}\` must be merged into \`${TRAVIS_PULL_REQUEST_BRANCH}\` before it can be merged into \`master\`.`,
+            `Snapshots on \`${ snapshot_branch_name }\` must be merged into \`${ TRAVIS_PULL_REQUEST_BRANCH }\` before it can be merged into \`master\`.`,
         );
     }
 }
@@ -166,7 +166,7 @@ async function addOriginalAuthorAsReviewer(snapshotPullRequestNumber) {
         const originalPullRequest = await octokit.pulls.get({
             owner: ORIGINAL_REPOSITORY_OWNER,
             repo: ORIGINAL_REPOSITORY_NAME,
-            pull_number: TRAVIS_PULL_REQUEST,
+            pull_number: parseInt( TRAVIS_PULL_REQUEST, 10),
         });
         const author = originalPullRequest.data.user;
         await octokit.pulls.createReviewRequest({
@@ -175,7 +175,7 @@ async function addOriginalAuthorAsReviewer(snapshotPullRequestNumber) {
             pull_number: snapshotPullRequestNumber,
             reviewers: [ author.login ],
         });
-        log(`Requested review from \`${author.login}\` on new snapshot PR.`);
+        log(`Requested review from \`${ author.login }\` on new snapshot PR.`);
     } catch (er) {
         log(
             'There was an error adding the original PR author as a reviewer for the new snapshot PR.',
@@ -204,13 +204,13 @@ async function addCommentToOriginalPullRequest(snapshotPullRequestUrl) {
         const comment = await octokit.issues.createComment({
             owner: 'uber',
             repo: 'baseweb',
-            issue_number: BUILDKITE_PULL_REQUEST,
+            issue_number: parseInt( TRAVIS_PULL_REQUEST, 10 ),
             body:
                 'Visual changes were detected on this branch. ' +
-                `Please review the following PR containing updated snapshots: ${snapshotPullRequestUrl}`,
+                `Please review the following PR containing updated snapshots: ${ snapshotPullRequestUrl }`,
         });
         log(
-            `Posted a comment linking to snapshot PR on original PR: ${comment.data.html_url}`
+            `Posted a comment linking to snapshot PR on original PR: ${ comment.data.html_url }`
         );
     } catch (er) {
         log('Error creating comment on original PR.');
@@ -218,20 +218,20 @@ async function addCommentToOriginalPullRequest(snapshotPullRequestUrl) {
     }
 }
 async function createSnapshotPullRequest(snapshot_branch_name) {
-    const head = `${ORIGINAL_REPOSITORY_OWNER}:${snapshot_branch_name}`;
-    log(`Pointing snapshot PR to: ${head}`);
+    const head = `${ ORIGINAL_REPOSITORY_OWNER }:${ snapshot_branch_name }`;
+    log(`Pointing snapshot PR to: ${ head }`);
     try {
         const pullRequest = await octokit.pulls.create({
             owner: ORIGINAL_REPOSITORY_OWNER,
             repo: ORIGINAL_REPOSITORY_NAME,
-            title: `test(vrt): update visual snapshots for ${TRAVIS_PULL_REQUEST_BRANCH} [skip ci]`,
+            title: `test(vrt): update visual snapshots for ${ TRAVIS_PULL_REQUEST_BRANCH } [skip ci]`,
             head,
             base: TRAVIS_PULL_REQUEST_BRANCH,
             body:
-                `This PR was generated based on visual changes detected in #${TRAVIS_PULL_REQUEST_BRANCH}. ` +
-                `Please verify that the updated snapshots look correct before merging this PR into \`${TRAVIS_BRANCH}\`.`,
+                `This PR was generated based on visual changes detected in #${ TRAVIS_PULL_REQUEST_BRANCH }. ` +
+                `Please verify that the updated snapshots look correct before merging this PR into \`${ TRAVIS_BRANCH }\`.`,
         });
-        log(`Created a new snapshot PR: ${pullRequest.data.html_url}`);
+        log(`Created a new snapshot PR: ${ pullRequest.data.html_url }`);
         return pullRequest.data;
     } catch (error) {
         log('There was an error creating a new snapshot PR.');

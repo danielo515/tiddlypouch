@@ -40,7 +40,9 @@ rules:
     no-unused-vars: ['error']
     valid-jsdoc: ['error']
     quotes: [ 1, 'single' ]
-    indent: [ 1, 4 ] # 2-space indentation
+    indent: [ 1, 4 ] # 4-space indentation
     keyword-spacing: 1 # space before and after
     array-bracket-spacing: [1, 'always']  # enforce spaces inside of brackets
+    template-curly-spacing: [1, 'always']
+    comma-spacing: [1, { "before": false, "after": true }]
     prefer-const: ['error']
