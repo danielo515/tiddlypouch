@@ -16,7 +16,7 @@ A factory of DbStores. This factory is responsible of instantiating the DbStores
 module.exports = factory;
 
 /** The dbStore class should export a function constructor. @see DbStore */
-var DbStore = require('@plugin/DbStore.js');
+var DbStore = require('@plugin/databases/DbStore.js');
 /** This list should be built automatically based on some kind of module system,
  * but for the moment, just create it manually
  */
