@@ -1,7 +1,7 @@
 language: node_js
 node_js:
-- stable
-- 12
-services: xvfb
+    - 12
+services:
+    - xvfb
 before_script:
     - yarn build-wiki
