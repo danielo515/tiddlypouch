@@ -218,12 +218,14 @@ async function addCommentToOriginalPullRequest(snapshotPullRequestUrl) {
     }
 }
 async function createSnapshotPullRequest(snapshot_branch_name) {
+    const head = `${ORIGINAL_REPOSITORY_OWNER}:${snapshot_branch_name}`;
+    log(`Pointing snapshot PR to: ${head}`);
     try {
         const pullRequest = await octokit.pulls.create({
             owner: ORIGINAL_REPOSITORY_OWNER,
             repo: ORIGINAL_REPOSITORY_NAME,
             title: `test(vrt): update visual snapshots for ${TRAVIS_PULL_REQUEST_BRANCH} [skip ci]`,
-            head: `${ORIGINAL_REPOSITORY_OWNER}:${snapshot_branch_name}`,
+            head,
             base: TRAVIS_PULL_REQUEST_BRANCH,
             body:
                 `This PR was generated based on visual changes detected in #${TRAVIS_PULL_REQUEST_BRANCH}. ` +
