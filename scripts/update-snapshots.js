@@ -1,7 +1,8 @@
 // MODIFIED FROM https://github.com/uber/baseweb/blob/07befaffd7b5e61792adac44e66da70918f54487/vrt/ci.js
 const { execSync } = require('child_process');
 const Octokit = require('@octokit/rest');
-const { GITHUB_TOKEN,
+const {
+    GITHUB_TOKEN,
     TRAVIS_BRANCH, // for builds triggered by a pull request this is the name of the branch targeted by the pull request.
     TRAVIS_PULL_REQUEST, // The pull request number if the current job is a pull request, “false” if it’s not a pull request.
     TRAVIS_PULL_REQUEST_BRANCH, // if the current job is a pull request, the name of the branch from which the PR originated.
@@ -10,7 +11,8 @@ const { GITHUB_TOKEN,
     TRAVIS_PULL_REQUEST_SHA, // if the current job is a pull request, the commit SHA of the HEAD commit of the PR.
 } = process.env;
 
-const SNAPSHOT_BRANCH_PREFIX = 'snapshots';
+const SNAPSHOTS_BRANCH_PREFIX = 'snapshots';
+const SNAPSHOTS_FOLDER = './test/__image_snapshots__';
 
 const { ORIGINAL_REPOSITORY_OWNER, ORIGINAL_REPOSITORY_NAME } = getRepositoryOwnerAndName();
 
@@ -58,7 +60,7 @@ async function getSnapshotPullRequest(snapshot_branch_name) {
 
 
 function getSnapshotBranchName() {
-    return `${SNAPSHOT_BRANCH_PREFIX}/${TRAVIS_PULL_REQUEST_SLUG}/${TRAVIS_PULL_REQUEST_BRANCH}`;
+    return `${SNAPSHOTS_BRANCH_PREFIX}/${TRAVIS_PULL_REQUEST_SLUG}/${TRAVIS_PULL_REQUEST_BRANCH}`;
 }
 
 function log(message) {
@@ -71,7 +73,7 @@ function pushChangesToGitHub(snapshot_branch_name) {
             'This will overwrite any existing snapshot branch.'
     );
     execSync(`git checkout -b ${snapshot_branch_name}`);
-    execSync('git add test/__image_snapshots__/');
+    execSync(`git add ${SNAPSHOTS_FOLDER}`);
     log(`Commiting updated snapshots to ${snapshot_branch_name}.`);
     execSync(
         `git commit -m "test(vrt): update visual snapshots for ${TRAVIS_PULL_REQUEST_SHA} [skip ci]"`
@@ -81,15 +83,13 @@ function pushChangesToGitHub(snapshot_branch_name) {
 }
 
 /**
- * We are only running this script after updating the snapshots,
- * so the only thing to check is if there are files changed.
- * We may need to be more strict on the future
+ * We are running this script after updating the snapshots.
  * @returns {Boolean} if there are files changed
  */
 function someSnapshotsWereUpdated() {
     const stdout = execSync('git status --porcelain').toString();
     const changedFiles = stdout.split('\n');
-    const result = changedFiles.length > 0;
+    const result = changedFiles.some(s => s.match(/\/__image_snapshots__\//));
     if (result) {
         log('Some snapshots were updated.');
     } else {
@@ -106,7 +106,7 @@ function buildIsValid() {
         log('The current job is not for a pull request. SKIP');
         return false;
     }
-    if (TRAVIS_PULL_REQUEST_BRANCH.startsWith(SNAPSHOT_BRANCH_PREFIX)) {
+    if (TRAVIS_PULL_REQUEST_BRANCH.startsWith(SNAPSHOTS_BRANCH_PREFIX)) {
         log('This build was somehow triggered from a snapshot update branch!');
         log('This should not happen! Check the logs! Exiting early.');
         return false;
