@@ -57,11 +57,11 @@ var CONFIG_TIDDLER = CONFIG_PREFIX + 'config_database';
  */
 exports.startup = function (callback) {
 
-  const { extendDeep, extendOne } = require('$:/plugins/danielo515/tiddlypouch/utils')
+  const { extendDeep, extendOne } = require('@plugin/utils')
   var LOGGER = require('$:/plugins/danielo515/tiddlypouch/utils/logger.js', true).Logger;
   var Logger = new LOGGER('TiddlyPouch:config');
-  var Ui = require('$:/plugins/danielo515/tiddlypouch/ui/config.js');
-  var DbConfig = require('$:/plugins/danielo515/tiddlypouch/config/single-db-config');
+  var Ui = require('@plugin/ui/config.js');
+  var DbConfig = require('@plugin/config/single-db-config');
   /** @type {tpouchConfig} */
   var _config;
   var _configDB; // PouchDb where the _config is persisted to

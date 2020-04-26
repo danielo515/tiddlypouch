@@ -18,7 +18,7 @@ Links the user interface with the configuration methods
 /*global $tw: false */
 
 /**
- * @typedef {import('./startup/startup-config').tpouchConfig} tpouchConfig
+ * @typedef {import('../startup/startup-config').tpouchConfig} tpouchConfig
  */
 
 var SELECTED_DATABASE =
