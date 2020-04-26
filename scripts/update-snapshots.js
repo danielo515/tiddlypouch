@@ -1,6 +1,6 @@
 // MODIFIED FROM https://github.com/uber/baseweb/blob/07befaffd7b5e61792adac44e66da70918f54487/vrt/ci.js
 const { execSync } = require('child_process');
-const Octokit = require('@octokit/rest');
+const { Octokit } = require('@octokit/rest');
 const {
     GITHUB_TOKEN,
     TRAVIS_BRANCH, // for builds triggered by a pull request this is the name of the branch targeted by the pull request.
