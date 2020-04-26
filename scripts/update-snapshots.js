@@ -14,7 +14,7 @@ const {
 const SNAPSHOTS_BRANCH_PREFIX = 'snapshots';
 const SNAPSHOTS_FOLDER = './test/__image_snapshots__';
 
-const { ORIGINAL_REPOSITORY_OWNER, ORIGINAL_REPOSITORY_NAME } = getRepositoryOwnerAndName();
+const [ ORIGINAL_REPOSITORY_OWNER, ORIGINAL_REPOSITORY_NAME ] = getRepositoryOwnerAndName();
 
 // Prepare GitHub API helper
 const octokit = new Octokit({
@@ -30,7 +30,7 @@ process.on('unhandledRejection', function (err) {
 
 function getRepositoryOwnerAndName() {
     const [ owner, name ] = TRAVIS_REPO_SLUG.split('/');
-    log(`Original repository identified as ${owner}/${name}.`);
+    log(`Original repository identified as '${owner}/${name}'.`);
     return [ owner, name ];
 }
 
