@@ -27,8 +27,8 @@ exports.startup = function (callback) {
   //============================
 
   var logger = new $TPouch.Logger('PouchStartup');
-  var DbRouter = require('$:/plugins/danielo515/tiddlypouch/database/router.js');
-  var Routes = require('$:/plugins/danielo515/tiddlypouch/database/routes');
+  var DbRouter = require('@plugin/databases/router.js');
+  var Routes = require('@plugin/databases/routes');
 
   /* Here is where startup stuff really starts */
   $TPouch._db = $TPouch._db || new PouchDB($TPouch.config.currentDB.name);

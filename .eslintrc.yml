@@ -1,17 +1,21 @@
-# @see http://eslint.org/docs/2.0.0/user-guide/configuring
+# @see http://eslint.org/docs/user-guide/configuring
 
 root: true
+plugins:
+    - import
 
 env:
     node: true
+    browser: true
+
+ignorePatterns:
+    - dist
 
 parserOptions:
-    ecmaVersion: 6
+    ecmaVersion: 2018
     sourceType: module
     ecmaFeatures:
-        jsx: true
         spread: true
-        experimentalObjectRestSpread: true
 
 globals:
     module: false
@@ -22,7 +26,15 @@ globals:
     $TPouch: true
     PouchDB: true
 
+settings:
+    import/resolver:
+        babel-module:
+            root: ./src/**
+            alias:
+                "@plugin": ./src/plugins/danielo515/tiddlypouch
+
 rules:
+    import/no-unresolved: [2, { commonjs: true }]
     prefer-template: ['error']
     semi: 1 # require semicolons
     no-unused-vars: ['error']

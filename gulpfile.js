@@ -55,9 +55,6 @@
 const authorName = 'danielo515';
 const pluginName = 'tiddlypouch';
 
-// whether or not to create/increment the build number automatically
-const isIncrBuild = true;
-
 /**** Imports ******************************************************/
 
 // node modules
@@ -72,7 +69,7 @@ const argv = require('yargs').argv;
 const del = require('del');
 // why on earth is fs.exists depreciated anyway by node?
 const exists = require('is-there');
-const SemVer = require('semver');
+const SemVer = require('semver/classes/semver');
 // once gulp 4.0 is out: remove runSequence and update
 const runSequence = require('gulp4-run-sequence');
 const gulp = require('gulp');
@@ -83,10 +80,13 @@ const sass = require('gulp-sass');
 const replace = require('gulp-replace');
 const uglify = require('gulp-uglify');
 const jsdoc = require('gulp-jsdoc3');
-const esprima = require('gulp-esprima');
+const eslint = require('gulp-eslint');
 const debug = require('gulp-debug');
 const tag_version = require('gulp-tag-version');
-// const watch = require('gulp-watch');
+const conventionalRecommendedBump = require('conventional-recommended-bump');
+const { promisify } = require('util');
+const { log } = require('console');
+const recommendedBump = promisify(conventionalRecommendedBump);
 
 /**** Preprocessing ************************************************/
 
@@ -120,19 +120,22 @@ const replaceAfterSass = {
         '{{$:/themes/tiddlywiki/vanilla/metrics/sidebarbreakpoint}}',
 };
 
+const replaceInJs = { '@plugin': `$:/plugins/${pluginNamespace}` };
+
 /**** Helper functions *********************/
 
-function bumpVersion() {
+async function bumpVersion() {
     console.log('Bumping from version ', pluginInfo.version);
     const v = new SemVer(pluginInfo.version);
-    const build = isIncrBuild ? `+${parseInt(v.build[0] || 0) + 1}` : '';
+    const recommended = await recommendedBump({ preset: 'angular' });
+    log({ bump: recommended });
     const bump_type = argv.major
         ? 'major'
         : argv.minor
             ? 'minor'
             : argv.patch
                 ? 'patch'
-                : 'prerelease';
+                : recommended.releaseType;
     v.inc(bump_type);
     pluginInfo.version = v.version;
     pluginInfo.released = new Date().toUTCString();
@@ -168,24 +171,7 @@ gulp.task('perform cleanup', function () {
  * file. If `isIncrBuild` is true, then the build number is
  * incremented as well.
  */
-gulp.task('bump_version', function (cb) {
-    bumpVersion();
-    cb();
-});
-
-/**
- * Override the version of the plugin specified in the plugin.info
- *.
- */
-gulp.task('patch', function (cb) {
-    const v = new SemVer(pluginInfo.version);
-    v.patch++;
-    pluginInfo.version = `${v.major}.${v.minor}.${v.patch}`;
-    pluginInfo.released = new Date().toUTCString();
-    fs.writeFileSync(pluginInfoPath, JSON.stringify(pluginInfo, null, 4));
-
-    cb();
-});
+gulp.task('bump_version', bumpVersion);
 
 /**
  * Labels with the current tag of the plugin
@@ -203,10 +189,6 @@ gulp.task('copy vanilla files', function () {
     return gulp
         .src(`${pluginSrc}/**/!(*.scss|*.js)`)
         .pipe(gulp.dest(outPath.dist));
-});
-
-gulp.task('copy libraries', function () {
-    return gulp.src(`${pluginSrc}/**/*.min.js`).pipe(gulp.dest(outPath.dist));
 });
 
 /**
@@ -250,10 +232,23 @@ gulp.task('compile and move scripts', () => {
         sourceMappingURLPrefix: '.',
     };
 
+    const babelCfg = {
+        plugins: [
+            [
+                require.resolve('babel-plugin-module-resolver'),
+                {
+                    root: [ './src/**' ],
+                    alias: replaceInJs,
+                    loglevel: 'silent',
+                },
+            ],
+        ],
+    };
+
     return gulp
         .src(`${pluginSrc}/**/*.js`)
         .pipe(sourcemaps.init())
-        .pipe(babel())
+        .pipe(babel(babelCfg))
         .pipe(gulpif(argv.production, uglify(uglifyOpts)))
         .pipe(sourcemaps.write('./maps', sourceMapOpts))
         .pipe(gulp.dest(outPath.dist));
@@ -262,8 +257,10 @@ gulp.task('compile and move scripts', () => {
 /**
  * Syntax validation.
  */
-gulp.task('Javascript validation', function () {
-    return gulp.src(`${pluginSrc}/**/*.js`).pipe(debug()).pipe(esprima());
+gulp.task('Javascript validation', function javascript_validation() {
+    return gulp.src(`${pluginSrc}/**/*.js`).pipe(debug())
+        .pipe(eslint()) // runs eslint
+        .pipe(eslint.formatEach()); // output eslint result per each file
 });
 
 /**
@@ -274,7 +271,7 @@ gulp.task('create docs', function (cb) {
 
     // use require to load the jsdoc config;
     // note the extension is discarted when loading json with require!
-    const config = require('./src/jsdoc/config');
+    const config = require('./src/jsdoc/config.json');
     config.opts.destination = outPath.docs;
 
     gulp.src([ `${pluginSrc}/**/*.js`, './src/jsdoc/README.md' ]).pipe(
@@ -331,6 +328,12 @@ function buildWiki(cb) {
     cb();
 }
 
+const basicBuild = gulp.parallel(
+    'copy vanilla files',
+    'compile and move styles',
+    'compile and move scripts'
+);
+
 /**
  * Execute the default task.
  */
@@ -342,7 +345,6 @@ gulp.task('default', function (cb) {
         [
             // 'create docs', // There is a problem because TS imports on JSDOC
             'copy vanilla files',
-            'copy libraries',
             'compile and move styles',
             'compile and move scripts',
         ],
@@ -357,29 +359,16 @@ gulp.task('travis', function (cb) {
     runSequence(
         'Javascript validation',
         'perform cleanup',
-        [
-            'copy vanilla files',
-            'copy libraries',
-            'compile and move styles',
-            'compile and move scripts',
-        ],
+        basicBuild,
         'bundle the plugin',
         cb
     );
 });
 
-gulp.task('build-wiki', function(cb){
-    runSequence('travis',buildWiki,cb);
-});
+gulp.task('build-wiki', gulp.series('travis', buildWiki));
 
 gulp.task('watch', () => {
-    // return watch('src/plugins/**/!(boot.html.tid|plugin.info)', bumpVersion);
-    gulp.watch(
-        'src/plugins/**/!(plugin.info)',
-        runSequence([
-            'copy vanilla files',
-            'compile and move styles',
-            'compile and move scripts',
-        ])
-    );
+    const path = `${pluginSrc}**`;
+    log({ path });
+    return gulp.watch(path, { ignoreInitial: false }, basicBuild);
 });

@@ -13,7 +13,7 @@ Saves all the tiddlers on the current database as JSON
 /*global $tw: false, Promise */
 'use strict';
 
-var Utils = require('$:/plugins/danielo515/tiddlypouch/utils');
+var Utils = require('@plugin/utils');
 const saveStartNotification = '$:/language/TiddlyPouch/Notifications/Save/Starting';
 
 /**

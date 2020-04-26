@@ -1,5 +1,5 @@
 /*\
-title: $:/plugins/danielo515/tiddlypouch/dbstore/factory
+title: $:/plugins/danielo515/tiddlypouch/databases/DbStore.factory
 type: application/javascript
 module-type: library
 
@@ -9,21 +9,20 @@ A factory of DbStores. This factory is responsible of instantiating the DbStores
 
 \*/
 
-'use strict'
+'use strict';
 
 /*jslint node: true, browser: true */
-/*global $tw: false */
 
 module.exports = factory;
 
 /** The dbStore class should export a function constructor. @see DbStore */
-var DbStore = require('$:/plugins/danielo515/tiddlypouch/DbStore.js');
+var DbStore = require('@plugin/databases/DbStore.js');
 /** This list should be built automatically based on some kind of module system,
  * but for the moment, just create it manually
  */
 var converters = {
-    'tiddlers': require('$:/plugins/danielo515/tiddlypouch/converters/tiddler'),
-    'plugins': require('$:/plugins/danielo515/tiddlypouch/converters/plugins')
+    'tiddlers': require('@plugin/databases/converters/tiddler'),
+    'plugins': require('@plugin/databases/converters/plugins')
 };
 
 /**

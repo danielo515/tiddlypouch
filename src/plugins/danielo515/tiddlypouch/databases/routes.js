@@ -1,5 +1,5 @@
 /*\
-title: $:/plugins/danielo515/tiddlypouch/database/routes
+title: $:/plugins/danielo515/tiddlypouch/databases/routes
 type: application/javascript
 module-type: library
 

@@ -20,15 +20,15 @@ exports.name = 'TiddlyPouch-eventListeners';
 exports.after = [ 'startup' ];
 exports.platforms = [ 'browser' ];
 exports.synchronous = true;
-const { DELETE_DB, LIST_REVISIONS, LOAD_REVISION, 
-        CONFIG_SAVED, UPDATE_DEBUG, UPDATE_SELECTED_DB, 
-        DB_HAS_BEEN_SELECTED 
-      } = require('$:/plugins/danielo515/tiddlypouch/constants.js');
+const { DELETE_DB, LIST_REVISIONS, LOAD_REVISION,
+        CONFIG_SAVED, UPDATE_DEBUG, UPDATE_SELECTED_DB,
+        DB_HAS_BEEN_SELECTED
+      } = require('@plugin/constants.js');
 
 exports.startup = function () {
   var logger = new $TPouch.Logger('TiddlyPouch');
-  var uiConnector = require('$:/plugins/danielo515/tiddlypouch/ui/config.js');
-  var Utils = require('$:/plugins/danielo515/tiddlypouch/utils');
+  var uiConnector = require('@plugin/ui/config.js');
+  var Utils = require('@plugin/utils');
 
   /*****************************************************************************
   ########################### EVENT LISTENERS ##################################*/

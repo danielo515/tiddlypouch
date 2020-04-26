@@ -1,5 +1,5 @@
 /*\
-title: $:/plugins/danielo515/tiddlypouch/DbStore.js
+title: $:/plugins/danielo515/tiddlypouch/databases/DbStore.js
 type: application/javascript
 module-type: library
 

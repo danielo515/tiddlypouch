@@ -1,5 +1,5 @@
 /*\
-title: $:/plugins/danielo515/tiddlypouch/converters/plugins
+title: $:/plugins/danielo515/tiddlypouch/databases/converters/plugins
 type: application/javascript
 module-type: library
 
@@ -9,7 +9,7 @@ Decorator that convert tiddlywiki plugins into PouchDB documents
 
 \*/
 
-'use strict'
+'use strict';
 
 /*jslint node: true, browser: true */
 /*global $tw: false */
@@ -19,7 +19,7 @@ Decorator that convert tiddlywiki plugins into PouchDB documents
 module.exports.decorate = pluginConverter;
 
 /***====================== plugins conversor dependency  ========================== */
-var BaseConverter = require('$:/plugins/danielo515/tiddlypouch/converters/converter.js')
+var BaseConverter = require('@plugin/databases/converter.js');
 
 /**
  * Injects methods to handle conversions between regular TW tiddlers and CouchDB.
@@ -50,7 +50,7 @@ function pluginConverter(db) {
         var result = { fields: {} };
         if (tiddler) {
             $tw.utils.each(tiddler.fields, function (element, field) {
-                if (field === "revision") { return; } // Skip revision
+                if (field === 'revision') { return; } // Skip revision
                 // Convert fields to string
                 result.fields[field] = tiddler.getFieldString(field);
             });
@@ -58,7 +58,7 @@ function pluginConverter(db) {
             result.fields.tags = tiddler.fields.tags;
         }
         // Default the content type
-        result.fields.type = result.fields.type || "text/vnd.tiddlywiki";
+        result.fields.type = result.fields.type || 'text/vnd.tiddlywiki';
         result._id = this._mangleTitle(tiddler.fields.title);
         if (adaptorInfo && adaptorInfo._rev && this._validateRevision(adaptorInfo._rev)) {
             result._rev = adaptorInfo._rev;
@@ -66,30 +66,30 @@ function pluginConverter(db) {
         return result;
     };
 
-        /**
+    /**
          * Dummy method. TW should never try to load a plugin from the sync adaptor.
          * Even if TW tries to lazy-load a plugin (because any error handling the tiddler)
          * the router will route that request to the default DbStore
          * @return {null} nothing is returned
          */
-        db._convertFromCouch = function convertFromCouch() {
-            var err = new Error('Tiddlers should not be loaded from the plugins database!');
-            err.status = 403;
-            throw err
-        };
+    db._convertFromCouch = function convertFromCouch() {
+        var err = new Error('Tiddlers should not be loaded from the plugins database!');
+        err.status = 403;
+        throw err;
+    };
 
-        /**
+    /**
          * Dummy method.
          * Tiddlers should never be deleted through the plugins DbStore
          * Even if TW tries to delete a plugin (because any error handling the tiddler)
          * the router will route that request to the default DbStore
          * @return {null} nothing is returned
          */
-        db.deleteTiddler = function() {
-            var err = new Error('Tiddlers should not be deleted through the plugins database!');
-            err.status = 403;
-            throw err
-        };
+    db.deleteTiddler = function() {
+        var err = new Error('Tiddlers should not be deleted through the plugins database!');
+        err.status = 403;
+        throw err;
+    };
 
-        return db;
+    return db;
 }
