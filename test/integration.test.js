@@ -18,17 +18,12 @@ describe('jest-image-snapshot usage with an image received from puppeteer', () =
 
     beforeEach(async () => {
         page = await browser.newPage();
-        await page.goto(
-            `file:${path.join(__dirname, '..', 'output', 'index.html')}`,
-            {
-                waitUntil: [ 'load', 'domcontentloaded', 'networkidle0' ],
-            }
-        );
+        await page.goto( `file:${path.join(__dirname, '..', 'output', 'index.html')}`);
         await waitForWikiLoad(page);
     });
 
     it('works', async () => {
-        const image = await page.screenshot();
+        const image = await page.screenshot({fullPage: true});
         expect(image).toMatchImageSnapshot();
     });
 
