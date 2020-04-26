@@ -1,3 +1,5 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/73026035-7961-4654-b9cd-b48de52e6dd4/deploy-status)](https://app.netlify.com/sites/quirky-joliot-a341f8/deploys)
+
 # Tiddlypouch plugin for tiddlywiki
 This is the repository of the tiddlypouch plugin for tiddlywiki.
 This plugin adds a layer between pouchdb and tiddlywiki to store tiddlers as documents on a pouchdb database.
