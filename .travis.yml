@@ -5,3 +5,10 @@ services:
     - xvfb
 before_script:
     - yarn build-wiki
+
+jobs:
+    include:
+        - name: Update snapshots
+          before_script: yarn test -u
+          script:
+            - node ./scripts/update-snapshots.js

@@ -47,6 +47,7 @@
         "@babel/preset-env": "^7.9.5",
         "@babel/register": "^7.9.0",
         "@babel/runtime": "^7.9.2",
+        "@octokit/rest": "^17.6.0",
         "babel-jest": "^25.4.0",
         "babel-plugin-module-resolver": "^4.0.0",
         "conventional-changelog": "^3.1.18",
