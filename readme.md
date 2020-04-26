@@ -1,4 +1,4 @@
-[![Netlify Status](https://api.netlify.com/api/v1/badges/73026035-7961-4654-b9cd-b48de52e6dd4/deploy-status)](https://app.netlify.com/sites/quirky-joliot-a341f8/deploys)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/73026035-7961-4654-b9cd-b48de52e6dd4/deploy-status)](https://app.netlify.com/sites/tiddlypouch/deploys)
 
 # Tiddlypouch plugin for tiddlywiki
 This is the repository of the tiddlypouch plugin for tiddlywiki.
