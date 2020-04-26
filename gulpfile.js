@@ -232,18 +232,25 @@ gulp.task('compile and move scripts', () => {
         sourceMappingURLPrefix: '.',
     };
 
-    let stream = gulp
+    const babelCfg = {
+        plugins: [
+            [
+                require.resolve('babel-plugin-module-resolver'),
+                {
+                    root: [ './src/' ],
+                    alias: replaceInJs,
+                },
+            ],
+        ],
+    };
+
+    return gulp
         .src(`${pluginSrc}/**/*.js`)
         .pipe(sourcemaps.init())
-        .pipe(babel())
+        .pipe(babel(babelCfg))
         .pipe(gulpif(argv.production, uglify(uglifyOpts)))
-        .pipe(sourcemaps.write('./maps', sourceMapOpts));
-
-    for (const str in replaceInJs) {
-        stream = stream.pipe(replace(str, replaceInJs[str]));
-    }
-
-    return stream.pipe(gulp.dest(outPath.dist));
+        .pipe(sourcemaps.write('./maps', sourceMapOpts))
+        .pipe(gulp.dest(outPath.dist));
 });
 
 /**
