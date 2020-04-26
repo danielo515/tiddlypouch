@@ -223,8 +223,8 @@ async function createSnapshotPullRequest(snapshot_branch_name) {
             owner: ORIGINAL_REPOSITORY_OWNER,
             repo: ORIGINAL_REPOSITORY_NAME,
             title: `test(vrt): update visual snapshots for ${TRAVIS_PULL_REQUEST_BRANCH} [skip ci]`,
-            head: `uber:${snapshot_branch_name}`,
-            base: ORIGINAL_BRANCH_NAME,
+            head: `${ORIGINAL_REPOSITORY_OWNER}:${snapshot_branch_name}`,
+            base: TRAVIS_PULL_REQUEST_BRANCH,
             body:
                 `This PR was generated based on visual changes detected in #${TRAVIS_PULL_REQUEST_BRANCH}. ` +
                 `Please verify that the updated snapshots look correct before merging this PR into \`${TRAVIS_BRANCH}\`.`,
@@ -233,6 +233,7 @@ async function createSnapshotPullRequest(snapshot_branch_name) {
         return pullRequest.data;
     } catch (er) {
         log('There was an error creating a new snapshot PR.');
+        log(er);
     }
 }
 
