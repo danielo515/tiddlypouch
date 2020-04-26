@@ -9,7 +9,7 @@ module.exports = {
     // bail: 0,
 
     // Respect "browser" field in package.json when resolving modules
-    // browser: false,
+    browser: false,
 
     // The directory where Jest should store its cached dependency information
     // cacheDirectory: "/private/var/folders/rz/6t__5md11ms0cfysw43yrybr0000gn/T/jest_dx",
@@ -18,7 +18,7 @@ module.exports = {
     // clearMocks: false,
 
     // Indicates whether the coverage information should be collected while executing the test
-    // collectCoverage: false,
+    collectCoverage: true,
 
     // An array of glob patterns indicating a set of files for which coverage information should be collected
     // collectCoverageFrom: undefined,
@@ -128,7 +128,7 @@ module.exports = {
     // setupFiles: [],
 
     // A list of paths to modules that run some code to configure or set up the testing framework before each test
-    // setupFilesAfterEnv: [],
+    setupFilesAfterEnv: [ '<rootDir>/jest-setup.js' ],
 
     // A list of paths to snapshot serializer modules Jest should use for snapshot testing
     // snapshotSerializers: [],
