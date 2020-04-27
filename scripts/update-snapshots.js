@@ -140,7 +140,8 @@ async function updateGitHub() {
             'Generated snapshots do not match currently checked in snapshots.'
         );
     } else {
-        await removeSnapshotsWorkFromGitHub(snapshotPullRequest);
+        // await removeSnapshotsWorkFromGitHub(snapshotPullRequest);
+        log('No snapshots changed. We should not have reach this far!!!');
     }
 }
 
@@ -161,6 +162,13 @@ async function updatePullRequests(snapshotPullRequest, snapshot_branch_name) {
     }
 }
 
+
+/**
+ * Assigns the original author of the PR the review and the PR itself.
+ * Requesting review may fail
+ * @param {number} snapshotPullRequestNumber the snapshots pull request number
+ * @returns {Promise} When the author has been assigned to the newly created PR
+ */
 async function addOriginalAuthorAsReviewer(snapshotPullRequestNumber) {
     try {
         const originalPullRequest = await octokit.pulls.get({
@@ -169,6 +177,12 @@ async function addOriginalAuthorAsReviewer(snapshotPullRequestNumber) {
             pull_number: parseInt( TRAVIS_PULL_REQUEST, 10),
         });
         const author = originalPullRequest.data.user;
+        await octokit.issues.addAssignees({
+            owner: ORIGINAL_REPOSITORY_OWNER,
+            repo: ORIGINAL_REPOSITORY_NAME,
+            issue_number: snapshotPullRequestNumber,
+            assignees: [ author.login ],
+        });
         await octokit.pulls.createReviewRequest({
             owner: ORIGINAL_REPOSITORY_OWNER,
             repo: ORIGINAL_REPOSITORY_NAME,
