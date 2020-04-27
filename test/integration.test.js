@@ -13,12 +13,17 @@ describe('jest-image-snapshot usage with an image received from puppeteer', () =
     let page;
 
     beforeAll(async () => {
-        browser = await puppeteer.launch();
+        browser = await puppeteer.launch({
+            defaultViewport: {
+                height: 1011,
+                width: 800,
+            }
+        });
     });
 
     beforeEach(async () => {
         page = await browser.newPage();
-        await page.goto( `file:${path.join(__dirname, '..', 'output', 'index.html')}`);
+        await page.goto( `file:${ path.join(__dirname, '..', 'output', 'index.html') }`);
         await waitForWikiLoad(page);
     });
 
