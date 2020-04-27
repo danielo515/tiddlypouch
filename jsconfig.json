@@ -1,6 +1,7 @@
 {
     "exclude": ["node_modules","dist"],
     "compilerOptions": {
+        "checkJs": true,
         "baseUrl": ".",
         "paths": {
             "@plugin/*": [ "./src/plugins/danielo515/tiddlypouch/*" ]

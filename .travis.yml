@@ -1,0 +1,15 @@
+language: node_js
+node_js:
+    - 12
+
+jobs:
+    include:
+        - name: run tests
+          before_script:
+            - yarn build-wiki
+        - name: Update snapshots
+          before_script:
+            - yarn build-wiki
+            - yarn test -u
+          script:
+            - node ./scripts/update-snapshots.js
