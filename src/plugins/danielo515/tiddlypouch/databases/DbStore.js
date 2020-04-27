@@ -12,7 +12,6 @@ Manages insertions, extractions, deletions of tiddlers to a database.
 'use strict';
 /*global PouchDB */
 /*jslint node: true, browser: true */
-/*global $tw, module */
 
 const identity = (x) => x;
 

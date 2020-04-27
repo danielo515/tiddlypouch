@@ -22,7 +22,7 @@ module.exports = DbRouter;
 
 /***====================== DEFAULT ROUTE  ========================== */
 
-function defaultRouter(tiddler){
+function defaultRouter(/*tiddler*/){
     if ( this.destinations.default ){
         return 'default';
     }

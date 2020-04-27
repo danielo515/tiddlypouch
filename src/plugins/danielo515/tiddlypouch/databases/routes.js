@@ -15,7 +15,7 @@ some routes for the DbRouter class
 
 module.exports.plugins = {
     name: 'plugins',
-    route: function(tiddler){
+    route: function(/*tiddler */){
         return '__TP_plugins';
     },
     canRoute: function(tiddler){

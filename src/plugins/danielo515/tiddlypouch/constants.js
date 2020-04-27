@@ -14,7 +14,6 @@ This may feel trivial, but it is an big advantage:
 \*/
 
 /*jslint node: true, browser: true */
-/*global $tw: false */
 
 'use strict';
 

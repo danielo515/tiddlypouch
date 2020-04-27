@@ -10,10 +10,9 @@ Saves all the tiddlers on the current database as JSON
 \*/
 
 /*jslint node: true, browser: true */
-/*global $tw: false, Promise */
+/*global $tw: false  */
 'use strict';
 
-var Utils = require('@plugin/utils');
 const saveStartNotification = '$:/language/TiddlyPouch/Notifications/Save/Starting';
 
 /**
@@ -24,7 +23,7 @@ function DownloadCurrentDB(wiki) {
     this.wiki = wiki;
 }
 
-DownloadCurrentDB.prototype.save = function (text, method, callback, options ) {
+DownloadCurrentDB.prototype.save = function (/**text, method, callback, options  */) {
 
     if ($tw.syncer.isDirty()){
     // If the syncer has not finished her job, we display a message and defer the save for one second...
@@ -51,7 +50,7 @@ DownloadCurrentDB.prototype.info = {
 * Static method that returns true if this saver is capable of working
 * @param {$tw.wiki} wiki wiki instance of the currently active tiddlywiki
 */
-exports.canSave = function (wiki) {
+exports.canSave = function (/*wiki */) {
     return $TPouch.database !== undefined;
 };
 

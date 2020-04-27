@@ -63,7 +63,7 @@ exports.startup = function () {
                 return err;
             }
         });
-        function start(info) { //Function that actually starts the sync
+        function start() { //Function that actually starts the sync
             var sync = $TPouch.database._db.sync(remoteDB, {
                 live: true,
                 retry: true,

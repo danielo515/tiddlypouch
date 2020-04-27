@@ -119,7 +119,7 @@ function getTiddlerFields(title) {
     return result;
 }
 
-exports.handlers.updateDebug = function (event) {
+exports.handlers.updateDebug = function (/**event */) {
     var rawConfig = getTiddlerFields(DEBUG_CONFIG);
     //@type { tpouchConfig }
     var savedConfig = $TPouch.config.readConfigTiddler();
@@ -153,7 +153,7 @@ function updateDebugUI(config) {
  * Note that the configuration being updated may not be the configuration of the currentDB,
  * the user can select a DB different than the current one and save that config.
  */
-exports.handlers.updateDbConfig = function (event) {
+exports.handlers.updateDbConfig = function (/**event */) {
     const uiConfig = $tw.wiki.getTiddlerData(SELECTED_DATABASE);
     const debugConfig = getTiddlerFields(DEBUG_CONFIG); //TODO: unify both configs and save them at once
     //@type { tpouchConfig }

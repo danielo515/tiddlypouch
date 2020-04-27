@@ -32,7 +32,7 @@ exports.startup = function () {
 
     /*****************************************************************************
   ########################### EVENT LISTENERS ##################################*/
-    $tw.rootWidget.addEventListener(DELETE_DB, function (event) {
+    $tw.rootWidget.addEventListener(DELETE_DB, function (/**event*/) {
         $tw.passwordPrompt.createPrompt({
             serviceName: $tw.language.getString('TiddlyPouch/Delete-DB', { variables: { database: $TPouch.config.currentDB.name } }),
             noUserName: true,
