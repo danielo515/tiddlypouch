@@ -202,8 +202,8 @@ async function addLabelsToSnapshotPullRequest(snapshotPullRequestNumber) {
 async function addCommentToOriginalPullRequest(snapshotPullRequestUrl) {
     try {
         const comment = await octokit.issues.createComment({
-            owner: 'uber',
-            repo: 'baseweb',
+            owner: ORIGINAL_REPOSITORY_OWNER,
+            repo: ORIGINAL_REPOSITORY_NAME,
             issue_number: parseInt( TRAVIS_PULL_REQUEST, 10 ),
             body:
                 'Visual changes were detected on this branch. ' +
