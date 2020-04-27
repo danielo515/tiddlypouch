@@ -91,8 +91,8 @@ const recommendedBump = promisify(conventionalRecommendedBump);
 /**** Preprocessing ************************************************/
 
 const pluginSrc = './src/plugins/';
-const pluginNamespace = `${authorName}/${pluginName}`; // no trailing slash!
-const pluginTiddler = `$:/plugins/${pluginNamespace}`;
+const pluginNamespace = `${ authorName }/${ pluginName }`; // no trailing slash!
+const pluginTiddler = `$:/plugins/${ pluginNamespace }`;
 const pluginInfoPath = path.resolve(pluginSrc, pluginNamespace, 'plugin.info');
 const pluginInfo = JSON.parse(fs.readFileSync(pluginInfoPath, 'utf8'));
 const pckgJSON = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
@@ -120,7 +120,7 @@ const replaceAfterSass = {
         '{{$:/themes/tiddlywiki/vanilla/metrics/sidebarbreakpoint}}',
 };
 
-const replaceInJs = { '@plugin': `$:/plugins/${pluginNamespace}` };
+const replaceInJs = { '@plugin': `$:/plugins/${ pluginNamespace }` };
 
 /**** Helper functions *********************/
 
@@ -143,7 +143,7 @@ async function bumpVersion() {
 
     updater = updater.replace(
         /\/\**TPOUCH_VER.*\*\//,
-        `/***TPOUCH_VER*/'${pluginInfo.version}'/*TPOUCH_VER***/`
+        `/***TPOUCH_VER*/'${ pluginInfo.version }'/*TPOUCH_VER***/`
     );
 
     fs.writeFileSync(pluginInfoPath, JSON.stringify(pluginInfo, null, 4));
@@ -187,7 +187,7 @@ gulp.task('tag', function (cb) {
  */
 gulp.task('copy vanilla files', function () {
     return gulp
-        .src(`${pluginSrc}/**/!(*.scss|*.js)`)
+        .src(`${ pluginSrc }/**/!(*.scss|*.js)`)
         .pipe(gulp.dest(outPath.dist));
 });
 
@@ -203,7 +203,7 @@ gulp.task('compile and move styles', function () {
         sourceComments: false,
     };
 
-    let stream = gulp.src(`${pluginSrc}/**/*.scss`).pipe(sass(opts));
+    let stream = gulp.src(`${ pluginSrc }/**/*.scss`).pipe(sass(opts));
 
     for (const str in replaceAfterSass) {
         stream = stream.pipe(replace(str, replaceAfterSass[str]));
@@ -246,7 +246,7 @@ gulp.task('compile and move scripts', () => {
     };
 
     return gulp
-        .src([ `${pluginSrc}/**/*.js`, `!${pluginSrc}/**/*.test.js` ])
+        .src([ `${ pluginSrc }/**/*.js`, `!${ pluginSrc }/**/*.test.js` ])
         .pipe(sourcemaps.init())
         .pipe(babel(babelCfg))
         .pipe(gulpif(argv.production, uglify(uglifyOpts)))
@@ -258,7 +258,7 @@ gulp.task('compile and move scripts', () => {
  * Syntax validation.
  */
 gulp.task('Javascript validation', function javascript_validation() {
-    return gulp.src(`${pluginSrc}/**/*.js`).pipe(debug())
+    return gulp.src(`${ pluginSrc }/**/*.js`).pipe(debug())
         .pipe(eslint()) // runs eslint
         .pipe(eslint.formatEach()); // output eslint result per each file
 });
@@ -274,7 +274,7 @@ gulp.task('create docs', function (cb) {
     const config = require('./src/jsdoc/config.json');
     config.opts.destination = outPath.docs;
 
-    gulp.src([ `${pluginSrc}/**/*.js`, './src/jsdoc/README.md' ]).pipe(
+    gulp.src([ `${ pluginSrc }/**/*.js`, './src/jsdoc/README.md' ]).pipe(
         jsdoc(config, cb)
     );
 });
@@ -311,7 +311,7 @@ gulp.task('bundle the plugin', function (cb) {
     // write the json to the dist dir;
     // note: tw requires the json to be wrapped in an array, since
     // a collection of tiddlers are possible.
-    const outName = `${pluginName}_${pluginInfo.version}.json`;
+    const outName = `${ pluginName }_${ pluginInfo.version }.json`;
     fs.writeFileSync(
         path.resolve(outPath.bundle, outName),
         JSON.stringify([ plugin ], null, 2)
@@ -321,7 +321,7 @@ gulp.task('bundle the plugin', function (cb) {
 });
 
 function buildWiki(cb) {
-    process.env.TIDDLYWIKI_PLUGIN_PATH = `${outPath.dist}:./node_modules/tw-pouchdb/`;
+    process.env.TIDDLYWIKI_PLUGIN_PATH = `${ outPath.dist }:./node_modules/tw-pouchdb/`;
     const $tw = tw.TiddlyWiki();
     $tw.boot.argv = [ './wiki', '--verbose', '--build', 'index' ];
     $tw.boot.boot();
@@ -368,7 +368,7 @@ gulp.task('travis', function (cb) {
 gulp.task('build-wiki', gulp.series('travis', buildWiki));
 
 gulp.task('watch', () => {
-    const path = `${pluginSrc}**`;
+    const path = `${ pluginSrc }**`;
     log({ path });
     return gulp.watch(path, { ignoreInitial: false }, basicBuild);
 });
