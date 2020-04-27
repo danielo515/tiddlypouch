@@ -15,13 +15,12 @@ and not before.
 
 
 /*jslint node: true, browser: true */
-/*global $tw: false */
-"use strict";
+'use strict';
 
 // Export name and synchronous status
-exports.name = "TiddlyPouch-remove-splash";
-exports.after = ["startup"];
-exports.platforms = ["browser"];
+exports.name = 'TiddlyPouch-remove-splash';
+exports.after = [ 'startup' ];
+exports.platforms = [ 'browser' ];
 exports.synchronous = true;
 
 
@@ -31,4 +30,4 @@ exports.synchronous = true;
  */
 exports.startup = function () {
     $TPouch.splashScreen.hide();
-}
+};

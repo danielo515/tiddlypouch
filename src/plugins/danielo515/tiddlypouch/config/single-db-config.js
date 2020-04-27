@@ -73,7 +73,7 @@ dbConfig.prototype.getConfig = function () {
 dbConfig.prototype.getUrl = function getUrl(section) {
     var URL = this.remote.url;
     if (!URL) { return null; }
-    URL = URL.substr(-1) === '/' ? URL : `${URL  }/`; //Make sure it ends with slash
+    URL = URL.substr(-1) === '/' ? URL : `${ URL  }/`; //Make sure it ends with slash
     if (section) {
         URL += section;
     }

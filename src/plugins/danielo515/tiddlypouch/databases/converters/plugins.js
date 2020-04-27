@@ -46,7 +46,7 @@ function pluginConverter(db) {
      * @private
      * @returns {object} doc - An document object that represents the tiddler. Ready to be inserted into CouchDB
      */
-    db._convertToCouch = function convertToCouch(tiddler,{adaptorInfo} ={}) {
+    db._convertToCouch = function convertToCouch(tiddler, {adaptorInfo} ={}) {
         var result = { fields: {} };
         if (tiddler) {
             $tw.utils.each(tiddler.fields, function (element, field) {

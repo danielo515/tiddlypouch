@@ -9,16 +9,16 @@ some routes for the DbRouter class
 
 \*/
 
-'use strict'
+'use strict';
 
 /*jslint node: true, browser: true */
 
 module.exports.plugins = {
-    name: "plugins" ,
-    route: function(tiddler){
+    name: 'plugins',
+    route: function(/*tiddler */){
         return '__TP_plugins';
     },
     canRoute: function(tiddler){
         return tiddler && tiddler.isPlugin && tiddler.isPlugin();
     }
-}
+};

@@ -12,11 +12,10 @@ Manages insertions, extractions, deletions of tiddlers to a database.
 'use strict';
 /*global PouchDB */
 /*jslint node: true, browser: true */
-/*global $tw, module */
 
 const identity = (x) => x;
 
-const ignoreRevisionFor= ["$:/StoryList"];
+const ignoreRevisionFor= [ '$:/StoryList' ];
 /***====================== EXPORTS  ========================== */
 
 /**
@@ -37,7 +36,7 @@ module.exports = class DbStore {
     constructor(dbName/**String */, db /**PouchDB db Optional */) {
         this.name = dbName;
         this._db = db instanceof PouchDB ? db : new PouchDB(dbName);
-        this.logger = new $TPouch.Logger("DbStore:" + dbName);
+        this.logger = new $TPouch.Logger(`DbStore:${  dbName }`);
     }
 
 
@@ -59,7 +58,7 @@ module.exports = class DbStore {
                 return self.logger.log(message);
             }
             throw err;
-        }
+        };
     };
 
     /**
@@ -83,7 +82,7 @@ module.exports = class DbStore {
      */
     _makeDesignDocument(name, mapFunction, processView = identity) {
         return {
-            _id: '_design/' + name,
+            _id: `_design/${  name }`,
             views: {
                 [name]: {
                     map: processView(mapFunction.toString())
@@ -105,11 +104,11 @@ module.exports = class DbStore {
      */
     createIndex(name, mapFunction, processView) {
 
-        this.logger.debug('Creating index' + name + '...')
+        this.logger.debug(`Creating index${  name  }...`);
         return this._db
             .put(this._makeDesignDocument(name, mapFunction, processView))
-            .then(() => this.logger.debug('Index ' + name + ' created'))
-            .catch(this._Conflict('Index ' + name + ' exists already'));
+            .then(() => this.logger.debug(`Index ${  name  } created`))
+            .catch(this._Conflict(`Index ${  name  } exists already`));
     }
 
     /**
@@ -136,7 +135,7 @@ module.exports = class DbStore {
             })
             .then(({ _rev }) => {
                 _rev && (index._rev = _rev);
-                return this._db.put(index)
+                return this._db.put(index);
             });
     };
 
@@ -156,7 +155,7 @@ module.exports = class DbStore {
         return self._db
             .get(document._id)
             .catch((err) => {
-                if (err.name === "not_found") {
+                if (err.name === 'not_found') {
                     delete document._rev;
                     return {};
                 }
@@ -164,9 +163,9 @@ module.exports = class DbStore {
             })
             .then((oldDoc) => self._db.put({ ...oldDoc, ...document }))
             .then((saveInfo) => {
-                self.logger.debug("Upserted document: ", saveInfo);
+                self.logger.debug('Upserted document: ', saveInfo);
                 return saveInfo;
-            })
+            });
     };
 
 
@@ -182,9 +181,9 @@ module.exports = class DbStore {
      */
     _validateRevision(rev) {
         if (/\d+-[A-z0-9]*/.test(rev)) {
-            return rev
+            return rev;
         }
-        return undefined
+        return undefined;
     };
 
     /***============================ TIDDLER STORE METHODS ======== */
@@ -199,12 +198,12 @@ module.exports = class DbStore {
      */
     addTiddler(tiddler, options) {
         var self = this;
-        const ignoreRev = ignoreRevisionFor.includes(tiddler.fields.title)
+        const ignoreRev = ignoreRevisionFor.includes(tiddler.fields.title);
         var convertedTiddler = this._convertToCouch(tiddler,
-             ignoreRev
-             ? {}
-             : options.tiddlerInfo); // revision is part of provided TW info, so we just omit that
-        this.logger.debug("Saving ", convertedTiddler);
+            ignoreRev
+                ? {}
+                : options.tiddlerInfo); // revision is part of provided TW info, so we just omit that
+        this.logger.debug('Saving ', convertedTiddler);
         return self._upsert(convertedTiddler);
     };
 
@@ -216,12 +215,12 @@ module.exports = class DbStore {
                 doc._deleted = true;
                 return self._db.put(doc);
             })
-            .catch(self.logger.log.bind(self.logger, 'Something went wrong deleting ' + title))
+            .catch(self.logger.log.bind(self.logger, `Something went wrong deleting ${  title }`));
     }
 
     getTiddler(title, revision) {
         var self = this;
-        var query = [self._mangleTitle(title)]
+        var query = [ self._mangleTitle(title) ];
         /** Because PouchDB uses the arguments object we can not pass an undefined value as
          * second parameter, they try to use it. So to be able to make the query in just one call
          * we create an array that dinamycally adds the extra options only if they are required.
@@ -234,7 +233,7 @@ module.exports = class DbStore {
         return self._db.get.apply(self._db, query)
             .then(self._convertFromCouch.bind(self))
             .catch(function (err) {
-                self.logger.log('Error getting tiddler ' + title + ' from DB', err);
+                self.logger.log(`Error getting tiddler ${  title  } from DB`, err);
                 throw err;
             });
     };
@@ -259,8 +258,8 @@ module.exports = class DbStore {
 
         return self._db.query(index, queryOptions)
             .then(function (result) {
-                self.logger.trace("Query to ", index, " searching for ", search_term, " : ", result.rows);
-                return result.rows
+                self.logger.trace('Query to ', index, ' searching for ', search_term, ' : ', result.rows);
+                return result.rows;
             })
             .then(function (rows) {
                 /** query Api returns documents in a different format, we have to convert them to the format convertFromCouch expects */
@@ -269,8 +268,8 @@ module.exports = class DbStore {
                         // the key is missed! maybe provide a conversion function as parameter?
                         _id: doc.id,
                         fields: doc.value
-                    }
-                })
+                    };
+                });
             }).then(function (documents) {
                 return documents.map(self._convertFromCouch.bind(self));
             })
@@ -290,7 +289,7 @@ module.exports = class DbStore {
                 return revisions;
             });
 
-        function onlyAvailable(rev) { return rev.status === "available"; }
+        function onlyAvailable(rev) { return rev.status === 'available'; }
         function getRevisionId(rev) { return rev.rev; }
     }
-}
+};
