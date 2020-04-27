@@ -1,15 +1,12 @@
 language: node_js
 node_js:
     - 12
-services:
-    - xvfb
 
 jobs:
     include:
         - name: run tests
           before_script:
             - yarn build-wiki
-          script: xvfb-run --server-args="-screen 0 800x1011x24" yarn test
         - name: Update snapshots
           before_script:
             - yarn build-wiki
