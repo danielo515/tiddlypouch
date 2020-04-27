@@ -23,15 +23,15 @@ module.exports = DbRouter;
 /***====================== DEFAULT ROUTE  ========================== */
 
 function defaultRouter(tiddler){
-    if( this.destinations.default ){
-            return 'default';
-        }
-    throw new Error('There is no default route set!')
+    if ( this.destinations.default ){
+        return 'default';
+    }
+    throw new Error('There is no default route set!');
 }
 
 var defaultRoute = {
     name: 'default',
-    canRoute: function(){ return true },
+    canRoute: function(){ return true; },
     route: defaultRouter
 };
 
@@ -82,7 +82,7 @@ function DbRouter ( defaultDb ){
  */
 DbRouter.createRouter = function( defaultDb ){
     return new DbRouter(defaultDb);
-}
+};
 
 /**
  * Adds a route at the ond of the routes array.
@@ -91,9 +91,9 @@ DbRouter.createRouter = function( defaultDb ){
  * @return {DbRouter} - a reference to the current router for method chaining.
  */
 DbRouter.prototype.addRoute = function( route ){
-    if( (typeof route === 'object') && ( typeof route.canRoute === 'function' ) && (typeof route.route === 'function') ) {
+    if ( (typeof route === 'object') && ( typeof route.canRoute === 'function' ) && (typeof route.route === 'function') ) {
         this.routes.push(route);
-        return this
+        return this;
     }
 
     var err = new Error('Invalid route. Routes should include "canRoute" and "route" methods');
@@ -106,23 +106,23 @@ DbRouter.prototype.addRoute = function( route ){
  * @param {string} name - The name the database will have in the destinations map. It can override any existing destination.
  * @return {DbRouter} a reference to the current router for method chaining
  */
-DbRouter.prototype.addDestination = function ( name , database ){
+DbRouter.prototype.addDestination = function ( name, database ){
     this.destinations[name] = database;
     return this;
-}
+};
 
 DbRouter.prototype.findRoute = function ( tiddler ){
-    for(var i = this.routes.length-1; i>-1; --i ) {
+    for (var i = this.routes.length-1; i>-1; --i ) {
         var route = this.routes[i];
-        if(route.canRoute.call(this,tiddler)){
-            return route
+        if (route.canRoute.call(this, tiddler)){
+            return route;
         }
     }
-}
+};
 
 DbRouter.prototype.route = function(tiddler){
     var route = this.findRoute(tiddler);
-    var dest = route.route.call(this,tiddler);
+    var dest = route.route.call(this, tiddler);
     return this.destinations[dest];
-}
+};
 

@@ -39,11 +39,11 @@ var converters = {
  * @param {PouchDB} [dbToWrap] - An already existing database to wrap, instead of being created
  * @returns {DbStore} a ready to use instance of DbStore class with the conversion logic injected
  */
-function factory( dbName, dbType , dbToWrap ){
+function factory( dbName, dbType, dbToWrap ){
     dbType = dbType || 'tiddlers';
     var converter = converters[dbType];
 
-    var db = new DbStore(dbName , dbToWrap);
+    var db = new DbStore(dbName, dbToWrap);
     return converter.decorate(db);
 
 }

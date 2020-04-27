@@ -13,7 +13,7 @@ Utils here can be required for more granular use.
 
 /*jslint node: false, browser: true */
 /*global $tw: false */
-"use strict";
+'use strict';
 
 
 /**
@@ -22,26 +22,26 @@ Utils here can be required for more granular use.
 
 const isObject = (o) => Object.prototype.toString.call(o) === '[object Object]';
 // I am not writing a more general fn for performance reasons and because I don't need it!
-const bothAreObjects = (x,y) => isObject(x) && isObject(y)
+const bothAreObjects = (x, y) => isObject(x) && isObject(y);
 const extendOne = (target, src) => {
-    for(const k in src){
-        if(!src.hasOwnProperty(k)) continue; //avoid traversing prototype chain
-        if(bothAreObjects(target[k], src[k])){
-            extendOne(target[k],src[k]);
-            continue
+    for (const k in src){
+        if (!src.hasOwnProperty(k)) continue; //avoid traversing prototype chain
+        if (bothAreObjects(target[k], src[k])){
+            extendOne(target[k], src[k]);
+            continue;
         }
-        if(isObject(src[k])){ // if source is an object we need to clone it to avoid modifying it
+        if (isObject(src[k])){ // if source is an object we need to clone it to avoid modifying it
             target[k] = extendOne({}, src[k]);
-            continue
+            continue;
         }
-        target[k] = src[k]
+        target[k] = src[k];
     }
     return target;
-}
+};
 
 const extendDeep = (target, ...sources ) => {
-    return sources.reduce(extendOne, target)
-}
+    return sources.reduce(extendOne, target);
+};
 
 
 
@@ -49,7 +49,7 @@ function saveAsJsonTiddler(title, data, beautify) {
     var formatParameters = beautify ? $tw.config.preferences.jsonSpaces : null;
     $tw.wiki.addTiddler(new $tw.Tiddler({
         title: title,
-        type: "application/json",
+        type: 'application/json',
         text: JSON.stringify(data, null, formatParameters)
     }));
 }
@@ -68,7 +68,7 @@ function flattenObject(ob) {
                 if (!flatObject.hasOwnProperty(x)) {
                     continue;
                 }
-                toReturn[i + (!!isNaN(x) ? '.' + x : '')] = flatObject[x];
+                toReturn[i + (!!isNaN(x) ? `.${  x }` : '')] = flatObject[x];
             }
         } else {
             toReturn[i] = ob[i];
@@ -81,7 +81,7 @@ function plainToNestedObject(plain) {
     var result = {};
     $tw.utils.each(plain,
         function (value, key) {
-            createChilds(result, key.split('.'), value)
+            createChilds(result, key.split('.'), value);
         });
     return result;
     function createChilds(ob, keys, value) {
@@ -105,7 +105,7 @@ function plainToNestedObject(plain) {
  * @returns {String} yes/no string
  */
 function boolToHuman(value) {
-    return value ? "yes" : "no"
+    return value ? 'yes' : 'no';
 }
 
 // ===== EXPORTS =====

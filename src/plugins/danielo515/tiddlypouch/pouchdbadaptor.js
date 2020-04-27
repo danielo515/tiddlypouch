@@ -55,7 +55,7 @@ function httpRequest(options) {
             results = [];
             $tw.utils.each(options.data, function (dataItem, dataItemTitle) {
                 results.push(
-                    `${dataItemTitle  }=${  encodeURIComponent(dataItem)}`
+                    `${ dataItemTitle  }=${  encodeURIComponent(dataItem) }`
                 );
             });
             data = results.join('&');
@@ -79,7 +79,7 @@ function httpRequest(options) {
                     return resolve(this.responseText);
                 }
                 // Something went wrong
-                return reject(`XMLHttpRequest error code: ${  this.status}`);
+                return reject(`XMLHttpRequest error code: ${  this.status }`);
             }
         };
         // Make the request

@@ -40,10 +40,10 @@ function Converter(db) {
         var firstChar = title.charAt(0);
         var restOfIt = title.substring(1);
         if (firstChar === '_') {
-            return `%5f${  restOfIt}`;
+            return `%5f${  restOfIt }`;
         }
         else if (firstChar === '%') {
-            return `%25${  restOfIt}`;
+            return `%25${  restOfIt }`;
         }
         else {
             return title;

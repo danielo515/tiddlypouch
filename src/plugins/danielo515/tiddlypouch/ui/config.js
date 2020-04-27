@@ -82,7 +82,7 @@ function setLoginMessage() {
         `Login to remote database <b>${
             databaseName
         }</b> at: ${
-            loginDestination}`;
+            loginDestination }`;
     $tw.wiki.addTiddler({
         title: '$:/language/LoginToTiddlySpace',
         text: message,
