@@ -187,7 +187,7 @@ gulp.task('tag', function (cb) {
  */
 gulp.task('copy vanilla files', function () {
     return gulp
-        .src(`${ pluginSrc }/**/!(*.scss|*.js)`)
+        .src(`${ pluginSrc }/**/!(*.scss|*.[tj]s)`)
         .pipe(gulp.dest(outPath.dist));
 });
 
@@ -246,7 +246,8 @@ gulp.task('compile and move scripts', () => {
     };
 
     return gulp
-        .src([ `${ pluginSrc }/**/*.js`, `!${ pluginSrc }/**/*.test.js` ])
+        .src([ `${ pluginSrc }/**/*.[tj]s`, `!${ pluginSrc }/**/*.test.js` ])
+        .pipe(debug())
         .pipe(sourcemaps.init())
         .pipe(babel(babelCfg))
         .pipe(gulpif(argv.production, uglify(uglifyOpts)))
@@ -258,7 +259,7 @@ gulp.task('compile and move scripts', () => {
  * Syntax validation.
  */
 gulp.task('Javascript validation', function javascript_validation() {
-    return gulp.src(`${ pluginSrc }/**/*.js`).pipe(debug())
+    return gulp.src(`${ pluginSrc }/**/*.js`)//.pipe(debug())
         .pipe(eslint()) // runs eslint
         .pipe(eslint.formatEach()); // output eslint result per each file
 });
@@ -344,9 +345,7 @@ gulp.task('default', function (cb) {
         'bump_version',
         [
             // 'create docs', // There is a problem because TS imports on JSDOC
-            'copy vanilla files',
-            'compile and move styles',
-            'compile and move scripts',
+            basicBuild,
         ],
         'bundle the plugin',
         'tag',
