@@ -46,7 +46,7 @@ $TPouch.ui.refresh = exports.refreshUI = function refreshUI(config) {
 exports.handlers = {};
 
 function setSyncFlag(mode) {
-    var sincStatusFlag = $tw.wiki.getTiddler(SYNC_ICON);
+    var syncStatusFlag = $tw.wiki.getTiddler(SYNC_ICON);
     /* Because I'm unsure about how to decide if we are in offline mode
       i can take both, a message param or just a plain function execution.
       take a look at startup-syncer for the emit of the events
@@ -54,12 +54,12 @@ function setSyncFlag(mode) {
     if (mode === 'offline' || !$TPouch.config.currentDB.getUrl()) {
         /* We don't want sync status icon on sidebar*/
         return $tw.wiki.addTiddler(
-            new $tw.Tiddler(sincStatusFlag, { tags: [] })
+            new $tw.Tiddler(syncStatusFlag, { tags: [] })
         ); //Remove tags
     }
     /*Otherwise, add to sidebar with the tag (it could be removed) */
     $tw.wiki.addTiddler(
-        new $tw.Tiddler(sincStatusFlag, { tags: [ '$:/tags/PageControls' ] })
+        new $tw.Tiddler(syncStatusFlag, { tags: [ '$:/tags/PageControls' ] })
     );
 }
 
