@@ -21,13 +21,12 @@ Links the user interface with the configuration methods
  * @typedef {import('../startup/startup-config').tpouchConfig} tpouchConfig
  */
 
-var SELECTED_DATABASE =
-    '$:/plugins/danielo515/tiddlypouch/config/selected_database';
 const {
     CONFIG_SAVED,
     SYNC_ICON,
     DATABASE_NAMES,
     DEBUG_CONFIG,
+    SELECTED_DATABASE,
 } = require('@plugin/constants.js');
 
 var Utils = require('@plugin/utils');

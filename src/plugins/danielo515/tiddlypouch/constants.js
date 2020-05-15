@@ -30,4 +30,5 @@ module.exports = {
     SYNC_ICON: '$:/plugins/danielo515/tiddlypouch/ui/sync-flag',
     DATABASE_NAMES: '$:/plugins/danielo515/tiddlypouch/config/database_names',
     DEBUG_CONFIG: '$:/plugins/danielo515/tiddlypouch/ui/Config',
+    SELECTED_DATABASE: '$:/plugins/danielo515/tiddlypouch/config/selected_database',
 };
