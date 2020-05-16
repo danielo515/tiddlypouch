@@ -22,6 +22,7 @@ declare namespace $tw {
 
     let wiki: Wiki;
     let rootWidget: RootWidget;
+    let browser: boolean;
     let utils: {
         each(Object, fn: (val: any, key: string) => void);
     };
