@@ -44,7 +44,8 @@ $TPouch.ui.refresh = exports.refreshUI = function refreshUI(config) {
 
 exports.handlers = {};
 
-function setSyncFlag(mode) {
+type syncFlag = 'offline' | 'online';
+function setSyncFlag(mode?: syncFlag) {
     var syncStatusFlag = $tw.wiki.getTiddler(SYNC_ICON);
     /* Because I'm unsure about how to decide if we are in offline mode
       i can take both, a message param or just a plain function execution.
