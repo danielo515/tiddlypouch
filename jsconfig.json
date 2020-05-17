@@ -3,6 +3,7 @@
     "compilerOptions": {
         "checkJs": true,
         "baseUrl": ".",
+        "module": "commonjs",
         "paths": {
             "@plugin/*": [ "./src/plugins/danielo515/tiddlypouch/*" ]
         }

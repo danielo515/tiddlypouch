@@ -18,9 +18,7 @@ exports.after = [ 'pouchdb' ];
 exports.platforms = [ 'browser' ];
 exports.synchronous = true;
 
-var SYNC_STATE = '$:/state/tiddlypouch/sync/status';
-var SYNC_ERRORS = '$:/state/tiddlypouch/sync/Log'; // for now, log everything to the same place
-var SYNC_LOG = '$:/state/tiddlypouch/sync/Log';
+const {SYNC_STATE, SYNC_ERRORS, SYNC_LOG} = require('@plugin/constants');
 
 exports.startup = function () {
     /* --- Declaration ZONE ---*/

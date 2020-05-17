@@ -27,7 +27,7 @@ const { DELETE_DB, LIST_REVISIONS, LOAD_REVISION,
 
 exports.startup = function () {
     var logger = new $TPouch.Logger('TiddlyPouch');
-    var uiConnector = require('@plugin/ui/config.js');
+    var uiConnector = require('@plugin/ui/config');
     var Utils = require('@plugin/utils');
 
     /*****************************************************************************

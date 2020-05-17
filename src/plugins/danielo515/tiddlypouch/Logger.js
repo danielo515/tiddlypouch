@@ -11,6 +11,7 @@ A basic logging implementation
 /*jslint node: true, browser: true */
 'use strict';
 
+// eslint-disable-next-line import/no-unresolved
 var Super = require('$:/core/modules/utils/logger.js').Logger;
 
 /**

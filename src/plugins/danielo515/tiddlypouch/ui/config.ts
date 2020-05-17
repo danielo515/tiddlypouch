@@ -1,6 +1,6 @@
 /*\
 type: application/javascript
-title: $:/plugins/danielo515/tiddlypouch/ui/config.js
+title: $:/plugins/danielo515/tiddlypouch/ui/config
 module-type: library
 
 Links the user interface with the configuration methods
@@ -10,7 +10,6 @@ Links the user interface with the configuration methods
 \*/
 
 'use strict';
-/** @module */
 
 //@ts-check
 
@@ -21,20 +20,19 @@ Links the user interface with the configuration methods
  * @typedef {import('../startup/startup-config').tpouchConfig} tpouchConfig
  */
 
-var SELECTED_DATABASE =
-    '$:/plugins/danielo515/tiddlypouch/config/selected_database';
 const {
     CONFIG_SAVED,
     SYNC_ICON,
     DATABASE_NAMES,
     DEBUG_CONFIG,
+    SELECTED_DATABASE,
 } = require('@plugin/constants.js');
 
 var Utils = require('@plugin/utils');
 
 $TPouch.ui = $TPouch.ui || {};
 
-$TPouch.ui.refresh = exports.refreshUI = function refreshUI(config) {
+export function refreshUI(config) {
     updateDebugUI(config);
     refreshSelectedDbUi(config.databases[config.selectedDbId]);
     setSyncFlag();
@@ -43,9 +41,10 @@ $TPouch.ui.refresh = exports.refreshUI = function refreshUI(config) {
     setSiteSubtitleToDatabaseName();
 };
 
-exports.handlers = {};
+$TPouch.ui.refresh = refreshUI
 
-function setSyncFlag(mode) {
+type syncFlag = 'offline' | 'online';
+export function setSyncFlag({param: mode = ''} = {}) {
     var syncStatusFlag = $tw.wiki.getTiddler(SYNC_ICON);
     /* Because I'm unsure about how to decide if we are in offline mode
       i can take both, a message param or just a plain function execution.
@@ -62,8 +61,6 @@ function setSyncFlag(mode) {
         new $tw.Tiddler(syncStatusFlag, { tags: [ '$:/tags/PageControls' ] })
     );
 }
-
-exports.setSyncFlag = setSyncFlag;
 
 function setSiteSubtitleToDatabaseName() {
     var text =
@@ -119,7 +116,7 @@ function getTiddlerFields(title) {
     return result;
 }
 
-exports.handlers.updateDebug = function (/**event */) {
+function updateDebug (/**event */) {
     var rawConfig = getTiddlerFields(DEBUG_CONFIG);
     //@type { tpouchConfig }
     var savedConfig = $TPouch.config.readConfigTiddler();
@@ -153,7 +150,7 @@ function updateDebugUI(config) {
  * Note that the configuration being updated may not be the configuration of the currentDB,
  * the user can select a DB different than the current one and save that config.
  */
-exports.handlers.updateDbConfig = function (/**event */) {
+function updateDbConfig (/**event */) {
     const uiConfig = $tw.wiki.getTiddlerData(SELECTED_DATABASE);
     const debugConfig = getTiddlerFields(DEBUG_CONFIG); //TODO: unify both configs and save them at once
     //@type { tpouchConfig }
@@ -178,7 +175,7 @@ exports.handlers.updateDbConfig = function (/**event */) {
  * Event handler that should be triggered when a database name is selected.
  * It loads it's configuration and refreshes the UI with it.
  */
-exports.handlers.databaseHasBeenSelected = function (event) {
+function databaseHasBeenSelected (event) {
     var dbName = event.param;
     var dbConfig = $TPouch.config.getDatabaseConfig(dbName);
     refreshSelectedDbUi(dbConfig);
@@ -200,3 +197,9 @@ function refreshSelectedDbUi(dbConfig) {
         })
     );
 }
+
+export const handlers = {
+    updateDbConfig,
+    databaseHasBeenSelected,
+    updateDebug,
+};
