@@ -30,6 +30,9 @@ settings:
     import/resolver:
         babel-module:
             root: ./src/**
+            extensions:
+                - .js
+                - .ts
             alias:
                 "@plugin": ./src/plugins/danielo515/tiddlypouch
 
