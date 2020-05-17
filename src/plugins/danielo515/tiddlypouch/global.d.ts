@@ -1,3 +1,4 @@
+type event = {param: any, paramObject: Object}
 declare namespace $tw {
     interface tiddlerFields {
         title: string;
@@ -18,6 +19,7 @@ declare namespace $tw {
 
     class RootWidget {
         dispatchEvent({ type: string, param: any });
+        addEventListener(msg: string, handler: (event:event) => void);
     }
 
     let wiki: Wiki;

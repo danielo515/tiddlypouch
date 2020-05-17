@@ -60,7 +60,7 @@ exports.startup = function (callback) {
     const { extendDeep, extendOne } = require('@plugin/utils');
     var LOGGER = require('@plugin/utils/logger.js', true).Logger;
     var Logger = new LOGGER('TiddlyPouch:config');
-    var Ui = require('@plugin/ui/config.js');
+    var Ui = require('@plugin/ui/config');
     var DbConfig = require('@plugin/config/single-db-config');
     /** @type {tpouchConfig} */
     var _config;

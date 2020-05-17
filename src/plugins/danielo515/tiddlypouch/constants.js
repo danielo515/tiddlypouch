@@ -27,8 +27,12 @@ module.exports = {
     UPDATE_SELECTED_DB: 'tm-TP-config-updateSelectedDB',
     DB_HAS_BEEN_SELECTED: 'tm-TP-config-selectedDb',
     // ===== TIDDLERS =====
+    SYNC_STATE: '$:/state/tiddlypouch/sync/status',
+    SYNC_ERRORS: '$:/state/tiddlypouch/sync/Log', // for now, log everything to the same place
+    SYNC_LOG: '$:/state/tiddlypouch/sync/Log',
     SYNC_ICON: '$:/plugins/danielo515/tiddlypouch/ui/sync-flag',
     DATABASE_NAMES: '$:/plugins/danielo515/tiddlypouch/config/database_names',
     DEBUG_CONFIG: '$:/plugins/danielo515/tiddlypouch/ui/Config',
-    SELECTED_DATABASE: '$:/plugins/danielo515/tiddlypouch/config/selected_database',
+    SELECTED_DATABASE:
+        '$:/plugins/danielo515/tiddlypouch/config/selected_database',
 };
